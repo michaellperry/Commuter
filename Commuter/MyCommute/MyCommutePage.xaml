@@ -1,0 +1,24 @@
+﻿<Page
+    x:Class="Commuter.MyCommute.MyCommutePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Commuter.MyCommute"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="111"/>
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <Image Margin="-4" Source="http://assets.libsyn.com/content/7569532" VerticalAlignment="Top"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1">
+                <MediaTransportControls IsFastForwardButtonVisible="False" IsZoomButtonVisible="False" IsZoomEnabled="False" IsSeekBarVisible="True" IsFullWindowEnabled="False" IsFullWindowButtonVisible="False" IsVolumeButtonVisible="False" IsVolumeEnabled="False"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

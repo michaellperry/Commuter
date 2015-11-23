@@ -1,4 +1,5 @@
-﻿using Commuter.Subscriptions;
+﻿using Commuter.MyCommute;
+using Commuter.Subscriptions;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -64,7 +65,7 @@ namespace Commuter
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(SubscriptionsPage), e.Arguments);
+                rootFrame.Navigate(typeof(MyCommutePage), e.Arguments);
             }
             // Ensure the current window is active
             Window.Current.Activate();
