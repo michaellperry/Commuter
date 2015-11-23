@@ -17,7 +17,7 @@
                 <Image Margin="-4" Source="http://assets.libsyn.com/content/7569532" VerticalAlignment="Top"/>
             </StackPanel>
             <StackPanel Grid.Row="1">
-                <MediaTransportControls IsFastForwardButtonVisible="False" IsZoomButtonVisible="False" IsZoomEnabled="False" IsSeekBarVisible="True" IsFullWindowEnabled="False" IsFullWindowButtonVisible="False" IsVolumeButtonVisible="False" IsVolumeEnabled="False"/>
+                <local:CustomMediaTransportControls />
             </StackPanel>
         </Grid>
     </Grid>

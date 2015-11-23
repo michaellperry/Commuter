@@ -104,6 +104,7 @@
     <Compile Include="Details\DetailsPage.xaml.cs">
       <DependentUpon>DetailsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MyCommute\CustomMediaTransportControls.cs" />
     <Compile Include="MyCommute\MyCommutePage.xaml.cs">
       <DependentUpon>MyCommutePage.xaml</DependentUpon>
     </Compile>
@@ -167,6 +168,11 @@
     <Page Include="Subscriptions\SubscriptionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="themes\generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
   <ItemGroup>
