@@ -1,6 +1,7 @@
-﻿using Commuter.MyCommute;
-using Commuter.Subscriptions;
+﻿using Assisticant.Fields;
 using System;
+using System.Collections.Immutable;
+using System.Linq;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -14,6 +15,9 @@ namespace Commuter
     /// </summary>
     sealed partial class App : Application
     {
+        private Frame _rootFrame;
+        private Observable<Model> _model = new Observable<Model>();
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -40,16 +44,16 @@ namespace Commuter
             }
 #endif
 
-            Frame rootFrame = Window.Current.Content as Frame;
+            _rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            if (rootFrame == null)
+            if (_rootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
+                _rootFrame = new Frame();
 
-                rootFrame.NavigationFailed += OnNavigationFailed;
+                _rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -57,15 +61,15 @@ namespace Commuter
                 }
 
                 // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
+                Window.Current.Content = _rootFrame;
             }
 
-            if (rootFrame.Content == null)
+            if (_rootFrame.Content == null)
             {
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MyCommutePage), e.Arguments);
+                _rootFrame.Navigate(typeof(MyCommute.MyCommutePage), e.Arguments);
             }
             // Ensure the current window is active
             Window.Current.Activate();
@@ -93,6 +97,36 @@ namespace Commuter
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        private ImmutableList<Type> PageStack()
+        {
+            var pages = ImmutableList<Type>.Empty;
+            var model = _model.Value;
+            if (model != null)
+            {
+                if (!model.Subscriptions.Any())
+                {
+                    pages = pages.Add(typeof(Onboarding.OnboardingPage));
+                    if (model.SearchResults.Any())
+                    {
+                        pages = pages.Add(typeof(Search.SearchPage));
+                    }
+                }
+                else
+                {
+                    pages = pages.Add(typeof(MyCommute.MyCommutePage));
+                    if (model.ManagingSubscriptions)
+                    {
+                        pages = pages.Add(typeof(Subscriptions.SubscriptionsPage));
+                        if (model.SearchResults.Any())
+                        {
+                            pages = pages.Add(typeof(Search.SearchPage));
+                        }
+                    }
+                }
+            }
+            return pages;
         }
     }
 }
