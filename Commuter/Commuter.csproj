@@ -121,6 +121,7 @@
     <Compile Include="Search\SearchResultControl.xaml.cs">
       <DependentUpon>SearchResultControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Search\SearchViewModel.cs" />
     <Compile Include="Subscriptions\Subscription.cs" />
     <Compile Include="Subscriptions\SubscriptionControl.xaml.cs">
       <DependentUpon>SubscriptionControl.xaml</DependentUpon>

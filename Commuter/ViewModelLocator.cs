@@ -21,5 +21,10 @@ namespace Commuter
         {
             get { return ViewModel(() => new Onboarding.OnboardingViewModel(Model)); }
         }
+
+        public object SearchViewModel
+        {
+            get { return ViewModel(() => new Search.SearchViewModel(Model)); }
+        }
     }
 }

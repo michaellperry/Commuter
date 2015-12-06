@@ -12,6 +12,7 @@ namespace Commuter
     internal class Model : RoverMob.Tasks.Process
     {
         private ObservableList<Subscription> _subscriptions = new ObservableList<Subscription>();
+
         private Observable<string> _searchTerm = new Observable<string>();
         private ObservableList<SearchResult> _searchResults = new ObservableList<SearchResult>();
         private Observable<bool> _managingSubscriptions = new Observable<bool>();
@@ -51,5 +52,10 @@ namespace Commuter
                 });
             });
         }
-   }
+
+        public void ClearSearchResults()
+        {
+            _searchResults.Clear();
+        }
+    }
 }
