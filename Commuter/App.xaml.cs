@@ -1,5 +1,7 @@
-﻿using Assisticant.Fields;
+﻿using Assisticant;
+using Assisticant.Fields;
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Windows.ApplicationModel;
@@ -15,8 +17,14 @@ namespace Commuter
     /// </summary>
     sealed partial class App : Application
     {
+        private class StackFrame
+        {
+        }
+
         private Frame _rootFrame;
         private Observable<Model> _model = new Observable<Model>();
+        private Computed<ImmutableList<Type>> _pageStack;
+        private ComputedSubscription _pageStackSubscription;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -27,6 +35,8 @@ namespace Commuter
             Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync();
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            _pageStack = new Computed<ImmutableList<Type>>(ComputePageStack);
         }
 
         /// <summary>
@@ -63,16 +73,14 @@ namespace Commuter
                 // Place the frame in the current Window
                 Window.Current.Content = _rootFrame;
             }
-
-            if (_rootFrame.Content == null)
-            {
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                _rootFrame.Navigate(typeof(MyCommute.MyCommutePage), e.Arguments);
-            }
             // Ensure the current window is active
             Window.Current.Activate();
+
+            _pageStackSubscription = _pageStack.Subscribe(NavigatePageStack);
+
+            _model.Value = new Model();
+
+            ForView.Initialize();
         }
 
         /// <summary>
@@ -99,7 +107,7 @@ namespace Commuter
             deferral.Complete();
         }
 
-        private ImmutableList<Type> PageStack()
+        private ImmutableList<Type> ComputePageStack()
         {
             var pages = ImmutableList<Type>.Empty;
             var model = _model.Value;
@@ -127,6 +135,51 @@ namespace Commuter
                 }
             }
             return pages;
+        }
+
+        private void NavigatePageStack(ImmutableList<Type> pages)
+        {
+            var stack = _rootFrame.BackStack.ToImmutableList();
+            NavigateFrame(stack, pages);
+        }
+
+        private void NavigateFrame(ImmutableList<PageStackEntry> stack, ImmutableList<Type> pages)
+        {
+            if (!stack.Any())
+            {
+                if (!pages.Any())
+                {
+                }
+                else
+                {
+                    _rootFrame.Navigate(pages[0]);
+                    NavigateFrame(stack, pages.RemoveAt(0));
+                }
+            }
+            else
+            {
+                if (!pages.Any())
+                {
+                    _rootFrame.GoBack();
+                    NavigateFrame(stack.RemoveAt(0), pages);
+                }
+                else
+                {
+                    if (stack[0].SourcePageType == pages[0])
+                    {
+                        NavigateFrame(stack.RemoveAt(0), pages.RemoveAt(0));
+                    }
+                    else
+                    {
+                        while (stack.Any())
+                        {
+                            _rootFrame.GoBack();
+                            stack = stack.RemoveAt(0);
+                        }
+                        NavigateFrame(stack, pages);
+                    }
+                }
+            }
         }
     }
 }
