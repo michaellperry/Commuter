@@ -5,6 +5,7 @@
     xmlns:local="using:Commuter.Details"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    DataContext="{Binding Source={StaticResource Locator}, Path=OnboardingViewModel}"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -14,8 +15,8 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackPanel>
-                <TextBox Margin="4" FontSize="20" PlaceholderText="Search" InputScope="Search" />
-                <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="Onboarding"/>
+                <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="Let&apos;s design your commute. What are you interested in?"/>
+                <AutoSuggestBox Margin="4" FontSize="20" PlaceholderText="Search" Text="{Binding SearchTerm, Mode=TwoWay}" QuerySubmitted="AutoSuggestBox_QuerySubmitted" />
             </StackPanel>
         </Grid>
     </Grid>

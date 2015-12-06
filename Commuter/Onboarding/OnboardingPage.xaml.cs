@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assisticant;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,14 @@ namespace Commuter.Onboarding
         public OnboardingPage()
         {
             this.InitializeComponent();
+        }
+
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            ForView.Unwrap<OnboardingViewModel>(DataContext, vm =>
+            {
+                vm.QuerySubmitted();
+            });
         }
     }
 }

@@ -17,13 +17,13 @@ namespace Commuter
     /// </summary>
     sealed partial class App : Application
     {
-        private class StackFrame
+        private struct StackFrame
         {
+            public Type ViewType;
         }
 
         private Frame _rootFrame;
-        private Observable<Model> _model = new Observable<Model>();
-        private Computed<ImmutableList<Type>> _pageStack;
+        private Computed<ImmutableList<StackFrame>> _pageStack;
         private ComputedSubscription _pageStackSubscription;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Commuter
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            _pageStack = new Computed<ImmutableList<Type>>(ComputePageStack);
+            _pageStack = new Computed<ImmutableList<StackFrame>>(ComputePageStack);
         }
 
         /// <summary>
@@ -78,8 +78,6 @@ namespace Commuter
 
             _pageStackSubscription = _pageStack.Subscribe(NavigatePageStack);
 
-            _model.Value = new Model();
-
             ForView.Initialize();
         }
 
@@ -107,29 +105,45 @@ namespace Commuter
             deferral.Complete();
         }
 
-        private ImmutableList<Type> ComputePageStack()
+        private ImmutableList<StackFrame> ComputePageStack()
         {
-            var pages = ImmutableList<Type>.Empty;
-            var model = _model.Value;
+            var pages = ImmutableList<StackFrame>.Empty;
+            var viewModelLocator = (ViewModelLocator)Resources["Locator"];
+            var model = viewModelLocator.Model;
             if (model != null)
             {
                 if (!model.Subscriptions.Any())
                 {
-                    pages = pages.Add(typeof(Onboarding.OnboardingPage));
+                    pages = pages.Add(new StackFrame
+                    {
+                        ViewType = typeof(Onboarding.OnboardingPage)
+                    });
                     if (model.SearchResults.Any())
                     {
-                        pages = pages.Add(typeof(Search.SearchPage));
+                        pages = pages.Add(new StackFrame
+                        {
+                            ViewType = typeof(Search.SearchPage)
+                        });
                     }
                 }
                 else
                 {
-                    pages = pages.Add(typeof(MyCommute.MyCommutePage));
+                    pages = pages.Add(new StackFrame
+                    {
+                        ViewType = typeof(MyCommute.MyCommutePage)
+                    });
                     if (model.ManagingSubscriptions)
                     {
-                        pages = pages.Add(typeof(Subscriptions.SubscriptionsPage));
+                        pages = pages.Add(new StackFrame
+                        {
+                            ViewType = typeof(Subscriptions.SubscriptionsPage)
+                        });
                         if (model.SearchResults.Any())
                         {
-                            pages = pages.Add(typeof(Search.SearchPage));
+                            pages = pages.Add(new StackFrame
+                            {
+                                ViewType = typeof(Search.SearchPage)
+                            });
                         }
                     }
                 }
@@ -137,49 +151,10 @@ namespace Commuter
             return pages;
         }
 
-        private void NavigatePageStack(ImmutableList<Type> pages)
+        private void NavigatePageStack(ImmutableList<StackFrame> pages)
         {
-            var stack = _rootFrame.BackStack.ToImmutableList();
-            NavigateFrame(stack, pages);
-        }
-
-        private void NavigateFrame(ImmutableList<PageStackEntry> stack, ImmutableList<Type> pages)
-        {
-            if (!stack.Any())
-            {
-                if (!pages.Any())
-                {
-                }
-                else
-                {
-                    _rootFrame.Navigate(pages[0]);
-                    NavigateFrame(stack, pages.RemoveAt(0));
-                }
-            }
-            else
-            {
-                if (!pages.Any())
-                {
-                    _rootFrame.GoBack();
-                    NavigateFrame(stack.RemoveAt(0), pages);
-                }
-                else
-                {
-                    if (stack[0].SourcePageType == pages[0])
-                    {
-                        NavigateFrame(stack.RemoveAt(0), pages.RemoveAt(0));
-                    }
-                    else
-                    {
-                        while (stack.Any())
-                        {
-                            _rootFrame.GoBack();
-                            stack = stack.RemoveAt(0);
-                        }
-                        NavigateFrame(stack, pages);
-                    }
-                }
-            }
+            if (pages.Any())
+                _rootFrame.Navigate(pages.Last().ViewType);
         }
     }
 }

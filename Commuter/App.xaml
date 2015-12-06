@@ -5,4 +5,8 @@
     xmlns:local="using:Commuter"
     RequestedTheme="Dark">
 
+    <Application.Resources>
+        <local:ViewModelLocator x:Key="Locator"/>
+    </Application.Resources>
+
 </Application>
