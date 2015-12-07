@@ -17,13 +17,8 @@ namespace Commuter
     /// </summary>
     sealed partial class App : Application
     {
-        private struct StackFrame
-        {
-            public Type ViewType;
-        }
-
         private Frame _rootFrame;
-        private Computed<ImmutableList<StackFrame>> _pageStack;
+        private Computed<ImmutableList<Type>> _pageStack;
         private ComputedSubscription _pageStackSubscription;
 
         /// <summary>
@@ -36,7 +31,7 @@ namespace Commuter
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            _pageStack = new Computed<ImmutableList<StackFrame>>(ComputePageStack);
+            _pageStack = new Computed<ImmutableList<Type>>(ComputePageStack);
         }
 
         /// <summary>
@@ -105,45 +100,30 @@ namespace Commuter
             deferral.Complete();
         }
 
-        private ImmutableList<StackFrame> ComputePageStack()
+        private ImmutableList<Type> ComputePageStack()
         {
-            var pages = ImmutableList<StackFrame>.Empty;
+            var pages = ImmutableList<Type>.Empty;
             var viewModelLocator = (ViewModelLocator)Resources["Locator"];
             var model = viewModelLocator.Model;
             if (model != null)
             {
                 if (!model.Subscriptions.Any())
                 {
-                    pages = pages.Add(new StackFrame
-                    {
-                        ViewType = typeof(Onboarding.OnboardingPage)
-                    });
+                    pages = pages.Add(typeof(Onboarding.OnboardingPage));
                     if (model.SearchResults.Any())
                     {
-                        pages = pages.Add(new StackFrame
-                        {
-                            ViewType = typeof(Search.SearchPage)
-                        });
+                        pages = pages.Add(typeof(Search.SearchPage));
                     }
                 }
                 else
                 {
-                    pages = pages.Add(new StackFrame
-                    {
-                        ViewType = typeof(MyCommute.MyCommutePage)
-                    });
+                    pages = pages.Add(typeof(MyCommute.MyCommutePage));
                     if (model.ManagingSubscriptions)
                     {
-                        pages = pages.Add(new StackFrame
-                        {
-                            ViewType = typeof(Subscriptions.SubscriptionsPage)
-                        });
+                        pages = pages.Add(typeof(Subscriptions.SubscriptionsPage));
                         if (model.SearchResults.Any())
                         {
-                            pages = pages.Add(new StackFrame
-                            {
-                                ViewType = typeof(Search.SearchPage)
-                            });
+                            pages = pages.Add(typeof(Search.SearchPage));
                         }
                     }
                 }
@@ -151,10 +131,12 @@ namespace Commuter
             return pages;
         }
 
-        private void NavigatePageStack(ImmutableList<StackFrame> pages)
+        private void NavigatePageStack(ImmutableList<Type> pages)
         {
+            while (_rootFrame.CanGoBack)
+                _rootFrame.GoBack();
             if (pages.Any())
-                _rootFrame.Navigate(pages.Last().ViewType);
+                _rootFrame.Navigate(pages.Last());
         }
     }
 }
