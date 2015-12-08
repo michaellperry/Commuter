@@ -1,0 +1,49 @@
+﻿<UserControl
+    x:Class="Commuter.Search.DetailControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Commuter.Search"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="640"
+    d:DesignWidth="360">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <Image Margin="-4" Source="http://assets.libsyn.com/content/7569532"/>
+            <TextBlock Margin="8,8,8,4" Style="{StaticResource TitleTextBlockStyle}" Text="Q.E.D. Code"/>
+            <TextBlock Margin="8,4" Style="{StaticResource SubtitleTextBlockStyle}" Text="Michael L Perry"/>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl Margin="-4">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:EpisodeControl/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.Items>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                    <local:Episode/>
+                </ItemsControl.Items>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

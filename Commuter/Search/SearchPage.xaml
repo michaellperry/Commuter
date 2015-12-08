@@ -9,17 +9,16 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid Margin="4">
+        <Grid Margin="4" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenFalse}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <ListView Grid.Row="1">
-                <ListView.Items>
-                    <local:SearchResult />
-                    <local:SearchResult />
-                    <local:SearchResult />
-                </ListView.Items>
+            <StackPanel>
+                <TextBox Margin="4" FontSize="20" PlaceholderText="Search" InputScope="Search"  Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenFalse}}" />
+                <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="'Tech' Results"/>
+            </StackPanel>
+            <ListView Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -31,10 +30,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackPanel>
-                <TextBox Margin="4" FontSize="20" PlaceholderText="Search" InputScope="Search" />
-                <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="'Tech' Results"/>
-            </StackPanel>
         </Grid>
+        <local:DetailControl Margin="4" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenTrue}}"/>
     </Grid>
 </Page>

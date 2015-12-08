@@ -16,6 +16,7 @@ namespace Commuter
         private Observable<string> _searchTerm = new Observable<string>();
         private ObservableList<SearchResult> _searchResults = new ObservableList<SearchResult>();
         private Observable<bool> _managingSubscriptions = new Observable<bool>();
+        private Observable<SearchResult> _selectedSearchResult = new Observable<SearchResult>();
 
         public ImmutableList<Subscription> Subscriptions
         {
@@ -36,6 +37,12 @@ namespace Commuter
         public bool ManagingSubscriptions
         {
             get { return _managingSubscriptions.Value; }
+        }
+
+        public SearchResult SelectedSearchResult
+        {
+            get { return _selectedSearchResult.Value; }
+            set { _selectedSearchResult.Value = value; }
         }
 
         public void BeginSearch()

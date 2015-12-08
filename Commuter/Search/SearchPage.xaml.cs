@@ -45,7 +45,7 @@ namespace Commuter.Search
         {
             ForView.Unwrap<SearchViewModel>(DataContext, vm =>
             {
-                vm.ClearSearchResults();
+                vm.GoBack();
                 e.Handled = true;
             });
         }

@@ -19,12 +19,28 @@ namespace Commuter
 
         public object OnboardingViewModel
         {
-            get { return ViewModel(() => new Onboarding.OnboardingViewModel(Model)); }
+            get { return ViewModel(NewOnboardingViewModel); }
         }
 
         public object SearchViewModel
         {
-            get { return ViewModel(() => new Search.SearchViewModel(Model)); }
+            get { return ViewModel(NewSearchViewModel); }
+        }
+
+        private Onboarding.OnboardingViewModel NewOnboardingViewModel()
+        {
+            return new Onboarding.OnboardingViewModel(Model);
+        }
+
+        private Search.SearchViewModel NewSearchViewModel()
+        {
+            return new Search.SearchViewModel(Model, NewSearchResultViewModel);
+        }
+
+        private Search.SearchResultViewModel NewSearchResultViewModel(
+            Search.SearchResult searchResult)
+        {
+            return new Search.SearchResultViewModel(searchResult);
         }
     }
 }

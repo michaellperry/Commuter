@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace Commuter.Search
 {
-    class SearchResult
+    class Episode
     {
-        private readonly float _quality = 1.0f;
-
-        public float Quality
-        {
-            get { return _quality; }
-        }
     }
 }
