@@ -9,23 +9,23 @@ namespace Commuter.Search
 {
     class SearchViewModel
     {
-        private readonly Model _model;
+        private readonly SearchService _search;
         private readonly Func<SearchResult, SearchResultViewModel> _newSearchResultViewModel;
 
         public SearchViewModel(
-            Model model,
+            SearchService search,
             Func<SearchResult, SearchResultViewModel> newSearchResultViewModel)
         {
-            _model = model;
+            _search = search;
             _newSearchResultViewModel = newSearchResultViewModel;
         }
 
         public void GoBack()
         {
-            if (_model.SelectedSearchResult != null)
-                _model.SelectedSearchResult = null;
+            if (_search.SelectedSearchResult != null)
+                _search.SelectedSearchResult = null;
             else
-                _model.ClearSearchResults();
+                _search.ClearSearchResults();
         }
 
         public ImmutableList<SearchResultViewModel> SearchResults
@@ -33,7 +33,7 @@ namespace Commuter.Search
             get
             {
                 return (
-                    from searchResult in _model.SearchResults
+                    from searchResult in _search.SearchResults
                     orderby searchResult.Quality descending
                     select _newSearchResultViewModel(searchResult)
                     ).ToImmutableList();
@@ -44,13 +44,13 @@ namespace Commuter.Search
         {
             get
             {
-                return _model.SelectedSearchResult == null
+                return _search.SelectedSearchResult == null
                     ? null
-                    : _newSearchResultViewModel(_model.SelectedSearchResult);
+                    : _newSearchResultViewModel(_search.SelectedSearchResult);
             }
             set
             {
-                _model.SelectedSearchResult = value == null
+                _search.SelectedSearchResult = value == null
                     ? null
                     : value.SearchResult;
             }
@@ -58,7 +58,7 @@ namespace Commuter.Search
 
         public bool HasSelectedSearchResult
         {
-            get { return _model.SelectedSearchResult != null; }
+            get { return _search.SelectedSearchResult != null; }
         }
     }
 }

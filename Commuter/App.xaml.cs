@@ -110,7 +110,7 @@ namespace Commuter
                 if (!model.Subscriptions.Any())
                 {
                     pages = pages.Add(typeof(Onboarding.OnboardingPage));
-                    if (model.SearchResults.Any())
+                    if (model.SearchService.SearchResults.Any())
                     {
                         pages = pages.Add(typeof(Search.SearchPage));
                     }
@@ -121,7 +121,7 @@ namespace Commuter
                     if (model.ManagingSubscriptions)
                     {
                         pages = pages.Add(typeof(Subscriptions.SubscriptionsPage));
-                        if (model.SearchResults.Any())
+                        if (model.SearchService.SearchResults.Any())
                         {
                             pages = pages.Add(typeof(Search.SearchPage));
                         }

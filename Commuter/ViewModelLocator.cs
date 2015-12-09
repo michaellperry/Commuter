@@ -29,12 +29,12 @@ namespace Commuter
 
         private Onboarding.OnboardingViewModel NewOnboardingViewModel()
         {
-            return new Onboarding.OnboardingViewModel(Model);
+            return new Onboarding.OnboardingViewModel(Model.SearchService);
         }
 
         private Search.SearchViewModel NewSearchViewModel()
         {
-            return new Search.SearchViewModel(Model, NewSearchResultViewModel);
+            return new Search.SearchViewModel(Model.SearchService, NewSearchResultViewModel);
         }
 
         private Search.SearchResultViewModel NewSearchResultViewModel(

@@ -120,6 +120,7 @@
     <Compile Include="Search\EpisodeControl.xaml.cs">
       <DependentUpon>EpisodeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>

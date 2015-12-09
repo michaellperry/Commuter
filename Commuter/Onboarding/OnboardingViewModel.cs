@@ -8,22 +8,22 @@ namespace Commuter.Onboarding
 {
     class OnboardingViewModel
     {
-        private Model _model;
+        private Search.SearchService _search;
 
-        public OnboardingViewModel(Model model)
+        public OnboardingViewModel(Search.SearchService search)
         {
-            _model = model;
+            _search = search;
         }
 
         public string SearchTerm
         {
-            get { return _model.SearchTerm; }
-            set { _model.SearchTerm = value; }
+            get { return _search.SearchTerm; }
+            set { _search.SearchTerm = value; }
         }
 
         public void QuerySubmitted()
         {
-            _model.BeginSearch();
+            _search.BeginSearch();
         }
     }
 }
