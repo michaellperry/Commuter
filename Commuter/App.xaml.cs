@@ -107,7 +107,7 @@ namespace Commuter
             var model = viewModelLocator.Model;
             if (model != null)
             {
-                if (!model.Subscriptions.Any())
+                if (!model.SubscriptionService.Subscriptions.Any())
                 {
                     pages = pages.Add(typeof(Onboarding.OnboardingPage));
                     if (model.SearchService.SearchResults.Any())
@@ -118,7 +118,7 @@ namespace Commuter
                 else
                 {
                     pages = pages.Add(typeof(MyCommute.MyCommutePage));
-                    if (model.ManagingSubscriptions)
+                    if (model.SubscriptionService.ManagingSubscriptions)
                     {
                         pages = pages.Add(typeof(Subscriptions.SubscriptionsPage));
                         if (model.SearchService.SearchResults.Any())

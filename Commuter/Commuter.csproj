@@ -134,6 +134,7 @@
     <Compile Include="Subscriptions\SubscriptionControl.xaml.cs">
       <DependentUpon>SubscriptionControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Subscriptions\SubscriptionService.cs" />
     <Compile Include="Subscriptions\SubscriptionsPage.xaml.cs">
       <DependentUpon>SubscriptionsPage.xaml</DependentUpon>
     </Compile>

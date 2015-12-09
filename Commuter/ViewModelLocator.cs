@@ -34,7 +34,10 @@ namespace Commuter
 
         private Search.SearchViewModel NewSearchViewModel()
         {
-            return new Search.SearchViewModel(Model.SearchService, NewSearchResultViewModel);
+            return new Search.SearchViewModel(
+                Model.SearchService,
+                Model.SubscriptionService,
+                NewSearchResultViewModel);
         }
 
         private Search.SearchResultViewModel NewSearchResultViewModel(

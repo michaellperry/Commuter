@@ -10,13 +10,16 @@ namespace Commuter.Search
     class SearchViewModel
     {
         private readonly SearchService _search;
+        private readonly Subscriptions.SubscriptionService _subscription;
         private readonly Func<SearchResult, SearchResultViewModel> _newSearchResultViewModel;
 
         public SearchViewModel(
             SearchService search,
+            Subscriptions.SubscriptionService subscription,
             Func<SearchResult, SearchResultViewModel> newSearchResultViewModel)
         {
             _search = search;
+            _subscription = subscription;
             _newSearchResultViewModel = newSearchResultViewModel;
         }
 
@@ -59,6 +62,14 @@ namespace Commuter.Search
         public bool HasSelectedSearchResult
         {
             get { return _search.SelectedSearchResult != null; }
+        }
+
+        public void Subscribe()
+        {
+            if (_search.SelectedSearchResult != null)
+            {
+                _subscription.Subscribe(_search.SelectedSearchResult.FeedUrl);
+            }
         }
     }
 }

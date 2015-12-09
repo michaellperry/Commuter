@@ -8,6 +8,11 @@
     DataContext="{Binding Source={StaticResource Locator}, Path=SearchViewModel}"
     mc:Ignorable="d">
 
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Icon="Favorite" Label="Subscribe" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenTrue}}" Command="{Binding Subscribe}"/>
+        </CommandBar>
+    </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid Margin="4" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenFalse}}">
             <Grid.RowDefinitions>
