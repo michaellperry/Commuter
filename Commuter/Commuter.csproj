@@ -108,6 +108,7 @@
     <Compile Include="MyCommute\MyCommutePage.xaml.cs">
       <DependentUpon>MyCommutePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MyCommute\MyCommuteViewModel.cs" />
     <Compile Include="Onboarding\OnboardingPage.xaml.cs">
       <DependentUpon>OnboardingPage.xaml</DependentUpon>
     </Compile>

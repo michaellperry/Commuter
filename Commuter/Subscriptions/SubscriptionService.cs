@@ -18,6 +18,7 @@ namespace Commuter.Subscriptions
         public bool ManagingSubscriptions
         {
             get { return _managingSubscriptions.Value; }
+            set { _managingSubscriptions.Value = value; }
         }
 
         public void Subscribe(Uri feedUrl)

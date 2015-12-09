@@ -27,6 +27,11 @@ namespace Commuter
             get { return ViewModel(NewSearchViewModel); }
         }
 
+        public object MyCommuteViewModel
+        {
+            get { return ViewModel(NewMyCommuteViewModel); }
+        }
+
         private Onboarding.OnboardingViewModel NewOnboardingViewModel()
         {
             return new Onboarding.OnboardingViewModel(Model.SearchService);
@@ -44,6 +49,11 @@ namespace Commuter
             Search.SearchResult searchResult)
         {
             return new Search.SearchResultViewModel(searchResult);
+        }
+
+        private MyCommute.MyCommuteViewModel NewMyCommuteViewModel()
+        {
+            return new MyCommute.MyCommuteViewModel(Model.SubscriptionService);
         }
     }
 }

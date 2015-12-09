@@ -5,6 +5,7 @@
     xmlns:local="using:Commuter.MyCommute"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    DataContext="{Binding Source={StaticResource Locator}, Path=MyCommuteViewModel}"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -18,7 +19,7 @@
             <ScrollViewer Grid.Row="1">
                 <TextBlock Margin="8" Text="The Difference Engine was a mechanical computer that could calculate tables of numbers based on polynomials. The amazing thing is, though, that it could only add. How then could it accomplish this feat? By the method of differences! Charles Babbage never constructed his Difference Engine, but we've made a couple from his designs.&#x0d;&#x0a;&#x0d;&#x0a;Lambda Calculus is also a method of computation based on really simple rules. In this case, they are alpha-conversion, beta-conversion, and eta-conversion. These serious-sounding transforms are actually pretty simple. Let's first learn what they are, and then see how they relate to C#.&#x0d;&#x0a;&#x0d;&#x0a;Speaking of C#, Malachi asks a question about C# constructors. As you may know, I am of the opinion that constructor parameters should represent only immutable fields. How, then, does one initialize a mutable field in such a way that you can guarantee that it is set? In other words, write a method on the class that can only be called after the object is initialized." Style="{StaticResource BodyTextBlockStyle}" />
             </ScrollViewer>
-            <local:CustomMediaTransportControls Grid.Row="2" />
+            <local:CustomMediaTransportControls Grid.Row="2" ManageSubscriptionsCommand="{Binding ManageSubscriptions}" />
         </Grid>
     </Grid>
 </Page>
