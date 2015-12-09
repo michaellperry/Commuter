@@ -50,6 +50,7 @@ namespace Commuter.Search
         public void ClearSearchResults()
         {
             _searchResults.Clear();
+            _selectedSearchResult.Value = null;
         }
     }
 }

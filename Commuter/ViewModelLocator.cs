@@ -53,7 +53,9 @@ namespace Commuter
 
         private MyCommute.MyCommuteViewModel NewMyCommuteViewModel()
         {
-            return new MyCommute.MyCommuteViewModel(Model.SubscriptionService);
+            return new MyCommute.MyCommuteViewModel(
+                Model.SubscriptionService,
+                Model.SearchService);
         }
     }
 }
