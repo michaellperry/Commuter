@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
 
 namespace Commuter.Search
 {
@@ -78,15 +79,18 @@ namespace Commuter.Search
             {
                 if (_search.Busy)
                 {
-                    return "Searching...";
+                    return ResourceLoader.GetForViewIndependentUse().GetString(
+                        "SearchBusy");
                 }
-                if (_search.SelectedSearchResult == null)
+                else if (_search.SelectedSearchResult == null)
                 {
-                    return "I found these.";
+                    return ResourceLoader.GetForViewIndependentUse().GetString(
+                        "SearchResults");
                 }
                 else
                 {
-                    return "Would you like to subscribe?";
+                    return ResourceLoader.GetForViewIndependentUse().GetString(
+                        "SearchDetails");
                 }
             }
         }
