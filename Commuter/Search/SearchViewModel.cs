@@ -78,15 +78,15 @@ namespace Commuter.Search
             {
                 if (_search.Busy)
                 {
-                    return Properties.Resources.SearchBusy;
+                    return "Searching...";
                 }
                 if (_search.SelectedSearchResult == null)
                 {
-                    return Properties.Resources.SearchResultsMessage;
+                    return "I found these.";
                 }
                 else
                 {
-                    return Properties.Resources.SearchDetailMessage;
+                    return "Would you like to subscribe?";
                 }
             }
         }

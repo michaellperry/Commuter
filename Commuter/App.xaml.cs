@@ -31,7 +31,8 @@ namespace Commuter
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            _currentPage = new Computed<Type>(ComputeCurrentPage);
+            _currentPage = new Computed<Type>(() =>
+                ComputePageStack().LastOrDefault());
         }
 
         /// <summary>
@@ -100,29 +101,35 @@ namespace Commuter
             deferral.Complete();
         }
 
-        private Type ComputeCurrentPage()
+        private IEnumerable<Type> ComputePageStack()
         {
             var viewModelLocator = (ViewModelLocator)Resources["Locator"];
             var model = viewModelLocator.Model;
             if (model != null)
             {
-                if (model.SearchService.Busy ||
-                    model.SearchService.SearchResults.Any())
-                {
-                    return typeof(Search.SearchPage);
-                }
                 if (!model.SubscriptionService.Subscriptions.Any())
                 {
-                    return typeof(Onboarding.OnboardingPage);
+                    yield return typeof(Onboarding.OnboardingPage);
+                    if (model.SearchService.Busy ||
+                        model.SearchService.SearchResults.Any())
+                    {
+                        yield return typeof(Search.SearchPage);
+                    }
                 }
                 else
                 {
+                    yield return typeof(MyCommute.MyCommutePage);
                     if (model.SubscriptionService.ManagingSubscriptions)
-                        return typeof(Subscriptions.SubscriptionsPage);
-                    return typeof(MyCommute.MyCommutePage);
+                    {
+                        yield return typeof(Subscriptions.SubscriptionsPage);
+                        if (model.SearchService.Busy ||
+                            model.SearchService.SearchResults.Any())
+                        {
+                            yield return typeof(Search.SearchPage);
+                        }
+                    }
                 }
             }
-            return null;
         }
 
         private void NavigateCurrentPage(Type pageType)
