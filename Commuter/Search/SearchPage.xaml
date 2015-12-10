@@ -9,7 +9,7 @@
     mc:Ignorable="d">
 
     <Page.BottomAppBar>
-        <CommandBar>
+        <CommandBar Content="{Binding Message}">
             <AppBarButton Icon="Favorite" Label="Subscribe" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenTrue}}" Command="{Binding Subscribe}"/>
         </CommandBar>
     </Page.BottomAppBar>

@@ -18,8 +18,8 @@ namespace Commuter
     sealed partial class App : Application
     {
         private Frame _rootFrame;
-        private Computed<ImmutableList<Type>> _pageStack;
-        private ComputedSubscription _pageStackSubscription;
+        private Computed<Type> _currentPage;
+        private ComputedSubscription _currentPageSubscription;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -31,7 +31,7 @@ namespace Commuter
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            _pageStack = new Computed<ImmutableList<Type>>(ComputePageStack);
+            _currentPage = new Computed<Type>(ComputeCurrentPage);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Commuter
             // Ensure the current window is active
             Window.Current.Activate();
 
-            _pageStackSubscription = _pageStack.Subscribe(NavigatePageStack);
+            _currentPageSubscription = _currentPage.Subscribe(NavigateCurrentPage);
 
             ForView.Initialize();
         }
@@ -100,43 +100,37 @@ namespace Commuter
             deferral.Complete();
         }
 
-        private ImmutableList<Type> ComputePageStack()
+        private Type ComputeCurrentPage()
         {
-            var pages = ImmutableList<Type>.Empty;
             var viewModelLocator = (ViewModelLocator)Resources["Locator"];
             var model = viewModelLocator.Model;
             if (model != null)
             {
+                if (model.SearchService.Busy ||
+                    model.SearchService.SearchResults.Any())
+                {
+                    return typeof(Search.SearchPage);
+                }
                 if (!model.SubscriptionService.Subscriptions.Any())
                 {
-                    pages = pages.Add(typeof(Onboarding.OnboardingPage));
-                    if (model.SearchService.SearchResults.Any())
-                    {
-                        pages = pages.Add(typeof(Search.SearchPage));
-                    }
+                    return typeof(Onboarding.OnboardingPage);
                 }
                 else
                 {
-                    pages = pages.Add(typeof(MyCommute.MyCommutePage));
                     if (model.SubscriptionService.ManagingSubscriptions)
-                    {
-                        pages = pages.Add(typeof(Subscriptions.SubscriptionsPage));
-                        if (model.SearchService.SearchResults.Any())
-                        {
-                            pages = pages.Add(typeof(Search.SearchPage));
-                        }
-                    }
+                        return typeof(Subscriptions.SubscriptionsPage);
+                    return typeof(MyCommute.MyCommutePage);
                 }
             }
-            return pages;
+            return null;
         }
 
-        private void NavigatePageStack(ImmutableList<Type> pages)
+        private void NavigateCurrentPage(Type pageType)
         {
             while (_rootFrame.CanGoBack)
                 _rootFrame.GoBack();
-            if (pages.Any())
-                _rootFrame.Navigate(pages.Last());
+            if (pageType != null)
+                _rootFrame.Navigate(pageType);
         }
     }
 }

@@ -71,5 +71,24 @@ namespace Commuter.Search
                 _subscription.Subscribe(_search.SelectedSearchResult.FeedUrl);
             }
         }
+
+        public string Message
+        {
+            get
+            {
+                if (_search.Busy)
+                {
+                    return Properties.Resources.SearchBusy;
+                }
+                if (_search.SelectedSearchResult == null)
+                {
+                    return Properties.Resources.SearchResultsMessage;
+                }
+                else
+                {
+                    return Properties.Resources.SearchDetailMessage;
+                }
+            }
+        }
     }
 }
