@@ -7,10 +7,18 @@ using System.Threading.Tasks;
 
 namespace Commuter
 {
-    internal class Model
+    class Model
     {
-        private readonly Search.SearchService _searchService = new Search.SearchService();
-        private readonly Subscriptions.SubscriptionService _subscriptionService = new Subscriptions.SubscriptionService();
+        private readonly Search.SearchService _searchService;
+        private readonly Subscriptions.SubscriptionService _subscriptionService;
+
+        public Model(
+            Search.SearchService searchService,
+            Subscriptions.SubscriptionService subscriptionService)
+        {
+            _searchService = searchService;
+            _subscriptionService = subscriptionService;
+        }
 
         public Search.SearchService SearchService
         {

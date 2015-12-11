@@ -1,61 +1,76 @@
 ﻿using Assisticant;
-using Assisticant.Fields;
+using Autofac;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Commuter
 {
-    class ViewModelLocator : ViewModelLocatorBase
+    class ViewModelLocator : ViewModelLocatorBase, IDisposable
     {
-        private Observable<Model> _model = new Observable<Model>(new Model());
+        private IContainer _container;
+
+        public ViewModelLocator()
+        {
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterModule<Onboarding.Module>();
+            builder.RegisterModule<Search.Module>();
+            builder.RegisterModule<MyCommute.Module>();
+            builder.RegisterModule<Subscriptions.Module>();
+            builder.RegisterType<Model>()
+                .SingleInstance()
+                .AsSelf();
+            builder.RegisterType<Onboarding.OnboardingViewModel>()
+                .AsSelf();
+            _container = builder.Build();
+        }
+
+        public void Dispose()
+        {
+            if (_container != null)
+            {
+                _container.Dispose();
+                _container = null;
+            }
+        }
 
         public Model Model
         {
-            get { return _model.Value; }
+            get { return _container.Resolve<Model>(); }
         }
 
         public object OnboardingViewModel
         {
-            get { return ViewModel(NewOnboardingViewModel); }
+            get
+            {
+                return ViewModel(() =>
+                    _container.Resolve<Onboarding.OnboardingViewModel>());
+            }
         }
 
         public object SearchViewModel
         {
-            get { return ViewModel(NewSearchViewModel); }
+            get
+            {
+                return ViewModel(() =>
+                    _container.Resolve<Search.SearchViewModel>());
+            }
         }
 
         public object MyCommuteViewModel
         {
-            get { return ViewModel(NewMyCommuteViewModel); }
+            get
+            {
+                return ViewModel(() =>
+                    _container.Resolve<MyCommute.MyCommuteViewModel>());
+            }
         }
 
-        private Onboarding.OnboardingViewModel NewOnboardingViewModel()
+        public object SubscriptionViewModel
         {
-            return new Onboarding.OnboardingViewModel(Model.SearchService);
-        }
-
-        private Search.SearchViewModel NewSearchViewModel()
-        {
-            return new Search.SearchViewModel(
-                Model.SearchService,
-                Model.SubscriptionService,
-                NewSearchResultViewModel);
-        }
-
-        private Search.SearchResultViewModel NewSearchResultViewModel(
-            Search.SearchResult searchResult)
-        {
-            return new Search.SearchResultViewModel(searchResult);
-        }
-
-        private MyCommute.MyCommuteViewModel NewMyCommuteViewModel()
-        {
-            return new MyCommute.MyCommuteViewModel(
-                Model.SubscriptionService,
-                Model.SearchService);
+            get
+            {
+                return ViewModel(() =>
+                    _container.Resolve<Subscriptions.SubscriptionViewModel>());
+            }
         }
     }
 }

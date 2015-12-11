@@ -106,10 +106,12 @@
     <Compile Include="Converters\VisibleWhenTrueConverter.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="MyCommute\CustomMediaTransportControls.cs" />
+    <Compile Include="MyCommute\Module.cs" />
     <Compile Include="MyCommute\MyCommutePage.xaml.cs">
       <DependentUpon>MyCommutePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MyCommute\MyCommuteViewModel.cs" />
+    <Compile Include="Onboarding\Module.cs" />
     <Compile Include="Onboarding\OnboardingPage.xaml.cs">
       <DependentUpon>OnboardingPage.xaml</DependentUpon>
     </Compile>
@@ -122,6 +124,7 @@
     <Compile Include="Search\EpisodeControl.xaml.cs">
       <DependentUpon>EpisodeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Search\Module.cs" />
     <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
@@ -132,6 +135,7 @@
     </Compile>
     <Compile Include="Search\SearchResultViewModel.cs" />
     <Compile Include="Search\SearchViewModel.cs" />
+    <Compile Include="Subscriptions\Module.cs" />
     <Compile Include="Subscriptions\Subscription.cs" />
     <Compile Include="Subscriptions\SubscriptionControl.xaml.cs">
       <DependentUpon>SubscriptionControl.xaml</DependentUpon>
@@ -140,6 +144,7 @@
     <Compile Include="Subscriptions\SubscriptionsPage.xaml.cs">
       <DependentUpon>SubscriptionsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Subscriptions\SubscriptionViewModel.cs" />
     <Compile Include="ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>

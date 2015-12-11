@@ -1,6 +1,7 @@
 ﻿{
   "dependencies": {
     "Assisticant": "1.1.5",
+    "Autofac": "3.5.2",
     "Microsoft.ApplicationInsights": "1.0.0",
     "Microsoft.ApplicationInsights.PersistenceChannel": "1.0.0",
     "Microsoft.ApplicationInsights.WindowsApps": "1.0.0",
