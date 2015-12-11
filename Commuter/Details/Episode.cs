@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Commuter.Search
+namespace Commuter.Details
 {
     class Episode
     {

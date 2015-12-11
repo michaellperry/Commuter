@@ -11,6 +11,8 @@ namespace Commuter.Subscriptions
                 .AsSelf();
             builder.RegisterType<SubscriptionViewModel>()
                 .AsSelf();
+            builder.RegisterType<SubscriptionDetailViewModel>()
+                .AsSelf();
         }
     }
 }
