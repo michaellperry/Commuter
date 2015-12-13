@@ -8,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 namespace Commuter
@@ -18,8 +19,8 @@ namespace Commuter
     sealed partial class App : Application
     {
         private Frame _rootFrame;
-        private Computed<Type> _currentPage;
-        private ComputedSubscription _currentPageSubscription;
+        private Computed<ImmutableList<Type>> _pageStack;
+        private ComputedSubscription _pageStackSubscription;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -31,8 +32,8 @@ namespace Commuter
             this.InitializeComponent();
             this.Suspending += OnSuspending;
 
-            _currentPage = new Computed<Type>(() =>
-                ComputePageStack().LastOrDefault());
+            _pageStack = new Computed<ImmutableList<Type>>(() =>
+                ComputePageStack().ToImmutableList());
         }
 
         /// <summary>
@@ -58,6 +59,11 @@ namespace Commuter
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
                 _rootFrame = new Frame();
+                _rootFrame.ContentTransitions = new TransitionCollection();
+                _rootFrame.ContentTransitions.Add(new NavigationThemeTransition()
+                {
+                    DefaultNavigationTransitionInfo = new DrillInNavigationTransitionInfo()
+                });
 
                 _rootFrame.NavigationFailed += OnNavigationFailed;
 
@@ -72,7 +78,7 @@ namespace Commuter
             // Ensure the current window is active
             Window.Current.Activate();
 
-            _currentPageSubscription = _currentPage.Subscribe(NavigateCurrentPage);
+            _pageStackSubscription = _pageStack.Subscribe(NavigatePageStack);
 
             ForView.Initialize();
         }
@@ -132,12 +138,38 @@ namespace Commuter
             }
         }
 
-        private void NavigateCurrentPage(Type pageType)
+        private void NavigatePageStack(ImmutableList<Type> pageStack, ImmutableList<Type> priorPageStack)
         {
-            while (_rootFrame.CanGoBack)
-                _rootFrame.GoBack();
-            if (pageType != null)
-                _rootFrame.Navigate(pageType);
+            var priorTop = priorPageStack?.LastOrDefault();
+            var priorSecond = priorPageStack != null && priorPageStack.Any()
+                ? priorPageStack.Reverse().Skip(1).FirstOrDefault()
+                : null;
+            var currentTop = pageStack.LastOrDefault();
+            var currentSecond = pageStack.Any()
+                ? pageStack.Reverse().Skip(1).FirstOrDefault()
+                : null;
+
+            if (currentTop == priorTop)
+            {
+                // All set.
+            }
+            else if (currentTop == priorSecond)
+            {
+                if (_rootFrame.CanGoBack)
+                    _rootFrame.GoBack();
+            }
+            else if (currentSecond == priorTop)
+            {
+                _rootFrame.Navigate(currentTop);
+            }
+
+            if (_rootFrame.CurrentSourcePageType != currentTop)
+            {
+                while (_rootFrame.CanGoBack)
+                    _rootFrame.GoBack();
+                if (currentTop != null)
+                    _rootFrame.Navigate(currentTop);
+            }
         }
     }
 }
