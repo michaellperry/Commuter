@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 
 namespace Commuter.Search
@@ -73,6 +70,14 @@ namespace Commuter.Search
         public bool HasSelectedSearchResult =>
             _search.SelectedSearchResult != null;
 
+        public bool CanSubscribe =>
+            _search.SelectedSearchResult != null &&
+            !_subscription.IsSubscribed(_search.SelectedSearchResult.FeedUrl);
+
+        public bool CanUnsubscribe =>
+            _search.SelectedSearchResult != null &&
+            _subscription.IsSubscribed(_search.SelectedSearchResult.FeedUrl);
+
         public void Subscribe()
         {
             if (_search.SelectedSearchResult != null)
@@ -81,26 +86,19 @@ namespace Commuter.Search
             }
         }
 
-        public string Message
+        public void Unsubscribe()
         {
-            get
+            if (_search.SelectedSearchResult != null)
             {
-                if (_search.Busy)
-                {
-                    return ResourceLoader.GetForViewIndependentUse().GetString(
-                        "SearchBusy");
-                }
-                else if (_search.SelectedSearchResult == null)
-                {
-                    return ResourceLoader.GetForViewIndependentUse().GetString(
-                        "SearchResults");
-                }
-                else
-                {
-                    return ResourceLoader.GetForViewIndependentUse().GetString(
-                        "SearchDetails");
-                }
+                _subscription.Unsubscribe(_search.SelectedSearchResult.FeedUrl);
             }
         }
+
+        public string Message => ResourceLoader.GetForViewIndependentUse().GetString(
+            _search.Busy
+                ? "SearchBusy" :
+            _search.SelectedSearchResult == null
+                ? "SearchResults"
+                : "SearchDetails");
     }
 }

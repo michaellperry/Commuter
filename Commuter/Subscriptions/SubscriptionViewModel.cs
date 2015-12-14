@@ -53,9 +53,31 @@ namespace Commuter.Subscriptions
             }
         }
 
-        public bool HasSelectedSubscription
+        public bool HasSelectedSubscription =>
+            _subscription.SelectedSubscription != null;
+
+        public bool CanSubscribe =>
+            _subscription.SelectedSubscription != null &&
+            !_subscription.IsSubscribed(_subscription.SelectedSubscription.FeedUrl);
+
+        public bool CanUnsubscribe =>
+            _subscription.SelectedSubscription != null &&
+            _subscription.IsSubscribed(_subscription.SelectedSubscription.FeedUrl);
+
+        public void Subscribe()
         {
-            get { return _subscription.SelectedSubscription != null; }
+            if (_subscription.SelectedSubscription != null)
+            {
+                _subscription.Subscribe(_subscription.SelectedSubscription.FeedUrl);
+            }
+        }
+
+        public void Unsubscribe()
+        {
+            if (_subscription.SelectedSubscription != null)
+            {
+                _subscription.Unsubscribe(_subscription.SelectedSubscription.FeedUrl);
+            }
         }
 
         public void GoBack()

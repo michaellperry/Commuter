@@ -1,7 +1,6 @@
 ﻿using Assisticant.Collections;
 using Assisticant.Fields;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace Commuter.Subscriptions
@@ -29,9 +28,19 @@ namespace Commuter.Subscriptions
             set { _selectedSubscription.Value = value; }
         }
 
+        public bool IsSubscribed(Uri feedUrl)
+        {
+            return _subscriptions.Contains(new Subscription(feedUrl));
+        }
+
         public void Subscribe(Uri feedUrl)
         {
-            _subscriptions.Add(new Subscription());
+            _subscriptions.Add(new Subscription(feedUrl));
+        }
+
+        public void Unsubscribe(Uri feedUrl)
+        {
+            _subscriptions.Remove(new Subscription(feedUrl));
         }
     }
 }

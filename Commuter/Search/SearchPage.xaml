@@ -11,7 +11,8 @@
 
     <Page.BottomAppBar>
         <CommandBar Content="{Binding Message}">
-            <AppBarButton Icon="Favorite" Label="Subscribe" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenTrue}}" Command="{Binding Subscribe}"/>
+            <AppBarButton Icon="Favorite" Label="Subscribe" Visibility="{Binding CanSubscribe, Converter={StaticResource VisibleWhenTrue}}" Command="{Binding Subscribe}"/>
+            <AppBarButton Icon="UnFavorite" Label="Unsubscribe" Visibility="{Binding CanUnsubscribe, Converter={StaticResource VisibleWhenTrue}}" Command="{Binding Unsubscribe}"/>
         </CommandBar>
     </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

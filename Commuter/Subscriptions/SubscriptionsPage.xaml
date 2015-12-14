@@ -9,6 +9,14 @@
     DataContext="{Binding Source={StaticResource Locator}, Path=SubscriptionViewModel}"
     mc:Ignorable="d">
 
+    <Page.BottomAppBar>
+        <CommandBar>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Favorite" Label="Resubscribe" Visibility="{Binding CanSubscribe, Converter={StaticResource VisibleWhenTrue}}" Command="{Binding Subscribe}"/>
+                <AppBarButton Icon="UnFavorite" Label="Unsubscribe" Visibility="{Binding CanUnsubscribe, Converter={StaticResource VisibleWhenTrue}}" Command="{Binding Unsubscribe}"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid Margin="4" Visibility="{Binding HasSelectedSubscription, Converter={StaticResource VisibleWhenFalse}}">
             <Grid.RowDefinitions>

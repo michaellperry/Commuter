@@ -5,20 +5,27 @@
     xmlns:local="using:Commuter.Details"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    d:DesignHeight="640"
-    d:DesignWidth="360">
+    mc:Ignorable="d">
 
-    <Grid>
+    <Grid Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel>
-            <Image Source="http://assets.libsyn.com/content/7569532"/>
-            <TextBlock Margin="8" Style="{StaticResource TitleTextBlockStyle}" Text="Q.E.D. Code"/>
-            <TextBlock Margin="8" Style="{StaticResource SubtitleTextBlockStyle}" Text="Michael L Perry"/>
-        </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Width="120" Height="120" Margin="4" VerticalAlignment="Top" BorderThickness="2" BorderBrush="Gray">
+                <Image Source="http://assets.libsyn.com/content/7569532" Margin="0"/>
+            </Border>
+            <StackPanel VerticalAlignment="Top" Grid.Column="1">
+                <TextBlock Margin="4" Style="{StaticResource TitleTextBlockStyle}" Text="Q.E.D. Code" />
+                <TextBlock Margin="4" Style="{StaticResource SubtitleTextBlockStyle}" Text="Michael L Perry" />
+                <TextBlock Margin="4" Style="{StaticResource BodyTextBlockStyle}" Text="A podcast that explores the intersection between software and mathematics" TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
         <ScrollViewer Grid.Row="1">
             <ItemsControl>
                 <ItemsControl.ItemTemplate>
