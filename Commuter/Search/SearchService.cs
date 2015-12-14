@@ -56,6 +56,7 @@ namespace Commuter.Search
 
         public void ClearSearchResults()
         {
+            _searchTerm.Value = null;
             _searchResultTerm.Value = null;
             _searchResults.Clear();
             _selectedSearchResult.Value = null;
