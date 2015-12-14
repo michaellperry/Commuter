@@ -21,10 +21,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackPanel>
-                <TextBox Margin="4" FontSize="20" PlaceholderText="Search" InputScope="Search"  Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenFalse}}" />
-                <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="'Tech' Results"/>
+                <AutoSuggestBox Margin="4" FontSize="20" PlaceholderText="Search" Text="{Binding SearchTerm, Mode=TwoWay}" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenFalse}}" QuerySubmitted="AutoSuggestBox_QuerySubmitted" />
+                <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="{Binding Heading}"/>
             </StackPanel>
-            <ListView Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
+            <ListView x:Name="ResultsList" Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

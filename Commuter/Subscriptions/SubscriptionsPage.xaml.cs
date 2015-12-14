@@ -49,5 +49,13 @@ namespace Commuter.Subscriptions
                 e.Handled = true;
             });
         }
+
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            ForView.Unwrap<SubscriptionViewModel>(DataContext, vm =>
+            {
+                vm.QuerySubmitted();
+            });
+        }
     }
 }

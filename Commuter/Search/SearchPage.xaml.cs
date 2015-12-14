@@ -49,5 +49,14 @@ namespace Commuter.Search
                 e.Handled = true;
             });
         }
+
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            ForView.Unwrap<SearchViewModel>(DataContext, vm =>
+            {
+                vm.QuerySubmitted();
+            });
+            ResultsList.Focus(FocusState.Keyboard);
+        }
     }
 }

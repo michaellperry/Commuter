@@ -12,6 +12,7 @@ namespace Commuter.Search
     class SearchService : RoverMob.Tasks.Process
     {
         private Observable<string> _searchTerm = new Observable<string>();
+        private Observable<string> _searchResultTerm = new Observable<string>();
         private ObservableList<SearchResult> _searchResults = new ObservableList<SearchResult>();
         private Observable<SearchResult> _selectedSearchResult = new Observable<SearchResult>();
 
@@ -19,6 +20,11 @@ namespace Commuter.Search
         {
             get { return _searchTerm.Value; }
             set { _searchTerm.Value = value; }
+        }
+
+        public string SearchResultTerm
+        {
+            get { return _searchResultTerm.Value; }
         }
 
         public ImmutableList<SearchResult> SearchResults
@@ -37,6 +43,7 @@ namespace Commuter.Search
             Perform(async delegate
             {
                 await Task.Delay(1500);
+                _searchResultTerm.Value = _searchTerm.Value;
                 _searchResults.Clear();
                 _searchResults.AddRange(new SearchResult[]
                 {
@@ -49,6 +56,7 @@ namespace Commuter.Search
 
         public void ClearSearchResults()
         {
+            _searchResultTerm.Value = null;
             _searchResults.Clear();
             _selectedSearchResult.Value = null;
         }

@@ -24,6 +24,21 @@ namespace Commuter.Search
             _newSearchResultViewModel = newSearchResultViewModel;
         }
 
+        public string SearchTerm
+        {
+            get { return _search.SearchTerm; }
+            set { _search.SearchTerm = value; }
+        }
+
+        public void QuerySubmitted()
+        {
+            _search.BeginSearch();
+        }
+
+        public string Heading => String.IsNullOrEmpty(_search.SearchResultTerm)
+            ? null
+            : $"'{_search.SearchResultTerm}' Results";
+
         public void GoBack()
         {
             if (_search.SelectedSearchResult != null)
@@ -32,17 +47,12 @@ namespace Commuter.Search
                 _search.ClearSearchResults();
         }
 
-        public ImmutableList<SearchResultViewModel> SearchResults
-        {
-            get
-            {
-                return (
-                    from searchResult in _search.SearchResults
-                    orderby searchResult.Quality descending
-                    select _newSearchResultViewModel(searchResult)
-                    ).ToImmutableList();
-            }
-        }
+        public ImmutableList<SearchResultViewModel> SearchResults =>
+            (
+            from searchResult in _search.SearchResults
+            orderby searchResult.Quality descending
+            select _newSearchResultViewModel(searchResult)
+            ).ToImmutableList();
 
         public SearchResultViewModel SelectedSearchResult
         {
@@ -60,10 +70,8 @@ namespace Commuter.Search
             }
         }
 
-        public bool HasSelectedSearchResult
-        {
-            get { return _search.SelectedSearchResult != null; }
-        }
+        public bool HasSelectedSearchResult =>
+            _search.SelectedSearchResult != null;
 
         public void Subscribe()
         {

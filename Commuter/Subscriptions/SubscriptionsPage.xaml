@@ -28,7 +28,7 @@
                 </ListView.ItemTemplate>
             </ListView>
             <StackPanel>
-                <TextBox Margin="4" FontSize="20" PlaceholderText="Search" InputScope="Search" Visibility="{Binding HasSelectedSubscription, Converter={StaticResource VisibleWhenFalse}}" />
+                <AutoSuggestBox Margin="4" FontSize="20" PlaceholderText="Search" Visibility="{Binding HasSelectedSubscription, Converter={StaticResource VisibleWhenFalse}}" Text="{Binding SearchTerm, Mode=TwoWay}" QuerySubmitted="AutoSuggestBox_QuerySubmitted" />
                 <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="Subscriptions"/>
             </StackPanel>
         </Grid>

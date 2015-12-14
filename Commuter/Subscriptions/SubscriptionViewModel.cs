@@ -7,14 +7,23 @@ namespace Commuter.Subscriptions
     class SubscriptionViewModel
     {
         private readonly SubscriptionService _subscription;
+        private readonly Search.SearchService _search;
         private readonly Func<Subscription, SubscriptionDetailViewModel> _newSubscriptionDetailViewModel;
 
         public SubscriptionViewModel(
             SubscriptionService subscription,
+            Search.SearchService search,
             Func<Subscription, SubscriptionDetailViewModel> newSubscriptionDetailViewModel)
         {
             _subscription = subscription;
+            _search = search;
             _newSubscriptionDetailViewModel = newSubscriptionDetailViewModel;
+        }
+
+        public string SearchTerm
+        {
+            get { return _search.SearchTerm; }
+            set { _search.SearchTerm = value; }
         }
 
         public ImmutableList<SubscriptionDetailViewModel> Subscriptions
@@ -55,6 +64,11 @@ namespace Commuter.Subscriptions
                 _subscription.SelectedSubscription = null;
             else
                 _subscription.ManagingSubscriptions = false;
+        }
+
+        public void QuerySubmitted()
+        {
+            _search.BeginSearch();
         }
     }
 }
