@@ -83,6 +83,7 @@ namespace Commuter.Search
             if (_search.SelectedSearchResult != null)
             {
                 _subscription.Subscribe(_search.SelectedSearchResult.FeedUrl);
+                _subscription.ManagingSubscriptions = true;
             }
         }
 
