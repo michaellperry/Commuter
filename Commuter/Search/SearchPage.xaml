@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     DataContext="{Binding Source={StaticResource Locator}, Path=SearchViewModel}"
+    Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
     <Page.BottomAppBar>
@@ -16,13 +17,121 @@
         </CommandBar>
     </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid Margin="4" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenFalse}}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualStateGroup.Transitions>
+                    <VisualTransition GeneratedDuration="0:0:0.2"/>
+                    <VisualTransition From="ShowMaster" GeneratedDuration="0:0:0.2" To="ShowDetail">
+                        <Storyboard>
+                            <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Master" d:IsOptimized="True"/>
+                            <DoubleAnimation Duration="0:0:0.2" To="0.9" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="Master" d:IsOptimized="True"/>
+                            <DoubleAnimation Duration="0:0:0.2" To="0.9" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="Master" d:IsOptimized="True"/>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Detail">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Detail">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="SearchBox">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Collapsed</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="Detail">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="100"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualTransition>
+                    <VisualTransition From="ShowDetail" GeneratedDuration="0:0:0.2" To="ShowMaster">
+                        <Storyboard>
+                            <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Detail" d:IsOptimized="True"/>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Master">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="Master">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0.9"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="Master">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0.9"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="Detail">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Collapsed</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="SearchBox">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.2">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="Detail">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="100"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualTransition>
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="ShowMaster">
+                    <VisualState.Setters>
+                        <Setter Target="Detail.(UIElement.Opacity)" Value="0"/>
+                        <Setter Target="Detail.(UIElement.Visibility)" Value="Collapsed"/>
+                        <Setter Target="Detail.(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Value="100"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="ShowDetail">
+                    <VisualState.Setters>
+                        <Setter Target="Master.(UIElement.Opacity)" Value="0"/>
+                        <Setter Target="Master.(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Value="0.9"/>
+                        <Setter Target="Master.(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Value="0.9"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid x:Name="Master" Margin="4" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <CompositeTransform/>
+            </Grid.RenderTransform>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackPanel>
-                <AutoSuggestBox Margin="4" FontSize="20" PlaceholderText="Search" Text="{Binding SearchTerm, Mode=TwoWay}" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenFalse}}" QuerySubmitted="AutoSuggestBox_QuerySubmitted" />
+                <AutoSuggestBox x:Name="SearchBox" Margin="4" FontSize="20" PlaceholderText="Search" Text="{Binding SearchTerm, Mode=TwoWay}" QuerySubmitted="AutoSuggestBox_QuerySubmitted" />
                 <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="{Binding Heading}"/>
             </StackPanel>
             <ListView x:Name="ResultsList" Grid.Row="1" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
@@ -38,6 +147,10 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-        <details:DetailControl Margin="4" Visibility="{Binding HasSelectedSearchResult, Converter={StaticResource VisibleWhenTrue}}"/>
+        <details:DetailControl x:Name="Detail" Margin="4" RenderTransformOrigin="0.5,0.5" >
+            <details:DetailControl.RenderTransform>
+                <CompositeTransform/>
+            </details:DetailControl.RenderTransform>
+        </details:DetailControl>
     </Grid>
 </Page>

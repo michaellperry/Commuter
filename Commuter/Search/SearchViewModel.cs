@@ -68,6 +68,7 @@ namespace Commuter.Search
         }
 
         public bool HasSelectedSearchResult =>
+            !_search.Busy &&
             _search.SelectedSearchResult != null;
 
         public bool CanSubscribe =>

@@ -1,4 +1,5 @@
 ﻿using Assisticant;
+using Assisticant.Fields;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +25,10 @@ namespace Commuter.Search
     /// </summary>
     public sealed partial class SearchPage : Page
     {
+        private Computed<string> _state;
+        private ComputedSubscription _stateSubscription;
+        private bool _isInitialized = false;
+
         public SearchPage()
         {
             this.InitializeComponent();
@@ -57,6 +62,30 @@ namespace Commuter.Search
                 vm.QuerySubmitted();
             });
             ResultsList.Focus(FocusState.Keyboard);
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            ForView.Unwrap<SearchViewModel>(DataContext, vm =>
+            {
+                _state = new Computed<string>(() => vm.HasSelectedSearchResult
+                    ? "ShowDetail"
+                    : "ShowMaster");
+                _stateSubscription = _state.Subscribe(s =>
+                {
+                    VisualStateManager.GoToState(this, s, _isInitialized);
+                    _isInitialized = true;
+                });
+            });
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (_stateSubscription != null)
+            {
+                _stateSubscription.Unsubscribe();
+                _state.Dispose();
+            }
         }
     }
 }
