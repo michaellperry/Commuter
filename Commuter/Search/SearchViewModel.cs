@@ -47,7 +47,6 @@ namespace Commuter.Search
         public ImmutableList<SearchResultViewModel> SearchResults =>
             (
             from searchResult in _search.SearchResults
-            orderby searchResult.Quality descending
             select _newSearchResultViewModel(searchResult)
             ).ToImmutableList();
 

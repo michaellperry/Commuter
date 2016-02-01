@@ -2,6 +2,8 @@
 using Assisticant.Fields;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
+using Commuter.DigitalPodcast;
+using System.Linq;
 
 namespace Commuter.Search
 {
@@ -38,15 +40,18 @@ namespace Commuter.Search
         {
             Perform(async delegate
             {
-                await Task.Delay(1500);
-                _searchResultTerm.Value = _searchTerm.Value;
-                _searchResults.Clear();
-                _searchResults.AddRange(new SearchResult[]
+                var searchTerm = _searchTerm.Value;
+                var search = new DigitalPodcastSearch(
+                    new Secrets().DigitalPodcastApiKey);
+                var response = await search.SearchAsync(new DigitalPodcastRequest
                 {
-                    new SearchResult(),
-                    new SearchResult(),
-                    new SearchResult()
+                    Keywords = searchTerm
                 });
+                _searchResultTerm.Value = searchTerm;
+                _searchResults.Clear();
+                _searchResults.AddRange(
+                    response.Results.Select(r =>
+                        new SearchResult(r.Title, r.FeedUrl)));
             });
         }
 

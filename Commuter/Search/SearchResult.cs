@@ -8,25 +8,23 @@ namespace Commuter.Search
 {
     class SearchResult
     {
-        private readonly float _quality = 1.0f;
-        private readonly Uri _feedUrl = RandomFeedUrl();
+        private readonly string _title;
+        private readonly Uri _feedUrl;
 
-        public float Quality
+        public SearchResult(string title, Uri feedUrl)
         {
-            get { return _quality; }
+            _title = title;
+            _feedUrl = feedUrl;
+        }
+
+        public string Title
+        {
+            get { return _title; }
         }
 
         public Uri FeedUrl
         {
             get { return _feedUrl; }
-        }
-
-
-        private static Random _rand = new Random();
-
-        private static Uri RandomFeedUrl()
-        {
-            return new Uri($"http://qedcode.libsyn.com/rss/{_rand.Next(10000)}", UriKind.Absolute);
         }
     }
 }

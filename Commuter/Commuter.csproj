@@ -97,6 +97,7 @@
     </Content>
     <None Include="project.json" />
     <PRIResource Include="Resources.resw" />
+    <Compile Include="Secrets.Private.cs" />
     <None Include="Service References\Application Insights\ConnectedService.json" />
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +137,7 @@
     </Compile>
     <Compile Include="Search\SearchResultViewModel.cs" />
     <Compile Include="Search\SearchViewModel.cs" />
+    <Compile Include="Secrets.cs" />
     <Compile Include="Subscriptions\Module.cs" />
     <Compile Include="Subscriptions\Subscription.cs" />
     <Compile Include="Subscriptions\SubscriptionControl.xaml.cs">
@@ -219,6 +221,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Commuter.DigitalPodcast\Commuter.DigitalPodcast.csproj">
+      <Project>{f41ae8a7-e3ff-487f-aa6b-4ee1f64bd975}</Project>
+      <Name>Commuter.DigitalPodcast</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
