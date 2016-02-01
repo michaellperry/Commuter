@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commuter", "Commuter\Commut
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commuter.DigitalPodcast", "Commuter.DigitalPodcast\Commuter.DigitalPodcast.csproj", "{F41AE8A7-E3FF-487F-AA6B-4EE1F64BD975}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commuter.DigitalPodcast.Tests", "Commuter.DigitalPodcast.Tests\Commuter.DigitalPodcast.Tests.csproj", "{A5989ABD-95D2-416E-9213-0078758DC77F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,26 @@ Global
 		{F41AE8A7-E3FF-487F-AA6B-4EE1F64BD975}.Release|x64.Build.0 = Release|x64
 		{F41AE8A7-E3FF-487F-AA6B-4EE1F64BD975}.Release|x86.ActiveCfg = Release|x86
 		{F41AE8A7-E3FF-487F-AA6B-4EE1F64BD975}.Release|x86.Build.0 = Release|x86
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|ARM.ActiveCfg = Debug|ARM
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|ARM.Build.0 = Debug|ARM
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|ARM.Deploy.0 = Debug|ARM
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|x64.ActiveCfg = Debug|x64
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|x64.Build.0 = Debug|x64
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|x64.Deploy.0 = Debug|x64
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|x86.ActiveCfg = Debug|x86
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|x86.Build.0 = Debug|x86
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Debug|x86.Deploy.0 = Debug|x86
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|Any CPU.ActiveCfg = Release|x86
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|ARM.ActiveCfg = Release|ARM
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|ARM.Build.0 = Release|ARM
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|ARM.Deploy.0 = Release|ARM
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|x64.ActiveCfg = Release|x64
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|x64.Build.0 = Release|x64
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|x64.Deploy.0 = Release|x64
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|x86.ActiveCfg = Release|x86
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|x86.Build.0 = Release|x86
+		{A5989ABD-95D2-416E-9213-0078758DC77F}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
