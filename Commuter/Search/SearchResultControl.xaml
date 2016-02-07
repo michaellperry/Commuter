@@ -15,12 +15,12 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Border Margin="4,12,4,4" BorderBrush="Gray" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Image Source="http://assets.libsyn.com/content/7569532"/>
+            <Image Source="{Binding ImageUri}" Width="88" Height="88"/>
         </Border>
         <StackPanel Grid.Column="1">
-            <TextBlock Margin="4" Text="Q.E.D. Code" Style="{StaticResource TitleTextBlockStyle}"/>
-            <TextBlock Margin="4" Text="Michael L Perry" Style="{StaticResource SubtitleTextBlockStyle}"/>
-            <TextBlock Margin="4" Text="The podcast that explores the intersection between software and mathematics." Style="{StaticResource BodyTextBlockStyle}"/>
+            <TextBlock Margin="4" Text="{Binding Title}" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Margin="4" Text="{Binding Author}" Style="{StaticResource SubtitleTextBlockStyle}"/>
+            <TextBlock Margin="4" Text="{Binding Subtitle}" Style="{StaticResource BodyTextBlockStyle}"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -52,6 +52,8 @@ namespace Commuter.Search
                 _searchResults.AddRange(
                     response.Results.Select(r =>
                         new SearchResult(r.Title, r.FeedUrl)));
+                await Task.WhenAll(_searchResults
+                    .Select(r => r.LoadAsync()));
             });
         }
 
