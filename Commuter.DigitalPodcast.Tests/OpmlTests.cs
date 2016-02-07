@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml.Linq;
-
+using FluentAssertions;
 namespace Commuter.DigitalPodcast.Tests
 {
     [TestClass]
@@ -44,7 +44,10 @@ namespace Commuter.DigitalPodcast.Tests
             var input = new MemoryStream(bytes);
 
             var document = XDocument.Load(input);
-            Assert.AreEqual("opml", document.Root.Name);
+            var response = Commuter.DigitalPodcast.Opml.Parse(document);
+            response.Results.Count.Should().Be(8);
+            response.Results[0].Title.Should().Be("SharePoint 4 Every 1");
+            response.Results[0].FeedUrl.Should().Be("http://feeds.feedburner.com/Sharepoint_4_Every_1");
         }
     }
 }
