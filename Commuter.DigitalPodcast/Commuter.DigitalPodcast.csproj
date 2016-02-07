@@ -112,7 +112,7 @@
     <Compile Include="DigitalPodcastResponse.cs" />
     <Compile Include="DigitalPodcastResult.cs" />
     <Compile Include="DigitalPodcastSearch.cs" />
-    <Compile Include="Opml\Parser.cs" />
+    <Compile Include="Opml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchSource.cs" />
     <Compile Include="SortOrder.cs" />

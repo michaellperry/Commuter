@@ -27,7 +27,7 @@ namespace Commuter.DigitalPodcast
             if (httpResponse.IsSuccessStatusCode)
             {
                 using (var stream = await httpResponse.Content.ReadAsStreamAsync())
-                    return Commuter.DigitalPodcast.Opml.Parse(XDocument.Load(stream));
+                    return Opml.Parse(XDocument.Load(stream));
             }
             else
             {
