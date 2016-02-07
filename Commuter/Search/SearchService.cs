@@ -47,13 +47,12 @@ namespace Commuter.Search
                 {
                     Keywords = searchTerm
                 });
+                var results = await Task.WhenAll(response.Results
+                    .Select(r => SearchResult.TryLoadAsync(r.FeedUrl)));
+
                 _searchResultTerm.Value = searchTerm;
                 _searchResults.Clear();
-                _searchResults.AddRange(
-                    response.Results.Select(r =>
-                        new SearchResult(r.Title, r.FeedUrl)));
-                await Task.WhenAll(_searchResults
-                    .Select(r => r.LoadAsync()));
+                _searchResults.AddRange(results.Where(r => r != null));
             });
         }
 

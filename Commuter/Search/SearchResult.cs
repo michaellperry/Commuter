@@ -1,5 +1,4 @@
-﻿using Assisticant.Fields;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Web.Syndication;
@@ -9,17 +8,25 @@ namespace Commuter.Search
     class SearchResult
     {
         private const string ITunesNamespace = "http://www.itunes.com/dtds/podcast-1.0.dtd";
-        private readonly string _title;
+
         private readonly Uri _feedUrl;
+        private readonly string _title;
+        private readonly string _subtitle;
+        private readonly string _author;
+        private readonly Uri _imageUri;
 
-        private Observable<string> _author = new Observable<string>();
-        private Observable<string> _subtitle = new Observable<string>();
-        private Observable<Uri> _imageUri = new Observable<Uri>();
-
-        public SearchResult(string title, Uri feedUrl)
+        private SearchResult(
+            Uri feedUrl,
+            string title,
+            string subtitle,
+            string author,
+            Uri imageUri)
         {
-            _title = title;
             _feedUrl = feedUrl;
+            _title = title;
+            _subtitle = subtitle;
+            _author = author;
+            _imageUri = imageUri;
         }
 
         public string Title
@@ -44,23 +51,33 @@ namespace Commuter.Search
 
         public Uri ImageUri
         {
-            get { return _imageUri.Value; }
+            get { return _imageUri; }
         }
 
-        public async Task LoadAsync()
+        public static async Task<SearchResult> TryLoadAsync(Uri feedUrl)
         {
-            var client = new SyndicationClient();
-            client.SetRequestHeader("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
+            try
+            {
+                var client = new SyndicationClient();
+                client.SetRequestHeader("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
 
-            var feed = await client.RetrieveFeedAsync(_feedUrl);
-            var iTunesAuthor = GetITunesAttribute(feed, "author");
-            var iTunesSubtitle = GetITunesAttribute(feed, "subtitle");
+                var feed = await client.RetrieveFeedAsync(feedUrl);
+                var iTunesAuthor = GetITunesAttribute(feed, "author");
+                var iTunesSubtitle = GetITunesAttribute(feed, "subtitle");
 
-            _author.Value = iTunesAuthor ??
-                string.Join(", ", feed.Authors.Select(a => a.Name).ToArray());
-            _subtitle.Value = iTunesSubtitle ??
-                feed.Subtitle.Text;
-            _imageUri.Value = feed.ImageUri;
+                var title = feed.Title.Text;
+                var author = iTunesAuthor ??
+                    string.Join(", ", feed.Authors.Select(a => a.Name).ToArray());
+                var subtitle = iTunesSubtitle ??
+                    feed.Subtitle.Text;
+                var imageUri = feed.ImageUri;
+
+                return new SearchResult(feedUrl, title, subtitle, author, imageUri);
+            }
+            catch (Exception x)
+            {
+                return null;
+            }
         }
 
         private static string GetITunesAttribute(SyndicationFeed feed, string attribute)
