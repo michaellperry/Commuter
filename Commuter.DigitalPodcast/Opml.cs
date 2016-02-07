@@ -29,10 +29,15 @@ namespace Commuter.DigitalPodcast
         private static DigitalPodcastResult ParseOutline(XElement element)
         {
             VerifyName(element, "outline");
+            var urlAttribute =
+                element.Attribute("url") ??
+                element.Attribute("xmlUrl");
+            if (urlAttribute == null)
+                throw new ArgumentException("Expected to find an attribute named url or xmlUrl, but found none.");
             return new DigitalPodcastResult
             {
                 Title = VerifyAttribute(element, "text").Value,
-                FeedUrl = VerifyUrl(VerifyAttribute(element, "url").Value)
+                FeedUrl = VerifyUrl(urlAttribute.Value)
             };
         }
 
