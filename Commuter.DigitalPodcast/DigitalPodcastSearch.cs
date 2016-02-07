@@ -23,7 +23,7 @@ namespace Commuter.DigitalPodcast
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri("http://api.digitalpodcast.com/v2r/", UriKind.Absolute);
-            HttpResponseMessage httpResponse = await client.GetAsync("search/?appid=43944b9fe5bf600bc2efae0e5904f5f5&keywords=sharepoint&format=rssopml");
+            HttpResponseMessage httpResponse = await client.GetAsync(string.Format("search/?appid={0}&keywords={1}&format=rssopml", _apiKey, request.Keywords));
             if (httpResponse.IsSuccessStatusCode)
             {
                 using (var stream = await httpResponse.Content.ReadAsStreamAsync())

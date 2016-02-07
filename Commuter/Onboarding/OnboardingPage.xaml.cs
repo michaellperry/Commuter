@@ -1,4 +1,5 @@
 ﻿using Assisticant;
+using Assisticant.Fields;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,9 +24,35 @@ namespace Commuter.Onboarding
     /// </summary>
     public sealed partial class OnboardingPage : Page
     {
+        private Computed<string> _lastException;
+        private ComputedSubscription _subscription;
+
         public OnboardingPage()
         {
             this.InitializeComponent();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            ForView.Unwrap<OnboardingViewModel>(DataContext, vm =>
+            {
+                _lastException = new Computed<string>(() => vm.LastException);
+                _subscription = _lastException.Subscribe(v => { if (v != null) { ShowError.Begin(); } });
+            });
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (_subscription != null)
+            {
+                _subscription.Unsubscribe();
+                _subscription = null;
+            }
+            if (_lastException != null)
+            {
+                _lastException.Dispose();
+                _lastException = null;
+            }
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)

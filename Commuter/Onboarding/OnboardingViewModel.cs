@@ -25,5 +25,10 @@ namespace Commuter.Onboarding
         {
             _search.BeginSearch();
         }
+
+        public string LastException
+        {
+            get { return _search.Exception?.Message; }
+        }
     }
 }
