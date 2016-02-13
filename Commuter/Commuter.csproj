@@ -235,7 +235,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Commuter.DigitalPodcast\Commuter.DigitalPodcast.csproj">
-      <Project>{f41ae8a7-e3ff-487f-aa6b-4ee1f64bd975}</Project>
+      <Project>{aa66134b-3cf8-40dc-8216-eb89649707e6}</Project>
       <Name>Commuter.DigitalPodcast</Name>
     </ProjectReference>
   </ItemGroup>
