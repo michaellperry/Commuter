@@ -89,5 +89,17 @@ namespace Commuter.Search
                 .Select(x => x.NodeValue)
                 .FirstOrDefault();
         }
+
+        private static Random _rand = new Random();
+
+        public static SearchResult RandomSearchResult()
+        {
+            return new SearchResult(
+                new Uri($"http://qedcode.libsyn.com/rss/{_rand.Next(10000)}", UriKind.Absolute),
+                "Q.E.D. Code",
+                "Exploring the intersection between software and mathematics",
+                "Michael L Perry",
+                new Uri("http://assets.libsyn.com/content/7569532", UriKind.Absolute));
+        }
     }
 }
