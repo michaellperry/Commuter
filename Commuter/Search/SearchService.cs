@@ -3,8 +3,12 @@ using Assisticant.Fields;
 using Commuter.DigitalPodcast;
 using System;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Commuter.Search
 {
@@ -43,11 +47,24 @@ namespace Commuter.Search
             {
                 string searchTerm = _searchTerm.Value;
 
-                var results = new SearchResult[0];
+                var client = new HttpClient();
+                var responseMessage = await client.GetAsync(
+                    $"http://localhost:2648/api/search/{searchTerm}");
+                if (responseMessage.IsSuccessStatusCode == false)
+                    throw new InvalidOperationException(responseMessage.ReasonPhrase);
 
-                _searchResultTerm.Value = searchTerm;
-                _searchResults.Clear();
-                _searchResults.AddRange(results);
+                var stream = await responseMessage.Content.ReadAsStreamAsync();
+                var reader = new StreamReader(stream);
+                using (var jsonReader = new JsonTextReader(reader))
+                {
+                    var token = JToken.ReadFrom(jsonReader);
+                    var results = token["results"].OfType<JObject>()
+                        .Select(j => SearchResult.FromJson(j));
+
+                    _searchResultTerm.Value = searchTerm;
+                    _searchResults.Clear();
+                    _searchResults.AddRange(results);
+                }
             });
         }
 
