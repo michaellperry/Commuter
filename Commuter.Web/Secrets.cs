@@ -19,7 +19,7 @@ namespace Commuter
 }
 */
 
-namespace Commuter
+namespace Commuter.Web
 {
     partial class Secrets
     {

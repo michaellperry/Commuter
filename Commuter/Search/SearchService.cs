@@ -43,18 +43,7 @@ namespace Commuter.Search
             {
                 string searchTerm = _searchTerm.Value;
 
-                var search = new DigitalPodcastSearch(
-                    new Secrets().DigitalPodcastApiKey);
-                var response = await search.SearchAsync(
-                    new DigitalPodcastRequest
-                    {
-                        Keywords = searchTerm
-                    });
-                var tasks = response.Results
-                    .Select(r => SearchResult.TryLoadAsync(r.FeedUrl));
-                var allResults = await Task.WhenAll(tasks);
-                var results = allResults
-                    .Where(r => r != null);
+                var results = new SearchResult[0];
 
                 _searchResultTerm.Value = searchTerm;
                 _searchResults.Clear();
