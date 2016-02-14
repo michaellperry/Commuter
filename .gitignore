@@ -3,6 +3,7 @@
 
 *.Private.cs
 BundleArtifacts/
+PublishProfiles/
 
 # User-specific files
 *.suo

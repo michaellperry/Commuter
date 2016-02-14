@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
 
 namespace Commuter.Search
 {
@@ -47,23 +48,29 @@ namespace Commuter.Search
             {
                 string searchTerm = _searchTerm.Value;
 
-                var client = new HttpClient();
-                var responseMessage = await client.GetAsync(
-                    $"http://localhost:2648/api/search/{searchTerm}");
-                if (responseMessage.IsSuccessStatusCode == false)
-                    throw new InvalidOperationException(responseMessage.ReasonPhrase);
-
-                var stream = await responseMessage.Content.ReadAsStreamAsync();
-                var reader = new StreamReader(stream);
-                using (var jsonReader = new JsonTextReader(reader))
+                using (var client = new HttpClient())
+                using (var request = new HttpRequestMessage(HttpMethod.Get,
+                    $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}"))
                 {
-                    var token = JToken.ReadFrom(jsonReader);
-                    var results = token["results"].OfType<JObject>()
-                        .Select(j => SearchResult.FromJson(j));
+                    request.Headers.Accept.Clear();
+                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(
+                        "application/json"));
+                    var responseMessage = await client.SendAsync(request);
+                    if (responseMessage.IsSuccessStatusCode == false)
+                        throw new InvalidOperationException(responseMessage.ReasonPhrase);
 
-                    _searchResultTerm.Value = searchTerm;
-                    _searchResults.Clear();
-                    _searchResults.AddRange(results);
+                    using (var stream = await responseMessage.Content.ReadAsStreamAsync())
+                    using (var reader = new StreamReader(stream))
+                    using (var jsonReader = new JsonTextReader(reader))
+                    {
+                        var token = JToken.ReadFrom(jsonReader);
+                        var results = token["results"].OfType<JObject>()
+                            .Select(j => SearchResult.FromJson(j));
+
+                        _searchResultTerm.Value = searchTerm;
+                        _searchResults.Clear();
+                        _searchResults.AddRange(results);
+                    }
                 }
             });
         }
