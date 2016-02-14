@@ -48,30 +48,14 @@ namespace Commuter.Search
             {
                 string searchTerm = _searchTerm.Value;
 
-                using (var client = new HttpClient())
-                using (var request = new HttpRequestMessage(HttpMethod.Get,
-                    $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}"))
-                {
-                    request.Headers.Accept.Clear();
-                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(
-                        "application/json"));
-                    var responseMessage = await client.SendAsync(request);
-                    if (responseMessage.IsSuccessStatusCode == false)
-                        throw new InvalidOperationException(responseMessage.ReasonPhrase);
+                var root = await GetJsonAsync(
+                    $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}");
+                var results = root["results"].OfType<JObject>()
+                    .Select(j => SearchResult.FromJson(j));
 
-                    using (var stream = await responseMessage.Content.ReadAsStreamAsync())
-                    using (var reader = new StreamReader(stream))
-                    using (var jsonReader = new JsonTextReader(reader))
-                    {
-                        var token = JToken.ReadFrom(jsonReader);
-                        var results = token["results"].OfType<JObject>()
-                            .Select(j => SearchResult.FromJson(j));
-
-                        _searchResultTerm.Value = searchTerm;
-                        _searchResults.Clear();
-                        _searchResults.AddRange(results);
-                    }
-                }
+                _searchResultTerm.Value = searchTerm;
+                _searchResults.Clear();
+                _searchResults.AddRange(results);
             });
         }
 
@@ -81,6 +65,27 @@ namespace Commuter.Search
             _searchResultTerm.Value = null;
             _searchResults.Clear();
             _selectedSearchResult.Value = null;
+        }
+
+        private static async Task<JObject> GetJsonAsync(string requestUri)
+        {
+            using (var client = new HttpClient())
+            using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
+            {
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(
+                    "application/json"));
+                var responseMessage = await client.SendAsync(request);
+                if (responseMessage.IsSuccessStatusCode == false)
+                    throw new InvalidOperationException(responseMessage.ReasonPhrase);
+
+                using (var stream = await responseMessage.Content.ReadAsStreamAsync())
+                using (var reader = new StreamReader(stream))
+                using (var jsonReader = new JsonTextReader(reader))
+                {
+                    return (JObject)JToken.ReadFrom(jsonReader);
+                }
+            }
         }
     }
 }

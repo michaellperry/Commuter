@@ -15,12 +15,14 @@ namespace Commuter.Web.Controllers
         // GET api/search/{keyword}
         public async Task<SearchResponse> Get(string id)
         {
+            string searchTerm = id;
+
             var search = new DigitalPodcastSearch(
-                new Commuter.Web.Secrets().DigitalPodcastApiKey);
+                new Secrets().DigitalPodcastApiKey);
             var response = await search.SearchAsync(
                 new DigitalPodcastRequest
                 {
-                    Keywords = id
+                    Keywords = searchTerm
                 });
             var tasks = response.Results
                 .Select(r => SearchResult.TryLoadAsync(r.FeedUrl));
