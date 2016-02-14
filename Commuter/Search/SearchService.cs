@@ -48,23 +48,10 @@ namespace Commuter.Search
             {
                 string searchTerm = _searchTerm.Value;
 
-                var search = new DigitalPodcastSearch(
-                    new Secrets().DigitalPodcastApiKey);
-                var response = await search.SearchAsync(
-                    new DigitalPodcastRequest
-                    {
-                        Keywords = searchTerm
-                    });
-                var tasks = response.Results
-                    .Select(r => SearchResult.TryLoadAsync(r.FeedUrl));
-                var allResults = await Task.WhenAll(tasks);
-                var results = allResults
-                    .Where(r => r != null);
-
-                //var root = await GetJsonAsync(
-                //    $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}");
-                //var results = root["results"].OfType<JObject>()
-                //    .Select(j => SearchResult.FromJson(j));
+                var root = await GetJsonAsync(
+                    $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}");
+                var results = root["results"].OfType<JObject>()
+                    .Select(j => SearchResult.FromJson(j));
 
                 _searchResultTerm.Value = searchTerm;
                 _searchResults.Clear();
