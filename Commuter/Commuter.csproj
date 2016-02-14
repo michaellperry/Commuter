@@ -106,6 +106,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CommuterAccessTokenProvider.cs" />
     <Compile Include="Converters\VisibleWhenFalseConverter.cs" />
     <Compile Include="Converters\VisibleWhenTrueConverter.cs" />
     <Compile Include="Model.cs" />
@@ -152,6 +153,7 @@
       <DependentUpon>SubscriptionsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Subscriptions\SubscriptionViewModel.cs" />
+    <Compile Include="Subscriptions\User.cs" />
     <Compile Include="ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>

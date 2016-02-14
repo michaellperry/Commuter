@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-/*
+﻿/*
 Create a partial class in Secrets.Private.cs:
 
 namespace Commuter
@@ -13,7 +7,9 @@ namespace Commuter
     {
         partial void Initialize()
         {
-            DigitalPodcastApiKey = "Register for your own API key";
+            DistributorUrl = "http://<Deploy a web app>/api/distributor/";
+            NotificationHubPath = "Create an Azure Notification Hub";
+            NotificationHubConnectionString = "The connection string with Listen privileges";
         }
     }
 }
@@ -23,7 +19,9 @@ namespace Commuter
 {
     partial class Secrets
     {
-        public string DigitalPodcastApiKey { get; set; }
+        public string DistributorUrl { get; set; }
+        public string NotificationHubPath { get; set; }
+        public string NotificationHubConnectionString { get; set; }
 
         public Secrets()
         {
