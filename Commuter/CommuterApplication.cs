@@ -1,3 +1,4 @@
+using Assisticant.Collections;
 using Commuter.Subscriptions;
 using RoverMob;
 using RoverMob.Messaging;
@@ -7,6 +8,8 @@ namespace Commuter
 {
     public class CommuterApplication : Application<User>
     {
+        private ObservableList<string> _subscriptions = new ObservableList<string>();
+
         private CommuterApplication()
         {
 
@@ -59,8 +62,14 @@ namespace Commuter
             var application = new CommuterApplication(
                 store, queue, pump, push, proxy);
 
+            pump.Subscribe(() => application._subscriptions);
+
             return application;
         }
 
+        public void AddSubscription(string topic)
+        {
+            _subscriptions.Add(topic);
+        }
     }
 }

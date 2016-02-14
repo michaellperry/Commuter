@@ -57,7 +57,7 @@ namespace Commuter.Search
 
             var searchTermBody = new { Text = searchTerm };
             var searchTermMessage = Message.CreateMessage(
-                string.Empty,
+                "search",
                 "SearchTerm",
                 searchTermBody.ToGuid(),
                 searchTermBody);
@@ -73,6 +73,12 @@ namespace Commuter.Search
                     Time = DateTime.UtcNow
                 }));
 
+            _searchResultTerm.Value = searchTerm;
+            _searchResults.Clear();
+            _selectedSearchResult.Value = null;
+            _application.AddSubscription(
+                searchTermMessage.ObjectId.ToCanonicalString());
+
             Perform(async delegate
             {
                 var root = await GetJsonAsync(
@@ -80,8 +86,6 @@ namespace Commuter.Search
                 var results = root["results"].OfType<JObject>()
                     .Select(j => SearchResult.FromJson(j));
 
-                _searchResultTerm.Value = searchTerm;
-                _searchResults.Clear();
                 _searchResults.AddRange(results);
             });
         }
