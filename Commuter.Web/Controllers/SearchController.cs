@@ -17,18 +17,7 @@ namespace Commuter.Web.Controllers
         {
             string searchTerm = id;
 
-            var search = new DigitalPodcastSearch(
-                new Secrets().DigitalPodcastApiKey);
-            var response = await search.SearchAsync(
-                new DigitalPodcastRequest
-                {
-                    Keywords = searchTerm
-                });
-            var tasks = response.Results
-                .Select(r => SearchResult.TryLoadAsync(r.FeedUrl));
-            var allResults = await Task.WhenAll(tasks);
-            var results = allResults
-                .Where(r => r != null);
+            var results = new SearchResult[0];
 
             return new SearchResponse
             {

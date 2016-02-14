@@ -139,6 +139,8 @@
     </Compile>
     <Compile Include="Search\SearchResultViewModel.cs" />
     <Compile Include="Search\SearchViewModel.cs" />
+    <Compile Include="Secrets.cs" />
+    <Compile Include="Secrets.Private.cs" />
     <Compile Include="Subscriptions\Module.cs" />
     <Compile Include="Subscriptions\Subscription.cs" />
     <Compile Include="Subscriptions\SubscriptionControl.xaml.cs">
