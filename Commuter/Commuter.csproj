@@ -107,6 +107,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="CommuterAccessTokenProvider.cs" />
+    <Compile Include="CommuterApplication.cs" />
     <Compile Include="Converters\VisibleWhenFalseConverter.cs" />
     <Compile Include="Converters\VisibleWhenTrueConverter.cs" />
     <Compile Include="Model.cs" />

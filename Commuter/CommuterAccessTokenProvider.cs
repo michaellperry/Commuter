@@ -16,12 +16,11 @@ namespace Commuter
 
         public Task<string> GetAccessTokenAsync()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(string.Empty);
         }
 
         public void RefreshAccessToken()
         {
-            throw new NotImplementedException();
         }
     }
 }

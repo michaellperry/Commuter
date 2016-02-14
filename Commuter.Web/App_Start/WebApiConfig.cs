@@ -27,6 +27,12 @@ namespace Commuter.Web
             );
 
             config.Routes.MapHttpRoute(
+                name: "UserIdentifier",
+                routeTemplate: "api/useridentifier/{userId}",
+                defaults: new { controller = "UserIdentifier", userId = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }

@@ -10,15 +10,24 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
+using RoverMob.Messaging;
+using RoverMob;
 
 namespace Commuter.Search
 {
     class SearchService : RoverMob.Tasks.Process
     {
+        private readonly CommuterApplication _application;
+
         private Observable<string> _searchTerm = new Observable<string>();
         private Observable<string> _searchResultTerm = new Observable<string>();
         private ObservableList<SearchResult> _searchResults = new ObservableList<SearchResult>();
         private Observable<SearchResult> _selectedSearchResult = new Observable<SearchResult>();
+
+        public SearchService(CommuterApplication application)
+        {
+            _application = application;
+        }
 
         public string SearchTerm
         {
@@ -44,10 +53,28 @@ namespace Commuter.Search
 
         public void BeginSearch()
         {
+            string searchTerm = _searchTerm.Value;
+
+            var searchTermBody = new { Text = searchTerm };
+            var searchTermMessage = Message.CreateMessage(
+                string.Empty,
+                "SearchTerm",
+                searchTermBody.ToGuid(),
+                searchTermBody);
+            _application.EmitMessage(searchTermMessage);
+            _application.EmitMessage(Message.CreateMessage(
+                "search",
+                "Search",
+                Predecessors.Set
+                    .In("SearchTerm", searchTermMessage.Hash),
+                Guid.NewGuid(),
+                new
+                {
+                    Time = DateTime.UtcNow
+                }));
+
             Perform(async delegate
             {
-                string searchTerm = _searchTerm.Value;
-
                 var root = await GetJsonAsync(
                     $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}");
                 var results = root["results"].OfType<JObject>()

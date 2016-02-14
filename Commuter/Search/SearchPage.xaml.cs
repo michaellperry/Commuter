@@ -28,6 +28,8 @@ namespace Commuter.Search
         private Computed<string> _state;
         private ComputedSubscription _stateSubscription;
         private bool _isInitialized = false;
+        private Computed<string> _lastException;
+        private ComputedSubscription _subscription;
 
         public SearchPage()
         {
@@ -76,6 +78,9 @@ namespace Commuter.Search
                     VisualStateManager.GoToState(this, s, _isInitialized);
                     _isInitialized = true;
                 });
+
+                _lastException = new Computed<string>(() => vm.LastException);
+                _subscription = _lastException.Subscribe(v => { if (v != null) { ShowError.Begin(); } });
             });
         }
 

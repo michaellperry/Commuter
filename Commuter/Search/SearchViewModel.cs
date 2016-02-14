@@ -7,15 +7,18 @@ namespace Commuter.Search
 {
     class SearchViewModel
     {
+        private readonly CommuterApplication _application;
         private readonly SearchService _search;
         private readonly Subscriptions.SubscriptionService _subscription;
         private readonly Func<SearchResult, SearchResultViewModel> _newSearchResultViewModel;
 
         public SearchViewModel(
+            CommuterApplication application,
             SearchService search,
             Subscriptions.SubscriptionService subscription,
             Func<SearchResult, SearchResultViewModel> newSearchResultViewModel)
         {
+            _application = application;
             _search = search;
             _subscription = subscription;
             _newSearchResultViewModel = newSearchResultViewModel;
@@ -101,5 +104,9 @@ namespace Commuter.Search
             _search.SelectedSearchResult == null
                 ? "SearchResults"
                 : "SearchDetails");
+
+        public string LastException =>
+            _application.Exception?.Message ??
+            _search.Exception?.Message;
     }
 }

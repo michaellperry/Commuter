@@ -10,6 +10,16 @@
     Loaded="Page_Loaded" Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <Storyboard x:Name="ShowError">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ErrorDisplay">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1.7" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar Content="{Binding Message}">
             <AppBarButton Icon="Favorite" Label="Subscribe" Visibility="{Binding CanSubscribe, Converter={StaticResource VisibleWhenTrue}}" Command="{Binding Subscribe}"/>
@@ -152,5 +162,8 @@
                 <CompositeTransform/>
             </details:DetailControl.RenderTransform>
         </details:DetailControl>
+        <Border x:Name="ErrorDisplay" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="3" Opacity="0" Background="#FFB61F1F" BorderBrush="#FF641313" IsHitTestVisible="False" Margin="5" Padding="4,0,0,0">
+            <TextBlock Text="{Binding LastException}" FontSize="29.333" Margin="5" TextWrapping="Wrap" TextAlignment="Center"/>
+        </Border>
     </Grid>
 </Page>

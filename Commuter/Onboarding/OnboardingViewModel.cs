@@ -8,10 +8,14 @@ namespace Commuter.Onboarding
 {
     class OnboardingViewModel
     {
-        private Search.SearchService _search;
+        private readonly CommuterApplication _application;
+        private readonly Search.SearchService _search;
 
-        public OnboardingViewModel(Search.SearchService search)
+        public OnboardingViewModel(
+            CommuterApplication application,
+            Search.SearchService search)
         {
+            _application = application;
             _search = search;
         }
 
@@ -26,9 +30,8 @@ namespace Commuter.Onboarding
             _search.BeginSearch();
         }
 
-        public string LastException
-        {
-            get { return _search.Exception?.Message; }
-        }
+        public string LastException =>
+            _application.Exception?.Message ??
+            _search.Exception?.Message;
     }
 }

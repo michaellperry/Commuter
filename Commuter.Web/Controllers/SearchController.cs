@@ -18,8 +18,6 @@ namespace Commuter.Web.Controllers
         {
             string searchTerm = id;
 
-            throw new HttpException("Service unreachable");
-
             var search = new DigitalPodcastSearch(
                 new Secrets().DigitalPodcastApiKey);
             var response = await search.SearchAsync(
