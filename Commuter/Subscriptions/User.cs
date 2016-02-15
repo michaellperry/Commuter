@@ -1,4 +1,6 @@
-﻿using RoverMob.Messaging;
+﻿using Assisticant.Collections;
+using Commuter.Search;
+using RoverMob.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,27 +10,42 @@ namespace Commuter.Subscriptions
 {
     public class User : IMessageHandler
     {
-        public IEnumerable<IMessageHandler> Children
+        private readonly Guid _userId;
+
+        private ObservableList<SearchTerm> _searchTerms = new ObservableList<SearchTerm>();
+
+        private static MessageDispatcher<User> _dispatcher = new MessageDispatcher<User>()
+            .On("SearchTerm", (u, m) => u.HandleSearchTerm(m));
+
+        public User(Guid userId)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            _userId = userId;
         }
+
+        public IEnumerable<SearchTerm> SearchTerms => _searchTerms;
+
+        public IEnumerable<IMessageHandler> Children => _searchTerms;
 
         public Guid GetObjectId()
         {
-            throw new NotImplementedException();
+            return _userId;
         }
 
         public void HandleAllMessages(IEnumerable<Message> messages)
         {
-            throw new NotImplementedException();
         }
 
         public void HandleMessage(Message message)
         {
-            throw new NotImplementedException();
+            _dispatcher.Dispatch(this, message);
+        }
+
+        private void HandleSearchTerm(Message searchTermMessage)
+        {
+            string text = searchTermMessage.Body.Text;
+
+            if (!_searchTerms.Any(t => t.GetObjectId() == searchTermMessage.ObjectId))
+                _searchTerms.Add(new SearchTerm(searchTermMessage.ObjectId, text));
         }
     }
 }

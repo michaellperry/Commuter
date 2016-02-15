@@ -79,7 +79,6 @@ namespace Commuter.Search
             _searchResultTerm.Value = searchTerm;
             _searchResults.Clear();
             _selectedSearchResult.Value = null;
-            _application.AddSubscription(topic);
         }
 
         public void ClearSearchResults()

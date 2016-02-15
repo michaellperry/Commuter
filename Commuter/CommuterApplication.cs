@@ -3,13 +3,12 @@ using Commuter.Subscriptions;
 using RoverMob;
 using RoverMob.Messaging;
 using System;
+using System.Linq;
 
 namespace Commuter
 {
     public class CommuterApplication : Application<User>
     {
-        private ObservableList<string> _subscriptions = new ObservableList<string>();
-
         private CommuterApplication()
         {
 
@@ -34,6 +33,7 @@ namespace Commuter
         public static CommuterApplication LoadDesignModeApplication()
         {
             CommuterApplication application = new CommuterApplication();
+            application.Load(new User(Guid.NewGuid()));
             return application;
         }
 
@@ -62,14 +62,13 @@ namespace Commuter
             var application = new CommuterApplication(
                 store, queue, pump, push, proxy);
 
-            pump.Subscribe(() => application._subscriptions);
+            application.Load(new User(Guid.NewGuid()));
+
+            pump.Subscribe(() => application.Root
+                .SearchTerms
+                .Select(t => t.GetObjectId().ToCanonicalString()));
 
             return application;
-        }
-
-        public void AddSubscription(string topic)
-        {
-            _subscriptions.Add(topic);
         }
     }
 }

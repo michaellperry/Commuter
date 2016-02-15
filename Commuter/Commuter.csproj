@@ -140,6 +140,7 @@
       <DependentUpon>SearchResultControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\SearchResultViewModel.cs" />
+    <Compile Include="Search\SearchTerm.cs" />
     <Compile Include="Search\SearchViewModel.cs" />
     <Compile Include="Secrets.cs" />
     <Compile Include="Secrets.Private.cs" />
