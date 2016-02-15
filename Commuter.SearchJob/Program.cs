@@ -4,14 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.ServiceBus;
+using Microsoft.Azure.WebJobs.Host;
 
 namespace Commuter.SearchJob
 {
-    class Program
+    public class Program
     {
-        static void Main()
+        public static void Main()
         {
-            var host = new JobHost();
+            var config = new JobHostConfiguration();
+            string connectionString = AmbientConnectionStringProvider.Instance
+                .GetConnectionString(ConnectionStringNames.ServiceBus);
+            var serviceBusConfig = new ServiceBusConfiguration()
+            {
+                ConnectionString = connectionString
+            };
+            config.UseServiceBus(serviceBusConfig);
+            var host = new JobHost(config);
             host.RunAndBlock();
         }
     }

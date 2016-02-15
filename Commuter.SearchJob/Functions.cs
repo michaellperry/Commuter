@@ -13,7 +13,7 @@ namespace Commuter.SearchJob
     public class Functions
     {
         public static void ProcessQueueMessage(
-            [ServiceBusTrigger("commutermessages")] MessageMemento message,
+            [ServiceBusTrigger("commutermessages", AccessRights.Listen)] MessageMemento message,
             TextWriter log)
         {
             log.WriteLine($"Received message of type {message.MessageType}");
