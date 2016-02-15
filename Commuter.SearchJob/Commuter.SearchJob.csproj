@@ -128,6 +128,8 @@
     <Compile Include="Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchResult.cs" />
+    <Compile Include="Secrets.cs" />
+    <Compile Include="Secrets.Private.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

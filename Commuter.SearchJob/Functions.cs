@@ -62,7 +62,7 @@ namespace Commuter.SearchJob
             string searchTerm)
         {
             var search = new DigitalPodcastSearch(
-                ConfigurationManager.AppSettings["DigitalPodcastApiKey"]);
+                new Secrets().DigitalPodcastApiKey);
             var response = await search.SearchAsync(
                 new DigitalPodcastRequest
                 {
