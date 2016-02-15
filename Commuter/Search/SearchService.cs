@@ -62,6 +62,7 @@ namespace Commuter.Search
                 searchTermBody.ToGuid(),
                 searchTermBody);
             _application.EmitMessage(searchTermMessage);
+            var topic = searchTermMessage.ObjectId.ToCanonicalString();
             _application.EmitMessage(Message.CreateMessage(
                 "search",
                 "Search",
@@ -70,24 +71,15 @@ namespace Commuter.Search
                 Guid.NewGuid(),
                 new
                 {
+                    SearchTermId = topic,
+                    SearchTerm = searchTerm,
                     Time = DateTime.UtcNow
                 }));
 
             _searchResultTerm.Value = searchTerm;
             _searchResults.Clear();
             _selectedSearchResult.Value = null;
-            _application.AddSubscription(
-                searchTermMessage.ObjectId.ToCanonicalString());
-
-            Perform(async delegate
-            {
-                var root = await GetJsonAsync(
-                    $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}");
-                var results = root["results"].OfType<JObject>()
-                    .Select(j => SearchResult.FromJson(j));
-
-                _searchResults.AddRange(results);
-            });
+            _application.AddSubscription(topic);
         }
 
         public void ClearSearchResults()
