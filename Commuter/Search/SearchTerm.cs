@@ -35,6 +35,7 @@ namespace Commuter.Search
 
         public void HandleMessage(Message message)
         {
+            _dispatcher.Dispatch(this, message);
         }
 
         private void HandleSearchResult(Message searchResultMessage)

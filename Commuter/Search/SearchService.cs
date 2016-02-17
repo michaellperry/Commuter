@@ -56,25 +56,19 @@ namespace Commuter.Search
             string searchTerm = _searchTerm.Value;
 
             var searchTermBody = new { Text = searchTerm };
-            var searchTermMessage = Message.CreateMessage(
-                "search",
-                "SearchTerm",
-                searchTermBody.ToGuid(),
-                searchTermBody);
-            _application.EmitMessage(searchTermMessage);
-            var topic = searchTermMessage.ObjectId.ToCanonicalString();
+            var topic = searchTermBody.ToGuid().ToCanonicalString();
             _application.EmitMessage(Message.CreateMessage(
                 "search",
                 "Search",
-                Predecessors.Set
-                    .In("SearchTerm", searchTermMessage.Hash),
-                Guid.NewGuid(),
+                Guid.Empty,
                 new
                 {
                     SearchTermId = topic,
                     SearchTerm = searchTerm,
                     Time = DateTime.UtcNow
                 }));
+            _application.Root.SearchTerm = new SearchTerm(
+                searchTermBody.ToGuid(), searchTerm);
 
             _searchResultTerm.Value = searchTerm;
             _searchResults.Clear();

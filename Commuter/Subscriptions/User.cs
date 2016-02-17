@@ -1,4 +1,5 @@
 ﻿using Assisticant.Collections;
+using Assisticant.Fields;
 using Commuter.Search;
 using RoverMob.Messaging;
 using System;
@@ -12,19 +13,22 @@ namespace Commuter.Subscriptions
     {
         private readonly Guid _userId;
 
-        private ObservableList<SearchTerm> _searchTerms = new ObservableList<SearchTerm>();
-
-        private static MessageDispatcher<User> _dispatcher = new MessageDispatcher<User>()
-            .On("SearchTerm", (u, m) => u.HandleSearchTerm(m));
+        private Observable<SearchTerm> _searchTerm = new Observable<SearchTerm>();
 
         public User(Guid userId)
         {
             _userId = userId;
         }
 
-        public IEnumerable<SearchTerm> SearchTerms => _searchTerms;
+        public SearchTerm SearchTerm
+        {
+            get { return _searchTerm.Value; }
+            set { _searchTerm.Value = value; }
+        }
 
-        public IEnumerable<IMessageHandler> Children => _searchTerms;
+        public IEnumerable<IMessageHandler> Children =>
+            new IMessageHandler[] { SearchTerm }
+                .Where(s => s != null);
 
         public Guid GetObjectId()
         {
@@ -37,15 +41,6 @@ namespace Commuter.Subscriptions
 
         public void HandleMessage(Message message)
         {
-            _dispatcher.Dispatch(this, message);
-        }
-
-        private void HandleSearchTerm(Message searchTermMessage)
-        {
-            string text = searchTermMessage.Body.Text;
-
-            if (!_searchTerms.Any(t => t.GetObjectId() == searchTermMessage.ObjectId))
-                _searchTerms.Add(new SearchTerm(searchTermMessage.ObjectId, text));
         }
     }
 }

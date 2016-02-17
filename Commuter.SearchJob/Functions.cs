@@ -11,6 +11,7 @@ using RoverMob.Messaging;
 using System.Configuration;
 using System.Collections.Immutable;
 using Commuter.DigitalPodcast;
+using RoverMob;
 
 namespace Commuter.SearchJob
 {
@@ -34,7 +35,8 @@ namespace Commuter.SearchJob
 
             var searchTermHash = searchMessage
                 .GetPredecessors("SearchTerm");
-            string topic = searchMessage.Body.SearchTermId;
+            string searchTermIdstr = searchMessage.Body.SearchTermId;
+            Guid searchTermId = Guid.Parse(searchTermIdstr);
             string searchTerm = searchMessage.Body.SearchTerm;
 
             log.WriteLine($"Searching for {searchTerm}");
@@ -42,19 +44,12 @@ namespace Commuter.SearchJob
             log.WriteLine($"Found {searchResults.Count} results");
 
             var searchResultMessages = searchResults
-                .Select(r => CreateSearchResultMessage(
-                    searchTermHash, topic, r))
+                .Select(r => CreateSearchResultMessage(searchTermId, r))
                 .ToImmutableList();
             pump.SendAllMessages(searchResultMessages);
 
-            var aggregateMessage = Message.CreateMessage(
-                topic,
-                "Aggregate",
-                Predecessors.Set
-                    .In("SearchResult", searchResultMessages.Select(r => r.Hash))
-                    .In("Search", searchMessage.Hash),
-                Guid.NewGuid(),
-                new { });
+            var aggregateMessage = CreateAggregateMessage(
+                searchTermId, searchResultMessages);
             pump.Enqueue(aggregateMessage);
         }
 
@@ -78,16 +73,13 @@ namespace Commuter.SearchJob
         }
 
         private static Message CreateSearchResultMessage(
-            ImmutableList<MessageHash> searchTermHash,
-            string topic,
+            Guid searchTermId,
             SearchResult searchResult)
         {
             var searchResultMessage = Message.CreateMessage(
-                topic,
+                searchTermId.ToCanonicalString(),
                 "SearchResult",
-                Predecessors.Set
-                    .In("SearchTerm", searchTermHash),
-                Guid.NewGuid(),
+                searchTermId,
                 new
                 {
                     ProviderId = "digitalpodcast.com",
@@ -98,6 +90,20 @@ namespace Commuter.SearchJob
                     ImageUri = searchResult.ImageUri
                 });
             return searchResultMessage;
+        }
+
+        private static Message CreateAggregateMessage(
+            Guid searchTermId,
+            ImmutableList<Message> searchResultMessages)
+        {
+            var aggregateMessage = Message.CreateMessage(
+                searchTermId.ToCanonicalString(),
+                "Aggregate",
+                Predecessors.Set
+                    .In("SearchResult", searchResultMessages.Select(r => r.Hash)),
+                searchTermId,
+                new { });
+            return aggregateMessage;
         }
 
         private static HttpMessagePump GetMessagePump()

@@ -65,8 +65,7 @@ namespace Commuter
             application.Load(new User(Guid.NewGuid()));
 
             pump.Subscribe(() => application.Root
-                .SearchTerms
-                .Select(t => t.GetObjectId().ToCanonicalString()));
+                .SearchTerm?.GetObjectId().ToCanonicalString());
 
             return application;
         }
