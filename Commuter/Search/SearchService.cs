@@ -60,15 +60,13 @@ namespace Commuter.Search
             _application.EmitMessage(Message.CreateMessage(
                 "search",
                 "Search",
-                Guid.Empty,
+                _application.Root.GetObjectId(),
                 new
                 {
                     SearchTermId = topic,
                     SearchTerm = searchTerm,
                     Time = DateTime.UtcNow
                 }));
-            _application.Root.SearchTerm = new SearchTerm(
-                searchTermBody.ToGuid(), searchTerm);
 
             _searchResultTerm.Value = searchTerm;
             _searchResults.Clear();

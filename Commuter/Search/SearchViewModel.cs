@@ -44,7 +44,7 @@ namespace Commuter.Search
             if (_search.SelectedSearchResult != null)
                 _search.SelectedSearchResult = null;
             else
-                _application.Root.SearchTerm = null;
+                _application.Root.ClearSearch();
         }
 
         public ImmutableList<SearchResultViewModel> SearchResults =>
