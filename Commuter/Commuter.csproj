@@ -130,6 +130,7 @@
     <Compile Include="Details\EpisodeControl.xaml.cs">
       <DependentUpon>EpisodeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Search\Aggregate.cs" />
     <Compile Include="Search\Module.cs" />
     <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SearchPage.xaml.cs">

@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
+using RoverMob.Messaging;
+using RoverMob.Protocol;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +8,7 @@ using Windows.Web.Syndication;
 
 namespace Commuter.Search
 {
-    class SearchResult
+    public class SearchResult
     {
         private const string ITunesNamespace = "http://www.itunes.com/dtds/podcast-1.0.dtd";
 
@@ -15,44 +17,47 @@ namespace Commuter.Search
         private readonly string _subtitle;
         private readonly string _author;
         private readonly Uri _imageUri;
+        private readonly MessageHash _hash;
 
         private SearchResult(
             Uri feedUrl,
             string title,
             string subtitle,
             string author,
-            Uri imageUri)
+            Uri imageUri,
+            MessageHash hash)
         {
             _feedUrl = feedUrl;
             _title = title;
             _subtitle = subtitle;
             _author = author;
             _imageUri = imageUri;
+            _hash = hash;
         }
 
-        public string Title
-        {
-            get { return _title; }
-        }
+        public string Title => _title;
+        public Uri FeedUrl => _feedUrl;
+        public string Author => _author;
+        public string Subtitle => _subtitle;
+        public Uri ImageUri => _imageUri;
+        public MessageHash Hash => _hash;
 
-        public Uri FeedUrl
+        public static SearchResult FromMessage(Message message)
         {
-            get { return _feedUrl; }
-        }
+            string feedUrl = message.Body.FeedUrl;
+            string title = message.Body.Title;
+            string subtitle = message.Body.Subtitle;
+            string author = message.Body.Author;
+            string imageUri = message.Body.ImageUri;
 
-        public string Author
-        {
-            get { return _author; }
-        }
-
-        public string Subtitle
-        {
-            get { return _subtitle; }
-        }
-
-        public Uri ImageUri
-        {
-            get { return _imageUri; }
+            var searchResult = new SearchResult(
+                new Uri(feedUrl, UriKind.Absolute),
+                title,
+                subtitle,
+                author,
+                new Uri(imageUri, UriKind.Absolute),
+                message.Hash);
+            return searchResult;
         }
 
         public static SearchResult FromJson(JObject obj)
@@ -62,7 +67,8 @@ namespace Commuter.Search
                 (string)obj["title"],
                 (string)obj["subtitle"],
                 (string)obj["author"],
-                new Uri((string)obj["imageUri"], UriKind.Absolute));
+                new Uri((string)obj["imageUri"], UriKind.Absolute),
+                null);
         }
 
         public static async Task<SearchResult> TryLoadAsync(Uri feedUrl)
@@ -83,7 +89,7 @@ namespace Commuter.Search
                     feed.Subtitle.Text;
                 var imageUri = feed.ImageUri;
 
-                return new SearchResult(feedUrl, title, subtitle, author, imageUri);
+                return new SearchResult(feedUrl, title, subtitle, author, imageUri, null);
             }
             catch (Exception x)
             {

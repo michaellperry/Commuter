@@ -1,9 +1,10 @@
-﻿using RoverMob.Messaging;
+﻿using Assisticant.Collections;
+using Assisticant.Fields;
+using RoverMob.Messaging;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Commuter.Search
 {
@@ -11,6 +12,9 @@ namespace Commuter.Search
     {
         private readonly Guid _searchTermId;
         private readonly string _text;
+
+        private Observable<Aggregate> _lastAggregate = new Observable<Aggregate>();
+        private ObservableList<SearchResult> _searchResults = new ObservableList<SearchResult>();
 
         private static MessageDispatcher<SearchTerm> _dispatcher = new MessageDispatcher<SearchTerm>()
             .On("SearchResult", (s, m) => s.HandleSearchResult(m))
@@ -22,6 +26,14 @@ namespace Commuter.Search
             _text = text;
         }
 
+        public string Text => _text;
+
+        public ImmutableList<SearchResult> SearchResults => _searchResults
+            .Where(r => _lastAggregate.Value != null && _lastAggregate.Value.IncludesSearchResult(r.Hash))
+            .ToImmutableList();
+
+        public bool IsBusy => _lastAggregate.Value == null;
+
         public IEnumerable<IMessageHandler> Children => Enumerable.Empty<IMessageHandler>();
 
         public Guid GetObjectId()
@@ -31,6 +43,8 @@ namespace Commuter.Search
 
         public void HandleAllMessages(IEnumerable<Message> messages)
         {
+            foreach (var m in messages)
+                HandleMessage(m);
         }
 
         public void HandleMessage(Message message)
@@ -38,14 +52,14 @@ namespace Commuter.Search
             _dispatcher.Dispatch(this, message);
         }
 
-        private void HandleSearchResult(Message searchResultMessage)
+        private void HandleSearchResult(Message message)
         {
-            throw new NotImplementedException();
+            _searchResults.Add(SearchResult.FromMessage(message));
         }
 
-        private void HandleAggregate(Message aggregateMessage)
+        private void HandleAggregate(Message message)
         {
-            throw new NotImplementedException();
+            _lastAggregate.Value = Aggregate.FromMessage(message);
         }
     }
 }

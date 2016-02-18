@@ -116,8 +116,7 @@ namespace Commuter
                 if (!model.SubscriptionService.Subscriptions.Any())
                 {
                     yield return typeof(Onboarding.OnboardingPage);
-                    if (model.SearchService.Busy ||
-                        model.SearchService.SearchResults.Any())
+                    if (model.Application.Root.SearchTerm != null)
                     {
                         yield return typeof(Search.SearchPage);
                     }

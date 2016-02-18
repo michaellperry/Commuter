@@ -35,23 +35,25 @@ namespace Commuter.Search
             _search.BeginSearch();
         }
 
-        public string Heading => String.IsNullOrEmpty(_search.SearchResultTerm)
+        public string Heading => String.IsNullOrEmpty(_application.Root.SearchTerm?.Text)
             ? null
-            : $"'{_search.SearchResultTerm}' Results";
+            : $"'{_application.Root.SearchTerm.Text}' Results";
 
         public void GoBack()
         {
             if (_search.SelectedSearchResult != null)
                 _search.SelectedSearchResult = null;
             else
-                _search.ClearSearchResults();
+                _application.Root.SearchTerm = null;
         }
 
         public ImmutableList<SearchResultViewModel> SearchResults =>
-            (
-            from searchResult in _search.SearchResults
-            select _newSearchResultViewModel(searchResult)
-            ).ToImmutableList();
+            _application.Root.SearchTerm == null
+                ? ImmutableList<SearchResultViewModel>.Empty
+                :   (
+                    from searchResult in _application.Root.SearchTerm.SearchResults
+                    select _newSearchResultViewModel(searchResult)
+                    ).ToImmutableList();
 
         public SearchResultViewModel SelectedSearchResult
         {
@@ -70,7 +72,8 @@ namespace Commuter.Search
         }
 
         public bool HasSelectedSearchResult =>
-            !_search.Busy &&
+            _application.Root.SearchTerm != null &&
+            _application.Root.SearchTerm.SearchResults.Any() &&
             _search.SelectedSearchResult != null;
 
         public bool CanSubscribe =>
@@ -99,7 +102,8 @@ namespace Commuter.Search
         }
 
         public string Message => ResourceLoader.GetForViewIndependentUse().GetString(
-            _search.Busy
+            (_application.Root.SearchTerm == null ||
+             _application.Root.SearchTerm.IsBusy)
                 ? "SearchBusy" :
             _search.SelectedSearchResult == null
                 ? "SearchResults"
