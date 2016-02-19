@@ -41,8 +41,8 @@ namespace Commuter.Search
 
         public void GoBack()
         {
-            if (_search.SelectedSearchResult != null)
-                _search.SelectedSearchResult = null;
+            if (_application.Root.SelectedSearchResult != null)
+                _application.Root.SelectedSearchResult = null;
             else
                 _application.Root.ClearSearch();
         }
@@ -59,13 +59,13 @@ namespace Commuter.Search
         {
             get
             {
-                return _search.SelectedSearchResult == null
+                return _application.Root.SelectedSearchResult == null
                     ? null
-                    : _newSearchResultViewModel(_search.SelectedSearchResult);
+                    : _newSearchResultViewModel(_application.Root.SelectedSearchResult);
             }
             set
             {
-                _search.SelectedSearchResult = value == null
+                _application.Root.SelectedSearchResult = value == null
                     ? null
                     : value.SearchResult;
             }
@@ -74,30 +74,30 @@ namespace Commuter.Search
         public bool HasSelectedSearchResult =>
             _application.Root.SearchTerm != null &&
             _application.Root.SearchTerm.SearchResults.Any() &&
-            _search.SelectedSearchResult != null;
+            _application.Root.SelectedSearchResult != null;
 
         public bool CanSubscribe =>
-            _search.SelectedSearchResult != null &&
-            !_subscription.IsSubscribed(_search.SelectedSearchResult.FeedUrl);
+            _application.Root.SelectedSearchResult != null &&
+            !_subscription.IsSubscribed(_application.Root.SelectedSearchResult.FeedUrl);
 
         public bool CanUnsubscribe =>
-            _search.SelectedSearchResult != null &&
-            _subscription.IsSubscribed(_search.SelectedSearchResult.FeedUrl);
+            _application.Root.SelectedSearchResult != null &&
+            _subscription.IsSubscribed(_application.Root.SelectedSearchResult.FeedUrl);
 
         public void Subscribe()
         {
-            if (_search.SelectedSearchResult != null)
+            if (_application.Root.SelectedSearchResult != null)
             {
-                _subscription.Subscribe(_search.SelectedSearchResult.FeedUrl);
+                _subscription.Subscribe(_application.Root.SelectedSearchResult.FeedUrl);
                 _subscription.ManagingSubscriptions = true;
             }
         }
 
         public void Unsubscribe()
         {
-            if (_search.SelectedSearchResult != null)
+            if (_application.Root.SelectedSearchResult != null)
             {
-                _subscription.Unsubscribe(_search.SelectedSearchResult.FeedUrl);
+                _subscription.Unsubscribe(_application.Root.SelectedSearchResult.FeedUrl);
             }
         }
 
@@ -105,7 +105,7 @@ namespace Commuter.Search
             (_application.Root.SearchTerm == null ||
              _application.Root.SearchTerm.IsBusy)
                 ? "SearchBusy" :
-            _search.SelectedSearchResult == null
+            _application.Root.SelectedSearchResult == null
                 ? "SearchResults"
                 : "SearchDetails");
 

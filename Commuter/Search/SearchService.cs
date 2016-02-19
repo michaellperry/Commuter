@@ -20,9 +20,7 @@ namespace Commuter.Search
         private readonly CommuterApplication _application;
 
         private Observable<string> _searchTerm = new Observable<string>();
-        private Observable<string> _searchResultTerm = new Observable<string>();
         private ObservableList<SearchResult> _searchResults = new ObservableList<SearchResult>();
-        private Observable<SearchResult> _selectedSearchResult = new Observable<SearchResult>();
 
         public SearchService(CommuterApplication application)
         {
@@ -35,50 +33,27 @@ namespace Commuter.Search
             set { _searchTerm.Value = value; }
         }
 
-        public string SearchResultTerm
-        {
-            get { return _searchResultTerm.Value; }
-        }
-
-        public ImmutableList<SearchResult> SearchResults
-        {
-            get { return _searchResults.ToImmutableList(); }
-        }
-
-        public SearchResult SelectedSearchResult
-        {
-            get { return _selectedSearchResult.Value; }
-            set { _selectedSearchResult.Value = value; }
-        }
-
         public void BeginSearch()
         {
-            string searchTerm = _searchTerm.Value;
+            Perform(async delegate
+            {
+                string searchTerm = _searchTerm.Value;
 
-            var searchTermBody = new { Text = searchTerm };
-            var topic = searchTermBody.ToGuid().ToCanonicalString();
-            _application.EmitMessage(Message.CreateMessage(
-                "search",
-                "Search",
-                _application.Root.GetObjectId(),
-                new
-                {
-                    SearchTermId = topic,
-                    SearchTerm = searchTerm,
-                    Time = DateTime.UtcNow
-                }));
+                var root = await GetJsonAsync(
+                    $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}");
+                var results = root["results"].OfType<JObject>()
+                    .Select(j => SearchResult.FromJson(j));
 
-            _searchResultTerm.Value = searchTerm;
-            _searchResults.Clear();
-            _selectedSearchResult.Value = null;
+                _searchResults.Clear();
+                _searchResults.AddRange(results);
+            });
         }
 
         public void ClearSearchResults()
         {
             _searchTerm.Value = null;
-            _searchResultTerm.Value = null;
             _searchResults.Clear();
-            _selectedSearchResult.Value = null;
+            _application.Root.SelectedSearchResult = null;
         }
 
         private static async Task<JObject> GetJsonAsync(string requestUri)

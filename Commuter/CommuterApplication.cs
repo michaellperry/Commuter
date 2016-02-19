@@ -1,9 +1,7 @@
-using Assisticant.Collections;
 using Commuter.Subscriptions;
 using RoverMob;
 using RoverMob.Messaging;
 using System;
-using System.Linq;
 using System.Threading;
 
 namespace Commuter

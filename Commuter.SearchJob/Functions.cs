@@ -33,8 +33,6 @@ namespace Commuter.SearchJob
         {
             HttpMessagePump pump = GetMessagePump();
 
-            var searchTermHash = searchMessage
-                .GetPredecessors("SearchTerm");
             string searchTermIdstr = searchMessage.Body.SearchTermId;
             Guid searchTermId = Guid.Parse(searchTermIdstr);
             string searchTerm = searchMessage.Body.SearchTerm;
@@ -44,7 +42,8 @@ namespace Commuter.SearchJob
             log.WriteLine($"Found {searchResults.Count} results");
 
             var searchResultMessages = searchResults
-                .Select(r => CreateSearchResultMessage(searchMessage.Hash, searchTermId, r))
+                .Select(r => CreateSearchResultMessage(
+                    searchMessage.Hash, searchTermId, r))
                 .ToImmutableList();
             pump.SendAllMessages(searchResultMessages);
 

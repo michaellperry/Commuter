@@ -15,6 +15,7 @@ namespace Commuter.Subscriptions
         private readonly Guid _userId;
 
         private Observable<SearchTerm> _searchTerm = new Observable<SearchTerm>();
+        private Observable<SearchResult> _selectedSearchResult = new Observable<SearchResult>();
 
         private static MessageDispatcher<User> _dispatcher = new MessageDispatcher<User>()
             .On("Search", (u, m) => u.HandleSearch(m));
@@ -25,6 +26,12 @@ namespace Commuter.Subscriptions
         }
 
         public SearchTerm SearchTerm => _searchTerm.Value;
+
+        public SearchResult SelectedSearchResult
+        {
+            get { return _selectedSearchResult.Value; }
+            set { _selectedSearchResult.Value = value; }
+        }
 
         public void ClearSearch()
         {
