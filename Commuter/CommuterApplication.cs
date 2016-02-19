@@ -4,11 +4,14 @@ using RoverMob;
 using RoverMob.Messaging;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace Commuter
 {
     public class CommuterApplication : Application<User>
     {
+        private Timer _refreshTimer;
+
         private CommuterApplication()
         {
 
@@ -27,7 +30,13 @@ namespace Commuter
                   pushNotificationSubscription,
                   userProxy)
         {
+            _refreshTimer = new Timer(RefreshTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(5.0));
+        }
 
+        private void RefreshTick(object state)
+        {
+            if (Root?.SearchTerm?.IsBusy ?? false)
+                SendAndReceiveMessages();
         }
 
         public static CommuterApplication LoadDesignModeApplication()
