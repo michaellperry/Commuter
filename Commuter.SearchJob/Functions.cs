@@ -44,7 +44,7 @@ namespace Commuter.SearchJob
             log.WriteLine($"Found {searchResults.Count} results");
 
             var searchResultMessages = searchResults
-                .Select(r => CreateSearchResultMessage(searchTermId, r))
+                .Select(r => CreateSearchResultMessage(searchMessage.Hash, searchTermId, r))
                 .ToImmutableList();
             pump.SendAllMessages(searchResultMessages);
 
@@ -73,12 +73,15 @@ namespace Commuter.SearchJob
         }
 
         private static Message CreateSearchResultMessage(
+            MessageHash searchHash,
             Guid searchTermId,
             SearchResult searchResult)
         {
             var searchResultMessage = Message.CreateMessage(
                 searchTermId.ToCanonicalString(),
                 "SearchResult",
+                Predecessors.Set
+                    .In("Search", searchHash),
                 searchTermId,
                 new
                 {

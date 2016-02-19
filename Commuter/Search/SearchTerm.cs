@@ -54,7 +54,8 @@ namespace Commuter.Search
 
         private void HandleSearchResult(Message message)
         {
-            _searchResults.Add(SearchResult.FromMessage(message));
+            if (!_searchResults.Any(r => r.Hash == message.Hash))
+                _searchResults.Add(SearchResult.FromMessage(message));
         }
 
         private void HandleAggregate(Message message)
