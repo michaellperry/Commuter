@@ -35,18 +35,17 @@ namespace Commuter.Search
 
         public void BeginSearch()
         {
-            Perform(async delegate
-            {
-                string searchTerm = _searchTerm.Value;
+            string searchTerm = _searchTerm.Value;
 
-                var root = await GetJsonAsync(
-                    $"http://commuterweb.azurewebsites.net/api/search/{searchTerm}");
-                var results = root["results"].OfType<JObject>()
-                    .Select(j => SearchResult.FromJson(j));
-
-                _searchResults.Clear();
-                _searchResults.AddRange(results);
-            });
+            _application.EmitMessage(Message.CreateMessage(
+                "search",
+                "Search",
+                Guid.Empty,
+                new
+                {
+                    SearchTerm = searchTerm,
+                    Time = DateTime.UtcNow
+                }));
         }
 
         public void ClearSearchResults()

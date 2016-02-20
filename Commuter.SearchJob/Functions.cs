@@ -17,6 +17,13 @@ namespace Commuter.SearchJob
 {
     public class Functions
     {
+        public static void ProcessQueueMessage(
+            [ServiceBusTrigger("commutermessages")] MessageMemento messageMemento,
+            TextWriter log)
+        {
+            log.WriteLine($"Received message of type {messageMemento.MessageType}");
+        }
+
         private static async Task<ImmutableList<SearchResult>> PerformSearch(
             string searchTerm)
         {

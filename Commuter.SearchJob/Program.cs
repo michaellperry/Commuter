@@ -13,7 +13,15 @@ namespace Commuter.SearchJob
     {
         public static void Main()
         {
-            var host = new JobHost();
+            var config = new JobHostConfiguration();
+            var serviceBusConfig = new ServiceBusConfiguration()
+            {
+                ConnectionString = AmbientConnectionStringProvider
+                    .Instance
+                    .GetConnectionString(ConnectionStringNames.ServiceBus)
+            };
+            config.UseServiceBus(serviceBusConfig);
+            var host = new JobHost(config);
             host.RunAndBlock();
         }
     }
