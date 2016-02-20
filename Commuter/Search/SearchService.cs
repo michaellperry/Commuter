@@ -40,7 +40,7 @@ namespace Commuter.Search
             _application.EmitMessage(Message.CreateMessage(
                 "search",
                 "Search",
-                Guid.Empty,
+                _application.Root.GetObjectId(),
                 new
                 {
                     SearchTerm = searchTerm,

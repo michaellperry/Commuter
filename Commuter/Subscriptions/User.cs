@@ -58,6 +58,10 @@ namespace Commuter.Subscriptions
 
         private void HandleSearch(Message message)
         {
+            string searchTerm = message.Body.SearchTerm;
+            var searchTermId = new { Text = searchTerm }.ToGuid();
+            _searchTerm.Value = new SearchTerm(
+                searchTermId, searchTerm);
         }
     }
 }

@@ -22,12 +22,49 @@ namespace Commuter.SearchJob
             TextWriter log)
         {
             log.WriteLine($"Received message of type {messageMemento.MessageType}");
+
+            if (messageMemento.MessageType == "Search")
+                HandleSearch(Message.FromMemento(messageMemento), log).Wait();
+        }
+
+        private static async Task HandleSearch(Message searchMessage, TextWriter log)
+        {
+            string searchTerm = searchMessage.Body.SearchTerm;
+
+            log.WriteLine($"Searching for {searchTerm}");
+            var searchResults = await PerformSearch(searchTerm);
+            log.WriteLine($"Found {searchResults.Count} results");
+
+            var searchTermId = new { Text = searchTerm }.ToGuid();
+            var searchResultMessages = searchResults.Select(r => CreateSearchResultMessage(
+                searchMessage.Hash,
+                searchTermId,
+                r)).ToImmutableList();
+
+            var aggregateMessage = CreateAggregateMessage(searchTermId, searchResultMessages);
+
+            var pump = GetMessagePump();
+            pump.SendAllMessages(searchResultMessages);
+            pump.Enqueue(aggregateMessage);
         }
 
         private static async Task<ImmutableList<SearchResult>> PerformSearch(
             string searchTerm)
         {
-            var results = new SearchResult[0];
+            throw new ApplicationException("Host Unreachable");
+
+            var search = new DigitalPodcastSearch(
+                new Secrets().DigitalPodcastApiKey);
+            var response = await search.SearchAsync(
+                new DigitalPodcastRequest
+                {
+                    Keywords = searchTerm
+                });
+            var tasks = response.Results
+                .Select(r => SearchResult.TryLoadAsync(r.FeedUrl));
+            var allResults = await Task.WhenAll(tasks);
+            var results = allResults
+                .Where(r => r != null);
 
             return results.ToImmutableList();
         }
