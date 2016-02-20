@@ -17,56 +17,10 @@ namespace Commuter.SearchJob
 {
     public class Functions
     {
-        public static void ProcessQueueMessage(
-            [ServiceBusTrigger("commutermessages")] MessageMemento messageMemento,
-            TextWriter log)
-        {
-            log.WriteLine($"Received message of type {messageMemento.MessageType}");
-
-            if (messageMemento.MessageType == "Search")
-                HandleSearch(Message.FromMemento(messageMemento), log).Wait();
-        }
-
-        private static async Task HandleSearch(
-            Message searchMessage,
-            TextWriter log)
-        {
-            HttpMessagePump pump = GetMessagePump();
-
-            string searchTermIdstr = searchMessage.Body.SearchTermId;
-            Guid searchTermId = Guid.Parse(searchTermIdstr);
-            string searchTerm = searchMessage.Body.SearchTerm;
-
-            log.WriteLine($"Searching for {searchTerm}");
-            var searchResults = await PerformSearch(searchTerm);
-            log.WriteLine($"Found {searchResults.Count} results");
-
-            var searchResultMessages = searchResults
-                .Select(r => CreateSearchResultMessage(
-                    searchMessage.Hash, searchTermId, r))
-                .ToImmutableList();
-            pump.SendAllMessages(searchResultMessages);
-
-            var aggregateMessage = CreateAggregateMessage(
-                searchTermId, searchResultMessages);
-            pump.Enqueue(aggregateMessage);
-        }
-
         private static async Task<ImmutableList<SearchResult>> PerformSearch(
             string searchTerm)
         {
-            var search = new DigitalPodcastSearch(
-                new Secrets().DigitalPodcastApiKey);
-            var response = await search.SearchAsync(
-                new DigitalPodcastRequest
-                {
-                    Keywords = searchTerm
-                });
-            var tasks = response.Results
-                .Select(r => SearchResult.TryLoadAsync(r.FeedUrl));
-            var allResults = await Task.WhenAll(tasks);
-            var results = allResults
-                .Where(r => r != null);
+            var results = new SearchResult[0];
 
             return results.ToImmutableList();
         }
