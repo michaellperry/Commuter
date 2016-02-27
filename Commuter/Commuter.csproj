@@ -21,7 +21,8 @@
     <ApplicationInsightsResourceId>/subscriptions/36e5e63a-6fc9-4204-8a76-ff827459a50e/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/Commuter</ApplicationInsightsResourceId>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>4A145C7D092141704C33187D76BA9A675DFDD1F1</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -98,6 +99,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Commuter_TemporaryKey.pfx" />
     <None Include="project.json" />
     <PRIResource Include="Resources.resw" />
     <None Include="Service References\Application Insights\ConnectedService.json" />
@@ -163,7 +165,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Commuter_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-100.png" />

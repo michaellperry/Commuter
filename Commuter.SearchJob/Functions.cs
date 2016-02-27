@@ -54,7 +54,7 @@ namespace Commuter.SearchJob
             throw new ApplicationException("Host Unreachable");
 
             var search = new DigitalPodcastSearch(
-                new Secrets().DigitalPodcastApiKey);
+                ConfigurationManager.AppSettings["DigitalPodcastApiKey"]);
             var response = await search.SearchAsync(
                 new DigitalPodcastRequest
                 {
