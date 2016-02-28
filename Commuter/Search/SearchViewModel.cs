@@ -123,7 +123,8 @@ namespace Commuter.Search
                 : "SearchDetails");
 
         public string LastException =>
-            _application.Exception?.Message;
+            _application.Exception?.Message ??
+            _podcastService.Exception?.Message;
 
         private Podcast CreatePodcast(SearchResult searchResult)
         {
