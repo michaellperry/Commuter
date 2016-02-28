@@ -15,6 +15,7 @@ namespace Commuter
             builder.RegisterModule<Search.Module>();
             builder.RegisterModule<MyCommute.Module>();
             builder.RegisterModule<Subscriptions.Module>();
+            builder.RegisterModule<Details.Module>();
             builder.RegisterType<Model>()
                 .SingleInstance()
                 .AsSelf();

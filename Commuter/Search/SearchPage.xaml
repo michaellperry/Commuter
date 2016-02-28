@@ -157,7 +157,7 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-        <details:DetailControl x:Name="Detail" Margin="4" RenderTransformOrigin="0.5,0.5" >
+        <details:DetailControl DataContext="{Binding SelectedPodcastDetail}" x:Name="Detail" Margin="4" RenderTransformOrigin="0.5,0.5" >
             <details:DetailControl.RenderTransform>
                 <CompositeTransform/>
             </details:DetailControl.RenderTransform>

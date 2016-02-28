@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Commuter.Details
 {
-    class Episode
+    public class Episode
     {
+        public string Title { get; set; }
+        public DateTime PublishDate { get; set; }
     }
 }

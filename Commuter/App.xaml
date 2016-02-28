@@ -10,6 +10,7 @@
         <local:ViewModelLocator x:Key="Locator"/>
         <converters:VisibleWhenTrueConverter x:Key="VisibleWhenTrue"/>
         <converters:VisibleWhenFalseConverter x:Key="VisibleWhenFalse"/>
+        <converters:DateConverter x:Key="DateConverter"/>
     </Application.Resources>
 
 </Application>

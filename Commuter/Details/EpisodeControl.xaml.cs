@@ -23,5 +23,11 @@ namespace Commuter.Details
         {
             this.InitializeComponent();
         }
+
+        public Episode SampleData => new Episode
+        {
+            Title = "QED 12: Difference Engine",
+            PublishDate = new DateTime(2015, 7, 19)
+        };
     }
 }

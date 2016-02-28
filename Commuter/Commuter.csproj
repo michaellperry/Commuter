@@ -110,8 +110,12 @@
     </Compile>
     <Compile Include="CommuterAccessTokenProvider.cs" />
     <Compile Include="CommuterApplication.cs" />
+    <Compile Include="Converters\DateConverter.cs" />
     <Compile Include="Converters\VisibleWhenFalseConverter.cs" />
     <Compile Include="Converters\VisibleWhenTrueConverter.cs" />
+    <Compile Include="Details\EpisodeViewModel.cs" />
+    <Compile Include="Details\Module.cs" />
+    <Compile Include="Details\Podcast.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="MyCommute\CustomMediaTransportControls.cs" />
     <Compile Include="MyCommute\Module.cs" />
@@ -133,6 +137,7 @@
       <DependentUpon>EpisodeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Search\Aggregate.cs" />
+    <Compile Include="Details\DetailViewModel.cs" />
     <Compile Include="Search\Module.cs" />
     <Compile Include="Search\SearchService.cs" />
     <Compile Include="Search\SearchPage.xaml.cs">

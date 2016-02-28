@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Commuter.Details;
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Windows.ApplicationModel.Resources;
@@ -11,17 +12,20 @@ namespace Commuter.Search
         private readonly SearchService _search;
         private readonly Subscriptions.SubscriptionService _subscription;
         private readonly Func<SearchResult, SearchResultViewModel> _newSearchResultViewModel;
-
+        private readonly Func<Podcast, DetailViewModel> _newDetailViewModel;
+        
         public SearchViewModel(
             CommuterApplication application,
             SearchService search,
             Subscriptions.SubscriptionService subscription,
-            Func<SearchResult, SearchResultViewModel> newSearchResultViewModel)
+            Func<SearchResult, SearchResultViewModel> newSearchResultViewModel,
+            Func<Podcast, DetailViewModel> newDetailViewModel)
         {
             _application = application;
             _search = search;
             _subscription = subscription;
             _newSearchResultViewModel = newSearchResultViewModel;
+            _newDetailViewModel = newDetailViewModel;
         }
 
         public string SearchTerm
@@ -70,6 +74,12 @@ namespace Commuter.Search
                     : value.SearchResult;
             }
         }
+
+        public DetailViewModel SelectedPodcastDetail =>
+            _application.Root.SelectedSearchResult == null
+                ? null
+                : _newDetailViewModel(Podcast.FromSearchResult(
+                    _application.Root.SelectedSearchResult));
 
         public bool HasSelectedSearchResult =>
             _application.Root.SearchTerm != null &&

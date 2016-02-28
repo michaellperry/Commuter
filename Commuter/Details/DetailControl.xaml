@@ -18,38 +18,21 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Border Width="120" Height="120" Margin="4" VerticalAlignment="Top" BorderThickness="2" BorderBrush="Gray">
-                <Image Source="http://assets.libsyn.com/content/7569532" Margin="0"/>
+                <Image Source="{Binding ImageUri}" Margin="0"/>
             </Border>
             <StackPanel VerticalAlignment="Top" Grid.Column="1">
-                <TextBlock Margin="4" Style="{StaticResource TitleTextBlockStyle}" Text="Q.E.D. Code" />
-                <TextBlock Margin="4" Style="{StaticResource SubtitleTextBlockStyle}" Text="Michael L Perry" />
-                <TextBlock Margin="4" Style="{StaticResource BodyTextBlockStyle}" Text="A podcast that explores the intersection between software and mathematics" TextWrapping="Wrap" />
+                <TextBlock Margin="4" Style="{StaticResource TitleTextBlockStyle}" Text="{Binding Title}" />
+                <TextBlock Margin="4" Style="{StaticResource SubtitleTextBlockStyle}" Text="{Binding Author}" />
+                <TextBlock Margin="4" Style="{StaticResource BodyTextBlockStyle}" Text="{Binding Subtitle}" TextWrapping="Wrap" />
             </StackPanel>
         </Grid>
         <ScrollViewer Grid.Row="1">
-            <ItemsControl>
+            <ItemsControl ItemsSource="{Binding Episodes}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <local:EpisodeControl/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-                <ItemsControl.Items>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                    <local:Episode/>
-                </ItemsControl.Items>
             </ItemsControl>
         </ScrollViewer>
     </Grid>

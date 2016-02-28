@@ -11,15 +11,13 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="10*"/>
-            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="109*"/>
+            <ColumnDefinition Width="41*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Margin="4" HorizontalAlignment="Right" Style="{StaticResource BodyTextBlockStyle}" Text="12"/>
-        <TextBlock Grid.Column="1" Margin="4" HorizontalAlignment="Left" Style="{StaticResource BodyTextBlockStyle}" Text="QED 12: Difference Engine"/>
-        <TextBlock Grid.Column="2" Margin="4" HorizontalAlignment="Right" Style="{StaticResource BodyTextBlockStyle}" Text="7/19/2015"/>
+        <TextBlock Margin="4" HorizontalAlignment="Left" Style="{StaticResource BodyTextBlockStyle}" Text="{Binding Title}"/>
+        <TextBlock Grid.Column="1" Margin="4" HorizontalAlignment="Right" Style="{StaticResource BodyTextBlockStyle}" Text="{Binding PublishDate, Converter={StaticResource DateConverter}, Mode=OneWay}"/>
     </Grid>
 </UserControl>
