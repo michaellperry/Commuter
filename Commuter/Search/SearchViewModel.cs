@@ -10,6 +10,7 @@ namespace Commuter.Search
     {
         private readonly CommuterApplication _application;
         private readonly SearchService _search;
+        private readonly PodcastService _podcastService;
         private readonly Subscriptions.SubscriptionService _subscription;
         private readonly Func<SearchResult, SearchResultViewModel> _newSearchResultViewModel;
         private readonly Func<Podcast, DetailViewModel> _newDetailViewModel;
@@ -17,12 +18,14 @@ namespace Commuter.Search
         public SearchViewModel(
             CommuterApplication application,
             SearchService search,
+            PodcastService podcastService,
             Subscriptions.SubscriptionService subscription,
             Func<SearchResult, SearchResultViewModel> newSearchResultViewModel,
             Func<Podcast, DetailViewModel> newDetailViewModel)
         {
             _application = application;
             _search = search;
+            _podcastService = podcastService;
             _subscription = subscription;
             _newSearchResultViewModel = newSearchResultViewModel;
             _newDetailViewModel = newDetailViewModel;
@@ -78,7 +81,7 @@ namespace Commuter.Search
         public DetailViewModel SelectedPodcastDetail =>
             _application.Root.SelectedSearchResult == null
                 ? null
-                : _newDetailViewModel(Podcast.FromSearchResult(
+                : _newDetailViewModel(CreatePodcast(
                     _application.Root.SelectedSearchResult));
 
         public bool HasSelectedSearchResult =>
@@ -121,5 +124,19 @@ namespace Commuter.Search
 
         public string LastException =>
             _application.Exception?.Message;
+
+        private Podcast CreatePodcast(SearchResult searchResult)
+        {
+            var podcast = new Podcast
+            {
+                Title = searchResult.Title,
+                Subtitle = searchResult.Subtitle,
+                Author = searchResult.Author,
+                FeedUrl = searchResult.FeedUrl,
+                ImageUri = searchResult.ImageUri
+            };
+            _podcastService.BeginLoadPodcast(podcast);
+            return podcast;
+        }
     }
 }

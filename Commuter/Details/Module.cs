@@ -11,6 +11,9 @@ namespace Commuter.Details
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<PodcastService>()
+                .AsSelf()
+                .SingleInstance();
             builder.RegisterType<DetailViewModel>()
                 .AsSelf();
             builder.RegisterType<EpisodeViewModel>()
