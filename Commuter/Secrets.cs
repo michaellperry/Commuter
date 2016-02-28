@@ -8,6 +8,7 @@ namespace Commuter
         partial void Initialize()
         {
             DistributorUrl = "http://<Deploy a web app>/api/distributor/";
+            EpisodesUrl = "http://<Deploy a web app>/api/episodes/";
             UserIdentifierUrl = "http://<Deploy a web app>/api/useridentifier/";
             NotificationHubPath = "Create an Azure Notification Hub";
             NotificationHubConnectionString = "The connection string with Listen privileges";
@@ -21,6 +22,7 @@ namespace Commuter
     partial class Secrets
     {
         public string DistributorUrl { get; set; }
+        public string EpisodesUrl { get; set; }
         public string UserIdentifierUrl { get; set; }
         public string NotificationHubPath { get; set; }
         public string NotificationHubConnectionString { get; set; }

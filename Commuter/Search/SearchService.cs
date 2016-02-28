@@ -1,21 +1,11 @@
 ﻿using Assisticant.Collections;
 using Assisticant.Fields;
-using Commuter.DigitalPodcast;
-using System;
-using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net.Http.Headers;
 using RoverMob.Messaging;
-using RoverMob;
+using System;
 
 namespace Commuter.Search
 {
-    class SearchService : RoverMob.Tasks.Process
+    class SearchService
     {
         private readonly CommuterApplication _application;
 
@@ -53,27 +43,6 @@ namespace Commuter.Search
             _searchTerm.Value = null;
             _searchResults.Clear();
             _application.Root.SelectedSearchResult = null;
-        }
-
-        private static async Task<JObject> GetJsonAsync(string requestUri)
-        {
-            using (var client = new HttpClient())
-            using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
-            {
-                request.Headers.Accept.Clear();
-                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(
-                    "application/json"));
-                var responseMessage = await client.SendAsync(request);
-                if (responseMessage.IsSuccessStatusCode == false)
-                    throw new InvalidOperationException(responseMessage.ReasonPhrase);
-
-                using (var stream = await responseMessage.Content.ReadAsStreamAsync())
-                using (var reader = new StreamReader(stream))
-                using (var jsonReader = new JsonTextReader(reader))
-                {
-                    return (JObject)JToken.ReadFrom(jsonReader);
-                }
-            }
         }
     }
 }

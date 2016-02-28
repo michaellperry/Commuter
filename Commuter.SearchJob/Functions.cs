@@ -51,8 +51,6 @@ namespace Commuter.SearchJob
         private static async Task<ImmutableList<SearchResult>> PerformSearch(
             string searchTerm)
         {
-            throw new ApplicationException("Host Unreachable");
-
             var search = new DigitalPodcastSearch(
                 ConfigurationManager.AppSettings["DigitalPodcastApiKey"]);
             var response = await search.SearchAsync(

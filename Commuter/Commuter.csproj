@@ -116,6 +116,7 @@
     <Compile Include="Details\EpisodeViewModel.cs" />
     <Compile Include="Details\Module.cs" />
     <Compile Include="Details\Podcast.cs" />
+    <Compile Include="Details\PodcastService.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="MyCommute\CustomMediaTransportControls.cs" />
     <Compile Include="MyCommute\Module.cs" />

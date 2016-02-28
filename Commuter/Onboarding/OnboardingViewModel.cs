@@ -31,7 +31,6 @@ namespace Commuter.Onboarding
         }
 
         public string LastException =>
-            _application.Exception?.Message ??
-            _search.Exception?.Message;
+            _application.Exception?.Message;
     }
 }
