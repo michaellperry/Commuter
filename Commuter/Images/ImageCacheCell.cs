@@ -16,7 +16,7 @@ namespace Commuter.Images
 
         private readonly string _sourceImageUrl;
 
-        private Observable<string> _originalImageUrl = new Observable<string>();
+        private Observable<string> _cachedImageUrl = new Observable<string>();
 
         public ImageCacheCell(string sourceImageUrl)
         {
@@ -29,7 +29,7 @@ namespace Commuter.Images
             {
                 lock (this)
                 {
-                    return new Uri(_originalImageUrl.Value ?? DefaultImageUrl,
+                    return new Uri(_cachedImageUrl.Value ?? DefaultImageUrl,
                         UriKind.Absolute);
                 }
             }
@@ -39,33 +39,20 @@ namespace Commuter.Images
         {
             lock (this)
             {
-                _originalImageUrl.Value = $"ms-appdata:///local/images/{fileName}";
+                _cachedImageUrl.Value = $"ms-appdata:///local/images/{fileName}";
             }
         }
 
         public async Task LoadAsync()
         {
             string fileName = GetFileName(_sourceImageUrl);
-            var imagesFolder = await OpenImagesFolder();
-            if (await imagesFolder.TryGetItemAsync(fileName) == null)
-            {
-                HttpClient client = new HttpClient();
-                var sourceStream = await client.GetStreamAsync(_sourceImageUrl);
+            var imagesFolder = await OpenImagesFolderAsync();
 
-                var imageFile = await imagesFolder.CreateFileAsync(fileName,
-                    CreationCollisionOption.ReplaceExisting);
-                try
-                {
-                    using (var targetStream = await imageFile.OpenStreamForWriteAsync())
-                    {
-                        await sourceStream.CopyToAsync(targetStream);
-                    }
+            if (await FileDoesNotExistAsync(fileName, imagesFolder))
+            {
+                bool success = await DownloadFileAsync(fileName, imagesFolder, _sourceImageUrl);
+                if (success)
                     SetImageUrl(fileName);
-                }
-                catch (Exception)
-                {
-                    await imageFile.DeleteAsync();
-                }
             }
             else
             {
@@ -88,15 +75,38 @@ namespace Commuter.Images
             return fileName;
         }
 
-        private static async Task<StorageFolder> OpenImagesFolder()
+        private static async Task<StorageFolder> OpenImagesFolderAsync()
         {
             var imagesFolder = await ApplicationData.Current.LocalFolder
                 .CreateFolderAsync("images", CreationCollisionOption.OpenIfExists);
             return imagesFolder;
         }
 
-        private static async Task SaveToFile(StorageFile imageFile, string sourceUrl)
+        private static async Task<bool> FileDoesNotExistAsync(string fileName, StorageFolder imagesFolder)
         {
+            return await imagesFolder.TryGetItemAsync(fileName) == null;
+        }
+
+        private static async Task<bool> DownloadFileAsync(string fileName, StorageFolder imagesFolder, string sourceUrl)
+        {
+            HttpClient client = new HttpClient();
+            var sourceStream = await client.GetStreamAsync(sourceUrl);
+
+            var imageFile = await imagesFolder.CreateFileAsync(fileName,
+                CreationCollisionOption.ReplaceExisting);
+            try
+            {
+                using (var targetStream = await imageFile.OpenStreamForWriteAsync())
+                {
+                    await sourceStream.CopyToAsync(targetStream);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                await imageFile.DeleteAsync();
+                return false;
+            }
         }
     }
 }

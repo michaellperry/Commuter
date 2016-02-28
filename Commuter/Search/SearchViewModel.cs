@@ -127,9 +127,7 @@ namespace Commuter.Search
              _application.Root.SearchTerm.IsBusy) ||
             _podcastService.Busy;
 
-        public string LastException =>
-            _application.Exception?.Message ??
-            _podcastService.Exception?.Message;
+        public string LastException => null;
 
         private Podcast CreatePodcast(SearchResult searchResult)
         {

@@ -15,29 +15,10 @@ namespace Commuter.Search
             _imageCacheService = imageCacheService;
         }
 
-        public SearchResult SearchResult
-        {
-            get { return _searchResult; }
-        }
-
-        public string Title
-        {
-            get { return _searchResult.Title; }
-        }
-
-        public string Author
-        {
-            get { return _searchResult.Author; }
-        }
-
-        public string Subtitle
-        {
-            get { return _searchResult.Subtitle; }
-        }
-
-        public Uri ImageUri
-        {
-            get { return _imageCacheService.GetCachedImageUri(_searchResult.ImageUri); }
-        }
+        public SearchResult SearchResult => _searchResult;
+        public string Title => _searchResult.Title;
+        public string Author => _searchResult.Author;
+        public string Subtitle => _searchResult.Subtitle;
+        public Uri ImageUri => _imageCacheService.GetCachedImageUri(_searchResult.ImageUri);
     }
 }

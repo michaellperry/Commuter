@@ -30,7 +30,6 @@ namespace Commuter.Onboarding
             _search.BeginSearch();
         }
 
-        public string LastException =>
-            _application.Exception?.Message;
+        public string LastException => null;
     }
 }

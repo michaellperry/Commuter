@@ -6,7 +6,8 @@ namespace Commuter.Images
 {
     class ImageCacheService : Process
     {
-        private Dictionary<string, ImageCacheCell> _cells = new Dictionary<string, ImageCacheCell>();
+        private Dictionary<string, ImageCacheCell> _cells =
+            new Dictionary<string, ImageCacheCell>();
 
         public Uri GetCachedImageUri(Uri imageUri)
         {
