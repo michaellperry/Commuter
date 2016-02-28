@@ -9,13 +9,13 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="128"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="128"/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Border Width="120" Height="120" Margin="4" VerticalAlignment="Top" BorderThickness="2" BorderBrush="Gray">
                 <Image Source="{Binding ImageUri}" Margin="0"/>
