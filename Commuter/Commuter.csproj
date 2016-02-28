@@ -117,6 +117,9 @@
     <Compile Include="Details\Module.cs" />
     <Compile Include="Details\Podcast.cs" />
     <Compile Include="Details\PodcastService.cs" />
+    <Compile Include="Images\ImageCacheCell.cs" />
+    <Compile Include="Images\ImageCacheService.cs" />
+    <Compile Include="Images\Module.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="MyCommute\CustomMediaTransportControls.cs" />
     <Compile Include="MyCommute\Module.cs" />

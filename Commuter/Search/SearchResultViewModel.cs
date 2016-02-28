@@ -5,10 +5,14 @@ namespace Commuter.Search
     class SearchResultViewModel
     {
         private readonly SearchResult _searchResult;
+        private readonly Images.ImageCacheService _imageCacheService;
 
-        public SearchResultViewModel(SearchResult searchResult)
+        public SearchResultViewModel(
+            SearchResult searchResult,
+            Images.ImageCacheService imageCacheService)
         {
             _searchResult = searchResult;
+            _imageCacheService = imageCacheService;
         }
 
         public SearchResult SearchResult
@@ -33,7 +37,7 @@ namespace Commuter.Search
 
         public Uri ImageUri
         {
-            get { return _searchResult.ImageUri; }
+            get { return _imageCacheService.GetCachedImageUri(_searchResult.ImageUri); }
         }
     }
 }
