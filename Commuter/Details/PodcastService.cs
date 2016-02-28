@@ -28,16 +28,11 @@ namespace Commuter.Details
         private async Task LoadPodcastAsync(Podcast podcast)
         {
             ImmutableList<Episode> episodes;
-            if (NetworkInformation.GetInternetConnectionProfile().GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess)
-            {
-                episodes = await LoadEpisodesFromServerAsync(podcast.FeedUrl);
-                await SaveEpisodesToCache(podcast.FeedUrl, episodes);
-            }
-            else
-            {
-                episodes = await LoadEpisodesFromCache(podcast.FeedUrl);
-            }
+            episodes = await LoadEpisodesFromCache(podcast.FeedUrl);
             podcast.SetEpisodes(episodes);
+            episodes = await LoadEpisodesFromServerAsync(podcast.FeedUrl);
+            podcast.SetEpisodes(episodes);
+            await SaveEpisodesToCache(podcast.FeedUrl, episodes);
         }
 
         private static async Task<ImmutableList<Episode>> LoadEpisodesFromServerAsync(Uri feedUrl)
