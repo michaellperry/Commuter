@@ -162,6 +162,7 @@
                 <CompositeTransform/>
             </details:DetailControl.RenderTransform>
         </details:DetailControl>
+        <ProgressBar Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsIndeterminate="{Binding Busy}" Visibility="{Binding Busy, Converter={StaticResource VisibleWhenTrue}}"/>
         <Border x:Name="ErrorDisplay" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="3" Opacity="0" Background="#FFB61F1F" BorderBrush="#FF641313" IsHitTestVisible="False" Margin="5" Padding="4,0,0,0">
             <TextBlock Text="{Binding LastException}" FontSize="29.333" Margin="5" TextWrapping="Wrap" TextAlignment="Center"/>
         </Border>

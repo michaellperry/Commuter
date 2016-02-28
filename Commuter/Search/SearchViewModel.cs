@@ -122,6 +122,11 @@ namespace Commuter.Search
                 ? "SearchResults"
                 : "SearchDetails");
 
+        public bool Busy =>
+            (_application.Root.SearchTerm != null &&
+             _application.Root.SearchTerm.IsBusy) ||
+            _podcastService.Busy;
+
         public string LastException =>
             _application.Exception?.Message ??
             _podcastService.Exception?.Message;
