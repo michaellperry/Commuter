@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.IO;
 using RoverMob.Tasks;
 using System;
 using System.Collections.Generic;
@@ -9,11 +11,15 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.Networking.Connectivity;
 
 namespace Commuter.Details
 {
     class PodcastService : Process
     {
+        private JsonSerializer _serializer = new JsonSerializer();
+
         public void BeginLoadPodcast(Podcast podcast)
         {
             Perform(() => LoadPodcastAsync(podcast));
@@ -21,7 +27,16 @@ namespace Commuter.Details
 
         private async Task LoadPodcastAsync(Podcast podcast)
         {
-            var episodes = await LoadEpisodesFromServerAsync(podcast.FeedUrl);
+            ImmutableList<Episode> episodes;
+            if (NetworkInformation.GetInternetConnectionProfile().GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess)
+            {
+                episodes = await LoadEpisodesFromServerAsync(podcast.FeedUrl);
+                await SaveEpisodesToCache(podcast.FeedUrl, episodes);
+            }
+            else
+            {
+                episodes = await LoadEpisodesFromCache(podcast.FeedUrl);
+            }
             podcast.SetEpisodes(episodes);
         }
 
@@ -58,6 +73,58 @@ namespace Commuter.Details
                     return (JObject)JToken.ReadFrom(jsonReader);
                 }
             }
+        }
+
+        private async Task SaveEpisodesToCache(Uri feedUrl, ImmutableList<Episode> episodes)
+        {
+            string fileName = GetFileName(feedUrl);
+            var episodesFolder = await OpenEpisodesFolder();
+
+            var file = await episodesFolder
+                .CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            var outputStream = await file.OpenStreamForWriteAsync();
+            using (JsonWriter writer = new JsonTextWriter(new StreamWriter(outputStream)))
+            {
+                _serializer.Serialize(writer, episodes);
+            }
+        }
+
+        private async Task<ImmutableList<Episode>> LoadEpisodesFromCache(Uri feedUrl)
+        {
+            string fileName = GetFileName(feedUrl);
+            var episodesFolder = await OpenEpisodesFolder();
+
+            var file = await episodesFolder
+                .CreateFileAsync(fileName, CreationCollisionOption.OpenIfExists);
+            var inputStream = await file.OpenStreamForReadAsync();
+            using (JsonReader reader = new JsonTextReader(new StreamReader(inputStream)))
+            {
+                var episodeList = _serializer.Deserialize<List<Episode>>(reader);
+                return episodeList.ToImmutableList();
+            }
+        }
+
+        private static string GetFileName(Uri feedUrl)
+        {
+            string uri = feedUrl.ToString();
+            var sha = new Sha256Digest();
+            var stream = new DigestStream(new MemoryStream(), null, sha);
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(uri);
+            }
+            byte[] buffer = new byte[sha.GetDigestSize()];
+            sha.DoFinal(buffer, 0);
+            string hex = BitConverter.ToString(buffer);
+            string fileName = hex.Replace("-", "") + ".json";
+            return fileName;
+        }
+
+        private static async Task<StorageFolder> OpenEpisodesFolder()
+        {
+            var episodesFolder = await ApplicationData.Current.LocalFolder
+                .CreateFolderAsync("Episodes", CreationCollisionOption.OpenIfExists);
+            return episodesFolder;
         }
     }
 }
