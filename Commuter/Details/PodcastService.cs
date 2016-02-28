@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using RoverMob.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -20,20 +21,22 @@ namespace Commuter.Details
 
         private async Task LoadPodcastAsync(Podcast podcast)
         {
-            await Task.Delay(500);
-            podcast.SetEpisodes(new Episode[]
-            {
-                new Episode
+            var episodes = await LoadEpisodesFromServerAsync(podcast.FeedUrl);
+            podcast.SetEpisodes(episodes);
+        }
+
+        private static async Task<ImmutableList<Episode>> LoadEpisodesFromServerAsync(Uri feedUrl)
+        {
+            string requestUri = $"{new Secrets().EpisodesUrl}?feed={Uri.EscapeUriString(feedUrl.ToString())}";
+            var root = await GetJsonAsync(requestUri);
+
+            var episodes = root["Episodes"].OfType<JObject>()
+                .Select(j => new Episode
                 {
-                    Title = "QED 11: The one before Difference Engine",
-                    PublishDate = new DateTime(2015, 6, 19)
-                },
-                new Episode
-                {
-                    Title = "QED 12: Difference Engine",
-                    PublishDate = new DateTime(2015, 7, 19)
-                }
-            });
+                    Title = j["Title"].Value<string>(),
+                    PublishDate = j["PublishDate"].Value<DateTime>()
+                });
+            return episodes.ToImmutableList();
         }
 
         private static async Task<JObject> GetJsonAsync(string requestUri)
