@@ -127,6 +127,10 @@
       <DependentUpon>MyCommutePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MyCommute\MyCommuteViewModel.cs" />
+    <Compile Include="Onboarding\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Onboarding\LoginViewModel.cs" />
     <Compile Include="Onboarding\Module.cs" />
     <Compile Include="Onboarding\OnboardingPage.xaml.cs">
       <DependentUpon>OnboardingPage.xaml</DependentUpon>
@@ -168,6 +172,7 @@
     </Compile>
     <Compile Include="Subscriptions\SubscriptionViewModel.cs" />
     <Compile Include="Subscriptions\User.cs" />
+    <Compile Include="Utilities\ApiUtility.cs" />
     <Compile Include="ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +213,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="MyCommute\MyCommutePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Onboarding\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

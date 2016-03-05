@@ -69,10 +69,11 @@ namespace Commuter
             var application = new CommuterApplication(
                 store, queue, pump, push, proxy);
 
-            application.Load(new User(Guid.NewGuid()));
+            application.GetUserIdentifier("User", guid =>
+                application.Load(new User(guid)));
 
             pump.Subscribe(() => application.Root
-                .SearchTerm?.GetObjectId().ToCanonicalString());
+                ?.SearchTerm?.GetObjectId().ToCanonicalString());
 
             return application;
         }

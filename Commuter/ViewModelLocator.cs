@@ -38,45 +38,21 @@ namespace Commuter
             }
         }
 
-        public Model Model
-        {
-            get { return _container.Resolve<Model>(); }
-        }
+        public Model Model => _container.Resolve<Model>();
 
-        public object OnboardingViewModel
-        {
-            get
-            {
-                return ViewModel(() =>
-                    _container.Resolve<Onboarding.OnboardingViewModel>());
-            }
-        }
+        public object LoginViewModel => ViewModel(() =>
+            _container.Resolve<Onboarding.LoginViewModel>());
 
-        public object SearchViewModel
-        {
-            get
-            {
-                return ViewModel(() =>
-                    _container.Resolve<Search.SearchViewModel>());
-            }
-        }
+        public object OnboardingViewModel => ViewModel(() =>
+            _container.Resolve<Onboarding.OnboardingViewModel>());
 
-        public object MyCommuteViewModel
-        {
-            get
-            {
-                return ViewModel(() =>
-                    _container.Resolve<MyCommute.MyCommuteViewModel>());
-            }
-        }
+        public object SearchViewModel => ViewModel(() =>
+            _container.Resolve<Search.SearchViewModel>());
 
-        public object SubscriptionViewModel
-        {
-            get
-            {
-                return ViewModel(() =>
-                    _container.Resolve<Subscriptions.SubscriptionViewModel>());
-            }
-        }
+        public object MyCommuteViewModel => ViewModel(() =>
+            _container.Resolve<MyCommute.MyCommuteViewModel>());
+
+        public object SubscriptionViewModel => ViewModel(() =>
+            _container.Resolve<Subscriptions.SubscriptionViewModel>());
     }
 }

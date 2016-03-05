@@ -113,7 +113,9 @@ namespace Commuter
             var model = viewModelLocator.Model;
             if (model != null)
             {
-                if (!model.SubscriptionService.Subscriptions.Any())
+                if (model.Application.Root == null)
+                    yield return typeof(Onboarding.LoginPage);
+                else if (!model.SubscriptionService.Subscriptions.Any())
                 {
                     yield return typeof(Onboarding.OnboardingPage);
                     if (model.Application.Root.SearchTerm != null)

@@ -1,0 +1,18 @@
+﻿<Page
+    x:Class="Commuter.Onboarding.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Commuter.Onboarding"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    DataContext="{Binding LoginViewModel, Source={StaticResource Locator}}">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="I need to know who you are so I can keep track of your podcast subscriptions. Let&apos;s log you in."/>
+        <ProgressBar Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsIndeterminate="{Binding Busy}" Visibility="{Binding HasException, Converter={StaticResource VisibleWhenFalse}}"/>
+        <Border Visibility="{Binding HasException, Converter={StaticResource VisibleWhenTrue}}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="3" Background="#FFB61F1F" BorderBrush="#FF641313" Margin="5" Padding="4,0,0,0">
+            <TextBlock Text="{Binding LastException}" FontSize="29.333" Margin="5" TextWrapping="Wrap" TextAlignment="Center"/>
+        </Border>
+    </Grid>
+</Page>

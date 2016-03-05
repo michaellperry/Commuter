@@ -10,6 +10,8 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using Commuter.Web.Providers;
 using Commuter.Web.Models;
+using System.Web.Configuration;
+using Microsoft.Owin.Security.MicrosoftAccount;
 
 namespace Commuter.Web
 {
@@ -46,10 +48,15 @@ namespace Commuter.Web
             // Enable the application to use bearer tokens to authenticate users
             app.UseOAuthBearerTokens(OAuthOptions);
 
-            // Uncomment the following lines to enable logging in with third party login providers
-            //app.UseMicrosoftAccountAuthentication(
-            //    clientId: "",
-            //    clientSecret: "");
+            // Sign in with Microsoft ID
+            var msOptions = new MicrosoftAccountAuthenticationOptions
+            {
+                ClientId = WebConfigurationManager.AppSettings["MicrosoftIDClientID"],
+                ClientSecret = WebConfigurationManager.AppSettings["MicrosoftIDClientSecret"]
+            };
+            msOptions.Scope.Clear();
+            msOptions.Scope.Add("wl.signin");
+            app.UseMicrosoftAccountAuthentication(msOptions);
 
             //app.UseTwitterAuthentication(
             //    consumerKey: "",

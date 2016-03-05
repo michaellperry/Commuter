@@ -1,7 +1,9 @@
 ﻿using System.Web.Configuration;
+using System.Web.Http;
 
 namespace Commuter.Web.Controllers
 {
+    [Authorize]
     public class UserIdentifierController : RoverMob.Distributor.Controllers.UserIdentifierController
     {
         public UserIdentifierController() : base(

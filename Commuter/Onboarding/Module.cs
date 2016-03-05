@@ -6,6 +6,8 @@ namespace Commuter.Onboarding
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<LoginViewModel>()
+                .AsSelf();
             builder.RegisterType<OnboardingViewModel>()
                 .AsSelf();
         }
