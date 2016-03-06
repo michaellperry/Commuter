@@ -1,20 +1,27 @@
-﻿using System;
+﻿using Assisticant.Collections;
+using Commuter.Details;
 using RoverMob.Messaging;
+using System;
+using System.Collections.Immutable;
 
 namespace Commuter.Subscriptions
 {
     public class Subscription
     {
+        private ObservableList<Episode> _episodes = new ObservableList<Episode>();
+
         public Subscription(
             Uri feedUrl,
             Uri imageUri,
             string title,
+            string subtitle,
             string author,
             MessageHash hash)
         {
             FeedUrl = feedUrl;
             ImageUri = imageUri;
             Title = title;
+            Subtitle = subtitle;
             Author = author;
             Hash = hash;
         }
@@ -22,8 +29,12 @@ namespace Commuter.Subscriptions
         public Uri FeedUrl { get; }
         public Uri ImageUri { get; }
         public string Title { get; }
+        public string Subtitle { get; }
         public string Author { get; }
         public MessageHash Hash { get; }
+
+        public ImmutableList<Episode> Episodes =>
+            _episodes.ToImmutableList();
 
         public override bool Equals(object obj)
         {

@@ -73,6 +73,7 @@ namespace Commuter.Subscriptions
                     subscription.FeedUrl,
                     subscription.ImageUri,
                     subscription.Title,
+                    subscription.Subtitle,
                     subscription.Author);
             }
         }

@@ -41,7 +41,12 @@ namespace Commuter.Subscriptions
             return Subscriptions.Any(s => s.FeedUrl == feedUrl);
         }
 
-        public void Subscribe(Uri feedUrl, Uri imageUri, string title, string author)
+        public void Subscribe(
+            Uri feedUrl,
+            Uri imageUri,
+            string title,
+            string subtitle,
+            string author)
         {
             if (_application.Root != null)
             {
@@ -55,6 +60,7 @@ namespace Commuter.Subscriptions
                         FeedUrl = feedUrl.ToString(),
                         ImageUri = imageUri.ToString(),
                         Title = title,
+                        Subtitle = subtitle,
                         Author = author
                     }));
             }

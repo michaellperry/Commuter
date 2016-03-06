@@ -81,11 +81,13 @@ namespace Commuter.Subscriptions
             string feedUrl = message.Body.FeedUrl;
             string imageUri = message.Body.ImageUri;
             string title = message.Body.Title;
+            string subtitle = message.Body.Subtitle;
             string author = message.Body.Author;
             return new Subscription(
                 new Uri(feedUrl, UriKind.Absolute),
                 new Uri(imageUri, UriKind.Absolute),
                 title,
+                subtitle,
                 author,
                 message.Hash);
         }

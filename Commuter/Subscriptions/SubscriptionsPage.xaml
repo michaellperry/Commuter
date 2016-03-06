@@ -131,7 +131,7 @@
                 <TextBlock Margin="12,4" Style="{StaticResource TitleTextBlockStyle}" Text="Subscriptions"/>
             </StackPanel>
         </Grid>
-        <details:DetailControl x:Name="Detail" RenderTransformOrigin="0.5,0.5" >
+        <details:DetailControl x:Name="Detail" RenderTransformOrigin="0.5,0.5" DataContext="{Binding SelectedSubscription}" >
             <details:DetailControl.RenderTransform>
                 <CompositeTransform/>
             </details:DetailControl.RenderTransform>

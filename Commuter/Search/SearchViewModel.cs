@@ -104,6 +104,7 @@ namespace Commuter.Search
                     searchResult.FeedUrl,
                     searchResult.ImageUri,
                     searchResult.Title,
+                    searchResult.Subtitle,
                     searchResult.Author);
                 _subscription.ManagingSubscriptions = true;
             }
