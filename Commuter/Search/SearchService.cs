@@ -10,7 +10,6 @@ namespace Commuter.Search
         private readonly CommuterApplication _application;
 
         private Observable<string> _searchTerm = new Observable<string>();
-        private ObservableList<SearchResult> _searchResults = new ObservableList<SearchResult>();
 
         public SearchService(CommuterApplication application)
         {
@@ -38,11 +37,29 @@ namespace Commuter.Search
                 }));
         }
 
+        public SearchTerm ActiveSearchTerm => _application.Root?.SearchTerm;
+
+        public SearchResult SelectedSearchResult
+        {
+            get { return _application.Root?.SelectedSearchResult; }
+            set
+            {
+                if (_application.Root != null)
+                    _application.Root.SelectedSearchResult = value;
+            }
+        }
+
         public void ClearSearchResults()
         {
             _searchTerm.Value = null;
-            _searchResults.Clear();
-            _application.Root.SelectedSearchResult = null;
+            if (_application.Root != null)
+                _application.Root.SelectedSearchResult = null;
+        }
+
+        public void ClearSearch()
+        {
+            if (_application.Root != null)
+                _application.Root.ClearSearch();
         }
     }
 }

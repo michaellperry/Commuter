@@ -1,4 +1,5 @@
 ﻿using Commuter.Details;
+using Commuter.Subscriptions;
 using System;
 using System.Collections.Immutable;
 using System.Linq;
@@ -8,22 +9,19 @@ namespace Commuter.Search
 {
     class SearchViewModel
     {
-        private readonly CommuterApplication _application;
         private readonly SearchService _search;
         private readonly PodcastService _podcastService;
-        private readonly Subscriptions.SubscriptionService _subscription;
+        private readonly SubscriptionService _subscription;
         private readonly Func<SearchResult, SearchResultViewModel> _newSearchResultViewModel;
         private readonly Func<Podcast, DetailViewModel> _newDetailViewModel;
-        
+
         public SearchViewModel(
-            CommuterApplication application,
             SearchService search,
             PodcastService podcastService,
-            Subscriptions.SubscriptionService subscription,
+            SubscriptionService subscription,
             Func<SearchResult, SearchResultViewModel> newSearchResultViewModel,
             Func<Podcast, DetailViewModel> newDetailViewModel)
         {
-            _application = application;
             _search = search;
             _podcastService = podcastService;
             _subscription = subscription;
@@ -42,23 +40,23 @@ namespace Commuter.Search
             _search.BeginSearch();
         }
 
-        public string Heading => String.IsNullOrEmpty(_application.Root.SearchTerm?.Text)
+        public string Heading => String.IsNullOrEmpty(_search.ActiveSearchTerm?.Text)
             ? null
-            : $"'{_application.Root.SearchTerm.Text}' Results";
+            : $"'{_search.ActiveSearchTerm.Text}' Results";
 
         public void GoBack()
         {
-            if (_application.Root.SelectedSearchResult != null)
-                _application.Root.SelectedSearchResult = null;
+            if (_search.SelectedSearchResult != null)
+                _search.SelectedSearchResult = null;
             else
-                _application.Root.ClearSearch();
+                _search.ClearSearch();
         }
 
         public ImmutableList<SearchResultViewModel> SearchResults =>
-            _application.Root.SearchTerm == null
+            _search.ActiveSearchTerm == null
                 ? ImmutableList<SearchResultViewModel>.Empty
                 :   (
-                    from searchResult in _application.Root.SearchTerm.SearchResults
+                    from searchResult in _search.ActiveSearchTerm.SearchResults
                     select _newSearchResultViewModel(searchResult)
                     ).ToImmutableList();
 
@@ -66,65 +64,65 @@ namespace Commuter.Search
         {
             get
             {
-                return _application.Root.SelectedSearchResult == null
+                return _search.SelectedSearchResult == null
                     ? null
-                    : _newSearchResultViewModel(_application.Root.SelectedSearchResult);
+                    : _newSearchResultViewModel(_search.SelectedSearchResult);
             }
             set
             {
-                _application.Root.SelectedSearchResult = value == null
+                _search.SelectedSearchResult = value == null
                     ? null
                     : value.SearchResult;
             }
         }
 
         public DetailViewModel SelectedPodcastDetail =>
-            _application.Root.SelectedSearchResult == null
+            _search.SelectedSearchResult == null
                 ? null
                 : _newDetailViewModel(CreatePodcast(
-                    _application.Root.SelectedSearchResult));
+                    _search.SelectedSearchResult));
 
         public bool HasSelectedSearchResult =>
-            _application.Root.SearchTerm != null &&
-            _application.Root.SearchTerm.SearchResults.Any() &&
-            _application.Root.SelectedSearchResult != null;
+            _search.ActiveSearchTerm != null &&
+            _search.ActiveSearchTerm.SearchResults.Any() &&
+            _search.SelectedSearchResult != null;
 
         public bool CanSubscribe =>
-            _application.Root.SelectedSearchResult != null &&
-            !_subscription.IsSubscribed(_application.Root.SelectedSearchResult.FeedUrl);
+            _search.SelectedSearchResult != null &&
+            !_subscription.IsSubscribed(_search.SelectedSearchResult.FeedUrl);
 
         public bool CanUnsubscribe =>
-            _application.Root.SelectedSearchResult != null &&
-            _subscription.IsSubscribed(_application.Root.SelectedSearchResult.FeedUrl);
+            _search.SelectedSearchResult != null &&
+            _subscription.IsSubscribed(_search.SelectedSearchResult.FeedUrl);
 
         public void Subscribe()
         {
-            if (_application.Root.SelectedSearchResult != null)
+            if (_search.SelectedSearchResult != null)
             {
-                _subscription.Subscribe(_application.Root.SelectedSearchResult.FeedUrl);
+                _subscription.Subscribe(_search.SelectedSearchResult.FeedUrl);
                 _subscription.ManagingSubscriptions = true;
             }
         }
 
         public void Unsubscribe()
         {
-            if (_application.Root.SelectedSearchResult != null)
+            if (_search.SelectedSearchResult != null)
             {
-                _subscription.Unsubscribe(_application.Root.SelectedSearchResult.FeedUrl);
+                _subscription.Unsubscribe(_search.SelectedSearchResult.FeedUrl);
             }
         }
 
         public string Message => ResourceLoader.GetForViewIndependentUse().GetString(
-            (_application.Root.SearchTerm == null ||
-             _application.Root.SearchTerm.IsBusy)
+            (_search.ActiveSearchTerm == null ||
+             _search.ActiveSearchTerm.IsBusy)
                 ? "SearchBusy" :
-            _application.Root.SelectedSearchResult == null
+            _search.SelectedSearchResult == null
                 ? "SearchResults"
                 : "SearchDetails");
 
         public bool Busy =>
-            (_application.Root.SearchTerm != null &&
-             _application.Root.SearchTerm.IsBusy) ||
+            (_search.ActiveSearchTerm != null &&
+             _search.ActiveSearchTerm.IsBusy) ||
             _podcastService.Busy;
 
         public string LastException => null;
