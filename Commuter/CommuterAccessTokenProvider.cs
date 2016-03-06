@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
+using Windows.Security.Credentials;
 
 namespace Commuter
 {
@@ -60,52 +61,68 @@ namespace Commuter
 
             try
             {
-                Uri baseUri = new Uri("https://commuterweb.azurewebsites.net", UriKind.Absolute);
-                var externalLoginsUrl = new Uri(baseUri, "/api/account/externalLogins?returnUrl=/LoggedIn&generateState=true").ToString();
-                var providers = await ApiUtility.GetJsonAsync(externalLoginsUrl);
-                var providerUrl = providers
-                    .OfType<JObject>()
-                    .Select(p => p["Url"].Value<string>())
-                    .FirstOrDefault();
-
-                var requestUri = new Uri(baseUri, providerUrl);
-                var callbackUri = new Uri(baseUri, "/LoggedIn");
-
-                var result = await WebAuthenticationBroker.AuthenticateAsync(
-                    WebAuthenticationOptions.None,
-                    requestUri,
-                    callbackUri);
-
-                if (result.ResponseStatus == WebAuthenticationStatus.Success)
+                string resource = "https://commuterweb.azurewebsites.net";
+                PasswordVault vault = new PasswordVault();
+                try
                 {
-                    var parameters = ParseParameters(result.ResponseData);
-                    if (parameters.Any(p => p[0] == "error"))
-                        ReceiveError(GetParameter(parameters, "error_description"));
-                    else
-                    {
-                        string accessToken = GetParameter(parameters, "access_token");
-                        if (string.IsNullOrEmpty(accessToken) == false)
-                            ReceiveAccessToken(accessToken);
-                        else
-                            ReceiveError("No access token provided.");
-                    }
+                    var password = vault.Retrieve(resource, "User").Password;
+                    ReceiveAccessToken(password);
                 }
-                else if (result.ResponseStatus == WebAuthenticationStatus.ErrorHttp)
+                catch (Exception)
                 {
-                    ReceiveError("HTTP Error returned by AuthenticateAsync() : " + result.ResponseErrorDetail.ToString());
-                }
-                else
-                {
-                    ReceiveError("Error returned by AuthenticateAsync() : " + result.ResponseStatus.ToString());
+                    var accessToken = await LogIn(resource);
+                    vault.Add(new PasswordCredential(resource, "User", accessToken));
                 }
             }
             catch (Exception x)
             {
-                ReceiveError(x.Message);
+                ReceiveError(x);
             }
         }
 
-        private void ReceiveAccessToken(string accessToken)
+        private async Task<string> LogIn(string resource)
+        {
+            Uri baseUri = new Uri(resource, UriKind.Absolute);
+            var externalLoginsUrl = new Uri(baseUri, "/api/account/externalLogins?returnUrl=/LoggedIn&generateState=true").ToString();
+            var providers = await ApiUtility.GetJsonAsync(externalLoginsUrl);
+            var providerUrl = providers
+                .OfType<JObject>()
+                .Select(p => p["Url"].Value<string>())
+                .FirstOrDefault();
+
+            var requestUri = new Uri(baseUri, providerUrl);
+            var callbackUri = new Uri(baseUri, "/LoggedIn");
+
+            var result = await WebAuthenticationBroker.AuthenticateAsync(
+                WebAuthenticationOptions.None,
+                requestUri,
+                callbackUri);
+
+            if (result.ResponseStatus == WebAuthenticationStatus.Success)
+            {
+                var parameters = ParseParameters(result.ResponseData);
+                if (parameters.Any(p => p[0] == "error"))
+                    throw new InvalidOperationException(GetParameter(parameters, "error_description"));
+                else
+                {
+                    string accessToken = GetParameter(parameters, "access_token");
+                    if (string.IsNullOrEmpty(accessToken) == false)
+                        return ReceiveAccessToken(accessToken);
+                    else
+                        throw new InvalidOperationException("No access token provided.");
+                }
+            }
+            else if (result.ResponseStatus == WebAuthenticationStatus.ErrorHttp)
+            {
+                throw new InvalidOperationException("HTTP Error returned by AuthenticateAsync() : " + result.ResponseErrorDetail.ToString());
+            }
+            else
+            {
+                throw new InvalidOperationException("Error returned by AuthenticateAsync() : " + result.ResponseStatus.ToString());
+            }
+        }
+
+        private string ReceiveAccessToken(string accessToken)
         {
             _accessToken = accessToken;
             ImmutableList<TaskCompletionSource<string>> completions;
@@ -117,9 +134,11 @@ namespace Commuter
             }
             foreach (var completion in completions)
                 completion.SetResult(_accessToken);
+
+            return accessToken;
         }
 
-        private void ReceiveError(string errorMessage)
+        private void ReceiveError(Exception exception)
         {
             ImmutableList<TaskCompletionSource<string>> completions;
             lock (this)
@@ -128,11 +147,8 @@ namespace Commuter
                 _accessTokenCompletions = ImmutableList<
                     TaskCompletionSource<string>>.Empty;
             }
-            var exception = new InvalidOperationException(errorMessage);
             foreach (var completion in completions)
                 completion.SetException(exception);
-
-            throw exception;
         }
 
         private static string[][] ParseParameters(string responseUrl)
