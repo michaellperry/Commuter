@@ -68,7 +68,7 @@ namespace Commuter.Subscriptions
                     .FirstOrDefault(s => s.FeedUrl == feedUrl);
                 _application.EmitMessage(Message.CreateMessage(
                     _application.Root.GetObjectId().ToCanonicalString(),
-                    "Ubsubscribe",
+                    "Unsubscribe",
                     Predecessors.Set
                         .In("Subscription", subscription.Hash),
                     _application.Root.GetObjectId(),
