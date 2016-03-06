@@ -5,6 +5,7 @@ using RoverMob;
 using RoverMob.Messaging;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +17,7 @@ namespace Commuter.Subscriptions
 
         private Observable<SearchTerm> _searchTerm = new Observable<SearchTerm>();
         private Observable<SearchResult> _selectedSearchResult = new Observable<SearchResult>();
+        private SuccessorCollection<Subscription> _subscriptions;
 
         private static MessageDispatcher<User> _dispatcher = new MessageDispatcher<User>()
             .On("Search", (u, m) => u.HandleSearch(m));
@@ -23,6 +25,11 @@ namespace Commuter.Subscriptions
         public User(Guid userId)
         {
             _userId = userId;
+            _subscriptions = new SuccessorCollection<Subscription>(
+                "Subscribe",
+                CreateSubscription,
+                "Unsubscribe",
+                "Subscription");
         }
 
         public SearchTerm SearchTerm => _searchTerm.Value;
@@ -38,6 +45,9 @@ namespace Commuter.Subscriptions
             _searchTerm.Value = null;
         }
 
+        public ImmutableList<Subscription> Subscriptions =>
+            _subscriptions.Items.ToImmutableList();
+
         public IEnumerable<IMessageHandler> Children =>
             new IMessageHandler[] { SearchTerm }
                 .Where(s => s != null);
@@ -49,11 +59,13 @@ namespace Commuter.Subscriptions
 
         public void HandleAllMessages(IEnumerable<Message> messages)
         {
+            _subscriptions.HandleAllMessages(messages);
         }
 
         public void HandleMessage(Message message)
         {
             _dispatcher.Dispatch(this, message);
+            _subscriptions.HandleMessage(message);
         }
 
         private void HandleSearch(Message message)
@@ -62,6 +74,14 @@ namespace Commuter.Subscriptions
             var searchTermId = new { Text = searchTerm }.ToGuid();
             _searchTerm.Value = new SearchTerm(
                 searchTermId, searchTerm);
+        }
+
+        public Subscription CreateSubscription(Message message)
+        {
+            string feedUrl = message.Body.FeedUrl;
+            return new Subscription(
+                new Uri(feedUrl, UriKind.Absolute),
+                message.Hash);
         }
     }
 }

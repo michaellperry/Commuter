@@ -1,17 +1,21 @@
 ﻿using System;
+using RoverMob.Messaging;
 
 namespace Commuter.Subscriptions
 {
-    class Subscription
+    public class Subscription
     {
         private readonly Uri _feedUrl;
+        private readonly MessageHash _hash;
 
-        public Subscription(Uri feedUrl)
+        public Subscription(Uri feedUrl, MessageHash hash)
         {
             _feedUrl = feedUrl;
+            _hash = hash;
         }
 
         public Uri FeedUrl => _feedUrl;
+        public MessageHash Hash => _hash;
 
         public override bool Equals(object obj)
         {

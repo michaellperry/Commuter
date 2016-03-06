@@ -1,20 +1,28 @@
 ﻿using Assisticant.Collections;
 using Assisticant.Fields;
+using RoverMob;
+using RoverMob.Messaging;
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Commuter.Subscriptions
 {
     class SubscriptionService
     {
-        private ObservableList<Subscription> _subscriptions = new ObservableList<Subscription>();
+        private readonly CommuterApplication _application;
+
         private Observable<bool> _managingSubscriptions = new Observable<bool>();
         private Observable<Subscription> _selectedSubscription = new Observable<Subscription>();
 
-        public ImmutableList<Subscription> Subscriptions
+        public SubscriptionService(CommuterApplication application)
         {
-            get { return _subscriptions.ToImmutableList(); }
+            _application = application;
         }
+
+        public ImmutableList<Subscription> Subscriptions =>
+            _application.Root?.Subscriptions ??
+            ImmutableList<Subscription>.Empty;
 
         public bool ManagingSubscriptions
         {
@@ -30,17 +38,38 @@ namespace Commuter.Subscriptions
 
         public bool IsSubscribed(Uri feedUrl)
         {
-            return _subscriptions.Contains(new Subscription(feedUrl));
+            return Subscriptions.Any(s => s.FeedUrl == feedUrl);
         }
 
         public void Subscribe(Uri feedUrl)
         {
-            _subscriptions.Add(new Subscription(feedUrl));
+            if (_application.Root != null)
+            {
+                _application.EmitMessage(Message.CreateMessage(
+                    _application.Root.GetObjectId().ToCanonicalString(),
+                    "Subscribe",
+                    _application.Root.GetObjectId(),
+                    new
+                    {
+                        FeedUrl = feedUrl.ToString()
+                    }));
+            }
         }
 
         public void Unsubscribe(Uri feedUrl)
         {
-            _subscriptions.Remove(new Subscription(feedUrl));
+            if (_application.Root != null)
+            {
+                var subscription = _application.Root.Subscriptions
+                    .FirstOrDefault(s => s.FeedUrl == feedUrl);
+                _application.EmitMessage(Message.CreateMessage(
+                    _application.Root.GetObjectId().ToCanonicalString(),
+                    "Ubsubscribe",
+                    Predecessors.Set
+                        .In("Subscription", subscription.Hash),
+                    _application.Root.GetObjectId(),
+                    new { }));
+            }
         }
     }
 }
