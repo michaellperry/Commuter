@@ -72,7 +72,8 @@ namespace Commuter.Details
             using (JsonReader reader = new JsonTextReader(new StreamReader(inputStream)))
             {
                 var episodeList = _serializer.Deserialize<List<Episode>>(reader);
-                return episodeList.ToImmutableList();
+                return episodeList?.ToImmutableList() ??
+                    ImmutableList<Episode>.Empty;
             }
         }
 
