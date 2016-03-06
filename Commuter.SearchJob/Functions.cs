@@ -18,7 +18,7 @@ namespace Commuter.SearchJob
     public class Functions
     {
         public static void ProcessQueueMessage(
-            [ServiceBusTrigger("commutermessages")] MessageMemento messageMemento,
+            [ServiceBusTrigger("searchmessages")] MessageMemento messageMemento,
             TextWriter log)
         {
             log.WriteLine($"Received message of type {messageMemento.MessageType}");

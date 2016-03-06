@@ -50,7 +50,7 @@ namespace Commuter.SearchJob
                     };
                 }
             }
-            catch (Exception x)
+            catch (Exception)
             {
                 return null;
             }

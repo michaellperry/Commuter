@@ -1,13 +1,19 @@
-﻿using Microsoft.Azure.WebJobs;
+﻿using Commuter.FeedJob.Entities;
+using Commuter.FeedJob.Migrations;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.ServiceBus;
+using System.Data.Entity;
 
-namespace Commuter.SearchJob
+namespace Commuter.FeedJob
 {
-    public class Program
+    class Program
     {
-        public static void Main()
+        static void Main()
         {
+            Database.SetInitializer(
+                new MigrateDatabaseToLatestVersion<CommuterDbContext, Configuration>());
+
             var config = new JobHostConfiguration();
             var serviceBusConfig = new ServiceBusConfiguration()
             {

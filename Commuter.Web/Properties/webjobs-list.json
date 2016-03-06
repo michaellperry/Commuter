@@ -3,6 +3,9 @@
   "WebJobs": [
     {
       "filePath": "../Commuter.SearchJob/Commuter.SearchJob.csproj"
+    },
+    {
+      "filePath": "../Commuter.FeedJob/Commuter.FeedJob.csproj"
     }
   ]
 }

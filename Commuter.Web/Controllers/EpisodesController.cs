@@ -37,7 +37,7 @@ namespace Commuter.Web.Controllers
             using (var reader = XmlReader.Create(stream))
             {
                 var feed = SyndicationFeed.Load(reader);
-                    
+
                 var episodes = feed.Items
                     .Select(i => new Episode
                     {
