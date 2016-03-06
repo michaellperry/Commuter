@@ -66,9 +66,14 @@ namespace Commuter.Subscriptions
 
         public void Subscribe()
         {
-            if (_subscription.SelectedSubscription != null)
+            Subscription subscription = _subscription.SelectedSubscription;
+            if (subscription != null)
             {
-                _subscription.Subscribe(_subscription.SelectedSubscription.FeedUrl);
+                _subscription.Subscribe(
+                    subscription.FeedUrl,
+                    subscription.ImageUri,
+                    subscription.Title,
+                    subscription.Author);
             }
         }
 

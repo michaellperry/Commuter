@@ -16,9 +16,9 @@
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
         <Border Margin="4,4,0,0" BorderBrush="Gray" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="52">
-            <Image Source="http://assets.libsyn.com/content/7569532"/>
+            <Image Source="{Binding ImageUri}"/>
         </Border>
-        <TextBlock Grid.Column="1" Margin="4" Text="Q.E.D. Code" Style="{StaticResource BodyTextBlockStyle}"/>
-        <TextBlock Grid.Column="2" Margin="4" Text="Michael L Perry" Style="{StaticResource CaptionTextBlockStyle}"/>
+        <TextBlock Grid.Column="1" Margin="4" Text="{Binding Title}" Style="{StaticResource BodyTextBlockStyle}"/>
+        <TextBlock Grid.Column="2" Margin="4" Text="{Binding Author}" Style="{StaticResource CaptionTextBlockStyle}"/>
     </Grid>
 </UserControl>

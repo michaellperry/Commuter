@@ -79,8 +79,14 @@ namespace Commuter.Subscriptions
         public Subscription CreateSubscription(Message message)
         {
             string feedUrl = message.Body.FeedUrl;
+            string imageUri = message.Body.ImageUri;
+            string title = message.Body.Title;
+            string author = message.Body.Author;
             return new Subscription(
                 new Uri(feedUrl, UriKind.Absolute),
+                new Uri(imageUri, UriKind.Absolute),
+                title,
+                author,
                 message.Hash);
         }
     }

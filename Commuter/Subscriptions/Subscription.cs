@@ -5,17 +5,25 @@ namespace Commuter.Subscriptions
 {
     public class Subscription
     {
-        private readonly Uri _feedUrl;
-        private readonly MessageHash _hash;
-
-        public Subscription(Uri feedUrl, MessageHash hash)
+        public Subscription(
+            Uri feedUrl,
+            Uri imageUri,
+            string title,
+            string author,
+            MessageHash hash)
         {
-            _feedUrl = feedUrl;
-            _hash = hash;
+            FeedUrl = feedUrl;
+            ImageUri = imageUri;
+            Title = title;
+            Author = author;
+            Hash = hash;
         }
 
-        public Uri FeedUrl => _feedUrl;
-        public MessageHash Hash => _hash;
+        public Uri FeedUrl { get; }
+        public Uri ImageUri { get; }
+        public string Title { get; }
+        public string Author { get; }
+        public MessageHash Hash { get; }
 
         public override bool Equals(object obj)
         {
@@ -25,12 +33,12 @@ namespace Commuter.Subscriptions
             }
 
             var that = (Subscription)obj;
-            return this._feedUrl.Equals(that._feedUrl);
+            return this.FeedUrl.Equals(that.FeedUrl);
         }
 
         public override int GetHashCode()
         {
-            return _feedUrl.GetHashCode();
+            return FeedUrl.GetHashCode();
         }
     }
 }

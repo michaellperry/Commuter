@@ -97,9 +97,14 @@ namespace Commuter.Search
 
         public void Subscribe()
         {
-            if (_search.SelectedSearchResult != null)
+            SearchResult searchResult = _search.SelectedSearchResult;
+            if (searchResult != null)
             {
-                _subscription.Subscribe(_search.SelectedSearchResult.FeedUrl);
+                _subscription.Subscribe(
+                    searchResult.FeedUrl,
+                    searchResult.ImageUri,
+                    searchResult.Title,
+                    searchResult.Author);
                 _subscription.ManagingSubscriptions = true;
             }
         }
