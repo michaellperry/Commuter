@@ -11,9 +11,6 @@ namespace Commuter.FeedJob
     {
         static void Main()
         {
-            Database.SetInitializer(
-                new MigrateDatabaseToLatestVersion<CommuterDbContext, Configuration>());
-
             var config = new JobHostConfiguration();
             var serviceBusConfig = new ServiceBusConfiguration()
             {

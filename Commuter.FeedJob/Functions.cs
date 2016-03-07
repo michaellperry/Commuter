@@ -39,6 +39,11 @@ namespace Commuter.FeedJob
                     {
                         FeedUrl = feedUrl
                     });
+                    log.WriteLine($"Adding new podcast {feedUrl}.");
+                }
+                else
+                {
+                    log.WriteLine($"Adding subscription for existing podcast {feedUrl}.");
                 }
 
                 context.Subscriptions.Add(new Subscription
@@ -61,8 +66,10 @@ namespace Commuter.FeedJob
             using (var context = new CommuterDbContext())
             {
                 var predecessors = context.Subscriptions
-                    .Where(s => hashes.Contains(s.Hash));
+                    .Where(s => hashes.Contains(s.Hash))
+                    .ToList();
                 context.Subscriptions.RemoveRange(predecessors);
+                log.WriteLine($"Removing {predecessors.Count} podcast subscriptions");
 
                 context.SaveChanges();
             }
