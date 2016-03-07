@@ -140,6 +140,10 @@
     <Compile Include="Migrations\201603070021496_AddedSubscriptionPodcastAndEpisode.Designer.cs">
       <DependentUpon>201603070021496_AddedSubscriptionPodcastAndEpisode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603070224177_AddedHashToSubscription.cs" />
+    <Compile Include="Migrations\201603070224177_AddedHashToSubscription.Designer.cs">
+      <DependentUpon>201603070224177_AddedHashToSubscription.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Functions.cs" />
@@ -154,8 +158,12 @@
     <EmbeddedResource Include="Migrations\201603070021496_AddedSubscriptionPodcastAndEpisode.resx">
       <DependentUpon>201603070021496_AddedSubscriptionPodcastAndEpisode.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603070224177_AddedHashToSubscription.resx">
+      <DependentUpon>201603070224177_AddedHashToSubscription.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Web.WebJobs.Publish.1.0.10\tools\webjobs.targets" Condition="Exists('..\packages\Microsoft.Web.WebJobs.Publish.1.0.10\tools\webjobs.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

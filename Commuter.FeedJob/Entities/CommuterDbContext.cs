@@ -11,11 +11,17 @@ namespace Commuter.FeedJob.Entities
 
         }
 
+        public virtual DbSet<Podcast> Podcasts { get; set; }
+        public virtual DbSet<Subscription> Subscriptions { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
-            modelBuilder.Entity<Subscription>();
+            modelBuilder.Entity<Subscription>()
+                .Property(x => x.Hash)
+                .IsRequired()
+                .HasMaxLength(45);
 
             modelBuilder.Entity<Podcast>()
                 .Property(x => x.FeedUrl)

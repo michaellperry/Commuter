@@ -6,6 +6,7 @@ namespace Commuter.FeedJob.Entities
     {
         public int SubscriptionId { get; set; }
 
+        public string Hash { get; set; }
         public Guid UserGuid { get; set; }
         public int StartAtEpisodeId { get; set; }
 
