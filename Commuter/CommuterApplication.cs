@@ -56,7 +56,7 @@ namespace Commuter
                 secrets.NotificationHubPath,
                 secrets.NotificationHubConnectionString);
             var accessTokenProvider = new WebAuthenticationBrokerAccessTokenProvider(
-                "https://commuterweb.azurewebsites.net/",
+                "https://commuterweb.azurewebsites.net",
                 "User",
                 "/LoggedIn");
             var pump = new HttpMessagePump(
