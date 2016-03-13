@@ -2,9 +2,11 @@
 using System.Web.Configuration;
 using RoverMob.Distributor.Dispatchers;
 using RoverMob.Distributor.Filters;
+using System.Web.Http;
 
 namespace Commuter.Web.Controllers
 {
+    [Authorize]
     public class DistributorController : RoverMob.Distributor.Controllers.DistributorController
     {
         protected DistributorController() : base(

@@ -41,6 +41,16 @@ namespace Commuter
         public void RefreshAccessToken()
         {
             _accessToken = null;
+            string resource = "https://commuterweb.azurewebsites.net";
+            PasswordVault vault = new PasswordVault();
+            try
+            {
+                var password = vault.Retrieve(resource, "User");
+                vault.Remove(password);
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void Authenticate()
