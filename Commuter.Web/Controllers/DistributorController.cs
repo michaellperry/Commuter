@@ -7,8 +7,6 @@ using Microsoft.AspNet.Identity;
 
 namespace Commuter.Web.Controllers
 {
-    [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-    [Authorize]
     public class DistributorController : RoverMob.Distributor.Controllers.DistributorController
     {
         protected DistributorController() : base(
