@@ -55,7 +55,10 @@ namespace Commuter
             var push = new PushNotificationSubscription(
                 secrets.NotificationHubPath,
                 secrets.NotificationHubConnectionString);
-            var accessTokenProvider = new CommuterAccessTokenProvider();
+            var accessTokenProvider = new WebAuthenticationBrokerAccessTokenProvider(
+                "https://commuterweb.azurewebsites.net/",
+                "User",
+                "/LoggedIn");
             var pump = new HttpMessagePump(
                 new Uri(secrets.DistributorUrl, UriKind.Absolute),
                 queue,
