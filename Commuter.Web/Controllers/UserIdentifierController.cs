@@ -1,8 +1,10 @@
-﻿using System.Web.Configuration;
+﻿using Microsoft.AspNet.Identity;
+using System.Web.Configuration;
 using System.Web.Http;
 
 namespace Commuter.Web.Controllers
 {
+    [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
     [Authorize]
     public class UserIdentifierController : RoverMob.Distributor.Controllers.UserIdentifierController
     {
