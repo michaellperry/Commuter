@@ -1,8 +1,10 @@
 ﻿using Commuter.FeedJob.Entities;
+using Commuter.PodcastFeed;
 using Microsoft.Azure.WebJobs;
 using RoverMob.Messaging;
 using RoverMob.Protocol;
 using System;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +23,11 @@ namespace Commuter.FeedJob
                 HandleSubscribe(Message.FromMemento(messageMemento), log);
             if (messageMemento.MessageType == "Unsubscribe")
                 HandleUnsubscribe(Message.FromMemento(messageMemento), log);
+        }
+
+        public static void CheckPodcastFeedsNow()
+        {
+            CheckFeeds().Wait();
         }
 
         private static void HandleSubscribe(Message message, TextWriter log)
@@ -72,6 +79,60 @@ namespace Commuter.FeedJob
                 log.WriteLine($"Removing {predecessors.Count} podcast subscriptions");
 
                 context.SaveChanges();
+            }
+        }
+
+        private static async Task CheckFeeds()
+        {
+            var yesterday = DateTime.UtcNow.AddDays(-1.0);
+            var halfHourAgo = DateTime.UtcNow.AddHours(-0.5);
+
+            using (var context = new CommuterDbContext())
+            {
+                var podcastsToCheck = context.Podcasts
+                    .Include("Episodes")
+                    .Where(p => context.Subscriptions.Any(s => s.Podcast == p))
+                    .Where(p => p.LastUpdateDateTime == null || p.LastUpdateDateTime < yesterday)
+                    .Where(p => p.LastAttemptDateTime == null || p.LastAttemptDateTime < halfHourAgo)
+                    .Distinct()
+                    .ToImmutableList();
+
+                await Task.WhenAll(podcastsToCheck
+                    .Select(p => CheckFeed(p)));
+
+                context.SaveChanges();
+            }
+        }
+
+        private static async Task CheckFeed(Podcast podcast)
+        {
+            var now = DateTime.UtcNow;
+            try
+            {
+                podcast.LastAttemptDateTime = now;
+                var result = await PodcastFunctions.TryLoadAsync(
+                    new Uri(podcast.FeedUrl, UriKind.Absolute));
+
+                var newEpisodes = result.Episodes
+                    .Where(e1 => !podcast.Episodes
+                        .Any(e2 => e1.MediaUrl == e2.MediaUrl))
+                    .ToImmutableList();
+                foreach (var episode in newEpisodes)
+                {
+                    podcast.Episodes.Add(new Entities.Episode
+                    {
+                        Title = episode.Title,
+                        Summary = episode.Summary,
+                        PublishDate = episode.PublishDate,
+                        MediaUrl = episode.MediaUrl
+                    });
+                }
+                podcast.LastUpdateDateTime = now;
+            }
+            catch (Exception x)
+            {
+                Console.WriteLine(x.Message);
+                // TODO: Publish the error so that someone can verify the podcast URL.
             }
         }
     }

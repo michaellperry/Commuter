@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Commuter.DigitalPodcast;
+using Microsoft.Azure.WebJobs;
+using RoverMob;
+using RoverMob.Messaging;
+using RoverMob.Protocol;
+using System;
+using System.Collections.Immutable;
+using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.ServiceBus.Messaging;
-using RoverMob.Protocol;
-using RoverMob.Messaging;
-using System.Configuration;
-using System.Collections.Immutable;
-using Commuter.DigitalPodcast;
-using RoverMob;
 
 namespace Commuter.SearchJob
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 
-namespace Commuter.Web.Models
+namespace Commuter.PodcastFeed
 {
     public class EpisodeList
     {

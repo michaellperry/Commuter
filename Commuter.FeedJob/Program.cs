@@ -11,16 +11,17 @@ namespace Commuter.FeedJob
     {
         static void Main()
         {
-            var config = new JobHostConfiguration();
-            var serviceBusConfig = new ServiceBusConfiguration()
-            {
-                ConnectionString = AmbientConnectionStringProvider
-                    .Instance
-                    .GetConnectionString(ConnectionStringNames.ServiceBus)
-            };
-            config.UseServiceBus(serviceBusConfig);
-            var host = new JobHost(config);
-            host.RunAndBlock();
+            //var config = new JobHostConfiguration();
+            //var serviceBusConfig = new ServiceBusConfiguration()
+            //{
+            //    ConnectionString = AmbientConnectionStringProvider
+            //        .Instance
+            //        .GetConnectionString(ConnectionStringNames.ServiceBus)
+            //};
+            //config.UseServiceBus(serviceBusConfig);
+            //var host = new JobHost(config);
+            //host.RunAndBlock();
+            Functions.CheckPodcastFeedsNow();
         }
     }
 }
