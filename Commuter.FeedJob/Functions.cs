@@ -1,10 +1,12 @@
 ﻿using Commuter.FeedJob.Entities;
 using Commuter.PodcastFeed;
 using Microsoft.Azure.WebJobs;
+using RoverMob;
 using RoverMob.Messaging;
 using RoverMob.Protocol;
 using System;
 using System.Collections.Immutable;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -92,19 +94,28 @@ namespace Commuter.FeedJob
                 var podcastsToCheck = context.Podcasts
                     .Include("Episodes")
                     .Where(p => context.Subscriptions.Any(s => s.Podcast == p))
-                    .Where(p => p.LastUpdateDateTime == null || p.LastUpdateDateTime < yesterday)
-                    .Where(p => p.LastAttemptDateTime == null || p.LastAttemptDateTime < halfHourAgo)
+                    .Where(p =>
+                        p.LastUpdateDateTime == null ||
+                        p.LastUpdateDateTime < yesterday)
+                    .Where(p =>
+                        p.LastAttemptDateTime == null ||
+                        p.LastAttemptDateTime < halfHourAgo)
                     .Distinct()
                     .ToImmutableList();
 
-                await Task.WhenAll(podcastsToCheck
+                var messages = await Task.WhenAll(podcastsToCheck
                     .Select(p => CheckFeed(p)));
+
+                var pump = GetMessagePump();
+                pump.SendAllMessages(messages
+                    .SelectMany(m => m)
+                    .ToImmutableList());
 
                 context.SaveChanges();
             }
         }
 
-        private static async Task CheckFeed(Podcast podcast)
+        private static async Task<ImmutableList<Message>> CheckFeed(Podcast podcast)
         {
             var now = DateTime.UtcNow;
             try
@@ -128,12 +139,41 @@ namespace Commuter.FeedJob
                     });
                 }
                 podcast.LastUpdateDateTime = now;
+
+                Guid podcastGuid = new { FeedUrl = podcast.FeedUrl }.ToGuid();
+                return newEpisodes
+                    .Select(episode => Message.CreateMessage(
+                        podcastGuid.ToCanonicalString(),
+                        "Episode",
+                        podcastGuid,
+                        new
+                        {
+                            Title = episode.Title,
+                            Summary = episode.Summary,
+                            PublishDate = episode.PublishDate,
+                            MediaUrl = episode.MediaUrl
+                        }))
+                    .ToImmutableList();
             }
-            catch (Exception x)
+            catch (Exception)
             {
-                Console.WriteLine(x.Message);
                 // TODO: Publish the error so that someone can verify the podcast URL.
+                return ImmutableList<Message>.Empty;
             }
+        }
+
+        private static HttpMessagePump GetMessagePump()
+        {
+            Uri distributorUrl = new Uri(
+                ConfigurationManager.AppSettings["DistributorUrl"],
+                UriKind.Absolute);
+            var messageQueue = new NoOpMessageQueue();
+            var bookmarkStore = new NoOpBookmarkStore();
+            var pump = new HttpMessagePump(
+                distributorUrl,
+                messageQueue,
+                bookmarkStore);
+            return pump;
         }
     }
 }
