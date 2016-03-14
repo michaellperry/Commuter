@@ -27,9 +27,11 @@ namespace Commuter.FeedJob
                 HandleUnsubscribe(Message.FromMemento(messageMemento), log);
         }
 
-        public static void CheckPodcastFeedsNow()
+        public static void CheckPodcastFeedsOnTimer(
+            [TimerTrigger("0 */5 * * * *")] TimerInfo timer,
+            TextWriter log)
         {
-            CheckFeeds().Wait();
+            CheckFeeds(log).Wait();
         }
 
         private static void HandleSubscribe(Message message, TextWriter log)
@@ -64,6 +66,8 @@ namespace Commuter.FeedJob
 
                 context.SaveChanges();
             }
+
+            CheckFeeds(log).Wait();
         }
 
         private static void HandleUnsubscribe(Message message, TextWriter log)
@@ -82,9 +86,11 @@ namespace Commuter.FeedJob
 
                 context.SaveChanges();
             }
+
+            CheckFeeds(log).Wait();
         }
 
-        private static async Task CheckFeeds()
+        private static async Task CheckFeeds(TextWriter log)
         {
             var yesterday = DateTime.UtcNow.AddDays(-1.0);
             var halfHourAgo = DateTime.UtcNow.AddHours(-0.5);
@@ -104,7 +110,7 @@ namespace Commuter.FeedJob
                     .ToImmutableList();
 
                 var messages = await Task.WhenAll(podcastsToCheck
-                    .Select(p => CheckFeed(p)));
+                    .Select(p => CheckFeed(p, log)));
 
                 var pump = GetMessagePump();
                 pump.SendAllMessages(messages
@@ -115,7 +121,7 @@ namespace Commuter.FeedJob
             }
         }
 
-        private static async Task<ImmutableList<Message>> CheckFeed(Podcast podcast)
+        private static async Task<ImmutableList<Message>> CheckFeed(Podcast podcast, TextWriter log)
         {
             var now = DateTime.UtcNow;
             try
@@ -137,6 +143,7 @@ namespace Commuter.FeedJob
                         PublishDate = episode.PublishDate,
                         MediaUrl = episode.MediaUrl
                     });
+                    log.WriteLine($"Found podcast episode \"{episode.Title}\".");
                 }
                 podcast.LastUpdateDateTime = now;
 

@@ -1,9 +1,6 @@
-﻿using Commuter.FeedJob.Entities;
-using Commuter.FeedJob.Migrations;
-using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.ServiceBus;
-using System.Data.Entity;
 
 namespace Commuter.FeedJob
 {
@@ -11,17 +8,16 @@ namespace Commuter.FeedJob
     {
         static void Main()
         {
-            //var config = new JobHostConfiguration();
-            //var serviceBusConfig = new ServiceBusConfiguration()
-            //{
-            //    ConnectionString = AmbientConnectionStringProvider
-            //        .Instance
-            //        .GetConnectionString(ConnectionStringNames.ServiceBus)
-            //};
-            //config.UseServiceBus(serviceBusConfig);
-            //var host = new JobHost(config);
-            //host.RunAndBlock();
-            Functions.CheckPodcastFeedsNow();
+            var config = new JobHostConfiguration();
+            var serviceBusConfig = new ServiceBusConfiguration()
+            {
+                ConnectionString = AmbientConnectionStringProvider
+                    .Instance
+                    .GetConnectionString(ConnectionStringNames.ServiceBus)
+            };
+            config.UseServiceBus(serviceBusConfig);
+            var host = new JobHost(config);
+            host.RunAndBlock();
         }
     }
 }
