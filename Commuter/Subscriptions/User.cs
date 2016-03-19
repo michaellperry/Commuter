@@ -50,7 +50,8 @@ namespace Commuter.Subscriptions
 
         public IEnumerable<IMessageHandler> Children =>
             new IMessageHandler[] { SearchTerm }
-                .Where(s => s != null);
+                .Where(s => s != null)
+                .Concat(_subscriptions.Items);
 
         public Guid GetObjectId()
         {

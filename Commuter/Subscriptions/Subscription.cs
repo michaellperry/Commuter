@@ -62,7 +62,8 @@ namespace Commuter.Subscriptions
 
         public Guid GetObjectId()
         {
-            return new { FeedUrl = FeedUrl }.ToGuid();
+            var podcastId = new { FeedUrl = FeedUrl }.ToGuid();
+            return podcastId;
         }
 
         public void HandleMessage(Message message)
