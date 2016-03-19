@@ -1,6 +1,8 @@
 ﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.ServiceBus;
+using System;
+using System.IO;
 
 namespace Commuter.FeedJob
 {

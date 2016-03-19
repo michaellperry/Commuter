@@ -99,14 +99,14 @@ namespace Commuter.FeedJob
             {
                 var podcastsToCheck = context.Podcasts
                     .Include("Episodes")
-                    .Where(p => context.Subscriptions.Any(s => s.Podcast == p))
+                    .Where(p => context.Subscriptions.Any(
+                        s => s.Podcast == p))
                     .Where(p =>
                         p.LastUpdateDateTime == null ||
                         p.LastUpdateDateTime < yesterday)
                     .Where(p =>
                         p.LastAttemptDateTime == null ||
                         p.LastAttemptDateTime < halfHourAgo)
-                    .Distinct()
                     .ToImmutableList();
 
                 var messages = await Task.WhenAll(podcastsToCheck
@@ -117,11 +117,24 @@ namespace Commuter.FeedJob
                     .SelectMany(m => m)
                     .ToImmutableList());
 
-                context.SaveChanges();
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch (System.Data.Entity.Validation.DbEntityValidationException x)
+                {
+                    var errors = x.EntityValidationErrors
+                        .SelectMany(e => e.ValidationErrors)
+                        .Select(e => $"Error in {e.PropertyName}: {e.ErrorMessage}")
+                        .ToArray();
+                    throw new InvalidOperationException(
+                        string.Join("; ", errors));
+                }
             }
         }
 
-        private static async Task<ImmutableList<Message>> CheckFeed(Podcast podcast, TextWriter log)
+        private static async Task<ImmutableList<Message>> CheckFeed(
+            Podcast podcast, TextWriter log)
         {
             var now = DateTime.UtcNow;
             try
@@ -138,14 +151,15 @@ namespace Commuter.FeedJob
                 {
                     podcast.Episodes.Add(new Entities.Episode
                     {
-                        Title = episode.Title,
+                        Title = episode.Title.MaxLength(50),
                         Summary = episode.Summary,
                         PublishDate = episode.PublishDate,
                         MediaUrl = episode.MediaUrl
                     });
-                    log.WriteLine($"Found podcast episode \"{episode.Title}\".");
                 }
                 podcast.LastUpdateDateTime = now;
+
+                log.WriteLine($"Found {newEpisodes.Count} new episodes in {podcast.FeedUrl}.");
 
                 Guid podcastGuid = new { FeedUrl = podcast.FeedUrl }.ToGuid();
                 return newEpisodes
@@ -181,6 +195,16 @@ namespace Commuter.FeedJob
                 messageQueue,
                 bookmarkStore);
             return pump;
+        }
+    }
+
+    public static class StringExtensions
+    {
+        public static string MaxLength(this string str, int length)
+        {
+            if (str == null || str.Length <= length)
+                return str;
+            return str.Substring(0, length);
         }
     }
 }
