@@ -2,6 +2,7 @@ using Commuter.Subscriptions;
 using RoverMob;
 using RoverMob.Messaging;
 using System;
+using System.Linq;
 using System.Threading;
 
 namespace Commuter
@@ -77,6 +78,8 @@ namespace Commuter
 
             pump.Subscribe(() => application.Root
                 ?.SearchTerm?.GetObjectId().ToCanonicalString());
+            pump.Subscribe(() => application.Root
+                ?.Subscriptions.Select(s => s.GetObjectId().ToCanonicalString()));
 
             return application;
         }
