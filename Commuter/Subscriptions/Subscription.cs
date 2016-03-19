@@ -5,12 +5,14 @@ using RoverMob.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Commuter.Subscriptions
 {
     public class Subscription : IMessageHandler
     {
-        private static MessageDispatcher<Subscription> _dispatcher = new MessageDispatcher<Subscription>()
+        private static MessageDispatcher<Subscription> _dispatcher =
+            new MessageDispatcher<Subscription>()
             .On("Episode", (s, m) => s.HandleEpisode(m));
 
         private ObservableList<Episode> _episodes = new ObservableList<Episode>();
@@ -41,6 +43,9 @@ namespace Commuter.Subscriptions
         public ImmutableList<Episode> Episodes =>
             _episodes.ToImmutableList();
 
+        public IEnumerable<IMessageHandler> Children =>
+            ImmutableList<IMessageHandler>.Empty;
+
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())
@@ -57,13 +62,9 @@ namespace Commuter.Subscriptions
             return FeedUrl.GetHashCode();
         }
 
-        public IEnumerable<IMessageHandler> Children =>
-            ImmutableList<IMessageHandler>.Empty;
-
         public Guid GetObjectId()
         {
-            var podcastId = new { FeedUrl = FeedUrl }.ToGuid();
-            return podcastId;
+            return new { FeedUrl = FeedUrl }.ToGuid();
         }
 
         public void HandleMessage(Message message)
@@ -79,13 +80,15 @@ namespace Commuter.Subscriptions
 
         public void HandleEpisode(Message message)
         {
-            _episodes.Add(new Episode
-            {
-                Title = message.Body.Title,
-                Summary = message.Body.Summary,
-                PublishDate = message.Body.PublishDate,
-                MediaUrl = new Uri(message.Body.MediaUrl, UriKind.Absolute)
-            });
+            if (!_episodes.Any(e => e.Hash == message.Hash))
+                _episodes.Add(new Episode
+                {
+                    Title = message.Body.Title,
+                    Summary = message.Body.Summary,
+                    PublishDate = message.Body.PublishDate,
+                    MediaUrl = new Uri(message.Body.MediaUrl, UriKind.Absolute),
+                    Hash = message.Hash
+                });
         }
     }
 }
