@@ -14,6 +14,21 @@ namespace Commuter.FeedJob
         {
             using (var context = new CommuterDbContext())
             {
+                await context.Database.ExecuteSqlCommandAsync(@"
+                    update Subscription
+                    set StartAtEpisodeId = last.EpisodeId
+                    from Subscription
+                    join (
+                      select s.SubscriptionId, max(e.EpisodeId) EpisodeId
+                      from Subscription s
+                      join Episode e
+                        on e.PodcastId = s.PodcastId
+                      where s.StartAtEpisodeId = 0
+                      group by s.SubscriptionId
+                    ) last
+                      on Subscription.SubscriptionId = last.SubscriptionId
+                    ");
+
                 var episodesToQueue = (
                     from s in context.Subscriptions
                     where s.StartAtEpisodeId > 0
