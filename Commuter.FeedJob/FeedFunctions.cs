@@ -38,7 +38,7 @@ namespace Commuter.FeedJob
                     .SelectMany(m => m)
                     .ToImmutableList());
                 await pump.JoinAsync();
-                if (pump.Exception == null)
+                if (pump.Exception != null)
                     throw pump.Exception;
 
                 context.ValidateAndSaveChanges();

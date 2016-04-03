@@ -56,7 +56,7 @@ namespace Commuter.FeedJob
                     QueueMessage(e.Subscription, e.Episode))
                     .ToImmutableList());
                 await pump.JoinAsync();
-                if (pump.Exception == null)
+                if (pump.Exception != null)
                     throw pump.Exception;
 
                 log.WriteLine($"Sent {episodesToQueue.Count} messages.");
