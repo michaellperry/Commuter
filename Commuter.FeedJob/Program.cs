@@ -18,6 +18,7 @@ namespace Commuter.FeedJob
                     .GetConnectionString(ConnectionStringNames.ServiceBus)
             };
             config.UseServiceBus(serviceBusConfig);
+            config.UseTimers();
             var host = new JobHost(config);
             host.RunAndBlock();
         }
