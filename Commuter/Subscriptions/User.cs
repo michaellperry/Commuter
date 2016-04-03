@@ -50,13 +50,19 @@ namespace Commuter.Subscriptions
             _searchTerm.Value = null;
         }
 
-        public ImmutableList<Subscription> Subscriptions =>
-            _subscriptions.Items.ToImmutableList();
+        public ImmutableList<Subscription> Subscriptions => _subscriptions.Items
+            .OrderBy(s => s.Title)
+            .ToImmutableList();
+
+        public ImmutableList<Queue> QueuedEpisodes => _queuedEpisodes.Items
+            .OrderBy(q => q.PublishedDate)
+            .ToImmutableList();
 
         public IEnumerable<IMessageHandler> Children =>
             new IMessageHandler[] { SearchTerm }
                 .Where(s => s != null)
-            .Concat(_subscriptions.Items);
+            .Concat(_subscriptions.Items)
+            .Concat(_queuedEpisodes.Items);
 
         public Guid GetObjectId()
         {
@@ -102,7 +108,7 @@ namespace Commuter.Subscriptions
         {
             string title = message.Body.Title;
             string summary = message.Body.Summary;
-            DateTime publishedDated = message.Body.PublishedDate;
+            DateTime publishedDate = message.Body.PublishedDate;
             string mediaUrl = message.Body.MediaUrl;
             string imageUri = message.Body.ImageUri;
             return new Queue(
@@ -110,7 +116,7 @@ namespace Commuter.Subscriptions
                 new Uri(mediaUrl, UriKind.Absolute),
                 title,
                 summary,
-                publishedDated,
+                publishedDate,
                 new Uri(imageUri, UriKind.Absolute));
         }
     }

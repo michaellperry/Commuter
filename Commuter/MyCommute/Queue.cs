@@ -5,13 +5,13 @@ using System.Collections.Immutable;
 
 namespace Commuter.MyCommute
 {
-    class Queue : IMessageHandler
+    public class Queue : IMessageHandler
     {
         public Guid ObjectId { get; }
         public Uri MediaUrl { get; }
         public string Title { get; }
         public string Summary { get; }
-        public DateTime PublishedDated { get; }
+        public DateTime PublishedDate { get; }
         public Uri ImageUri { get; }
 
         public Queue(
@@ -19,14 +19,14 @@ namespace Commuter.MyCommute
             Uri mediaUrl,
             string title,
             string summary,
-            DateTime publishedDated,
+            DateTime publishedDate,
             Uri imageUri)
         {
             ObjectId = objectId;
             MediaUrl = mediaUrl;
             Title = title;
             Summary = summary;
-            PublishedDated = publishedDated;
+            PublishedDate = publishedDate;
             ImageUri = imageUri;
         }
 
