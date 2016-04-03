@@ -40,6 +40,11 @@ namespace Commuter.FeedJob.Entities
                 .Property(x => x.MediaUrl)
                 .IsRequired()
                 .HasMaxLength(512);
+
+            modelBuilder.Entity<Queue>()
+                .HasRequired(x => x.Episode)
+                .WithMany()
+                .WillCascadeOnDelete(false);
         }
     }
 }

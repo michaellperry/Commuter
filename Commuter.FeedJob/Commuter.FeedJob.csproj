@@ -166,6 +166,10 @@
     <Compile Include="Migrations\201603070245385_MadeDateTimesNullable.Designer.cs">
       <DependentUpon>201603070245385_MadeDateTimesNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604031754017_AddedQueue.cs" />
+    <Compile Include="Migrations\201604031754017_AddedQueue.Designer.cs">
+      <DependentUpon>201604031754017_AddedQueue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Functions.cs" />
@@ -187,6 +191,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603070245385_MadeDateTimesNullable.resx">
       <DependentUpon>201603070245385_MadeDateTimesNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604031754017_AddedQueue.resx">
+      <DependentUpon>201604031754017_AddedQueue.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
