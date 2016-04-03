@@ -11,6 +11,7 @@ namespace Commuter.FeedJob
         public static void HandleSubscribe(Message message, TextWriter log)
         {
             string feedUrl = message.Body.FeedUrl;
+            string imageUri = message.Body.ImageUri;
             string hash = Convert.ToBase64String(message.Hash.Code);
             Guid userGuid = message.ObjectId;
 
@@ -22,7 +23,8 @@ namespace Commuter.FeedJob
                 {
                     podcast = context.Podcasts.Add(new Podcast
                     {
-                        FeedUrl = feedUrl
+                        FeedUrl = feedUrl,
+                        ImageUri = imageUri
                     });
                     log.WriteLine($"Adding new podcast {feedUrl}.");
                 }

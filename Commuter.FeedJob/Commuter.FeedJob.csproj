@@ -170,6 +170,10 @@
     <Compile Include="Migrations\201604031754017_AddedQueue.Designer.cs">
       <DependentUpon>201604031754017_AddedQueue.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604032129477_AddedImageUriToPodcastAndEpisode.cs" />
+    <Compile Include="Migrations\201604032129477_AddedImageUriToPodcastAndEpisode.Designer.cs">
+      <DependentUpon>201604032129477_AddedImageUriToPodcastAndEpisode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Functions.cs" />
@@ -194,6 +198,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604031754017_AddedQueue.resx">
       <DependentUpon>201604031754017_AddedQueue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604032129477_AddedImageUriToPodcastAndEpisode.resx">
+      <DependentUpon>201604032129477_AddedImageUriToPodcastAndEpisode.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

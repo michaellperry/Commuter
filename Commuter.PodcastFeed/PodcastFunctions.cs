@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Commuter.ITunes;
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Net.Http;
@@ -31,11 +32,13 @@ namespace Commuter.PodcastFeed
                         MediaUrl = i.Links
                             .Where(l => l.RelationshipType == "enclosure")
                             .Select(l => l.Uri.ToString())
-                            .FirstOrDefault()
+                            .FirstOrDefault(),
+                        ImageUri = i.GetITunesAttribute("image")
                     });
 
                 return new EpisodeList
                 {
+                    ImageUri = feed.ImageUrl,
                     Episodes = episodes.ToImmutableList()
                 };
             }

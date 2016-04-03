@@ -126,6 +126,7 @@
       <DependentUpon>MyCommutePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MyCommute\MyCommuteViewModel.cs" />
+    <Compile Include="MyCommute\Queue.cs" />
     <Compile Include="Onboarding\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>

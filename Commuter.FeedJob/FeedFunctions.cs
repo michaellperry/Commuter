@@ -66,10 +66,12 @@ namespace Commuter.FeedJob
                         Title = episode.Title.Truncate(50),
                         Summary = episode.Summary,
                         PublishDate = episode.PublishDate,
-                        MediaUrl = episode.MediaUrl
+                        MediaUrl = episode.MediaUrl,
+                        ImageUri = episode.ImageUri
                     });
                 }
                 podcast.LastUpdateDateTime = now;
+                podcast.ImageUri = result.ImageUri?.ToString();
 
                 log.WriteLine($"Found {newEpisodes.Count} new episodes in {podcast.FeedUrl}.");
 
@@ -84,7 +86,8 @@ namespace Commuter.FeedJob
                             Title = episode.Title,
                             Summary = episode.Summary,
                             PublishDate = episode.PublishDate,
-                            MediaUrl = episode.MediaUrl
+                            MediaUrl = episode.MediaUrl,
+                            ImageUri = episode.ImageUri
                         }))
                     .ToImmutableList();
             }

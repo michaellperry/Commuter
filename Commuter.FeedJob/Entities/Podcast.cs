@@ -8,6 +8,7 @@ namespace Commuter.FeedJob.Entities
         public int PodcastId { get; set; }
 
         public string FeedUrl { get; set; }
+        public string ImageUri { get; set; }
         public DateTime? LastUpdateDateTime { get; set; }
         public DateTime? LastAttemptDateTime { get; set; }
 

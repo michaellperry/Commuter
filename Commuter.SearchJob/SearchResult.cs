@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Commuter.ITunes;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.ServiceModel.Syndication;
@@ -9,8 +10,6 @@ namespace Commuter.SearchJob
 {
     public class SearchResult
     {
-        private const string ITunesNamespace = "http://www.itunes.com/dtds/podcast-1.0.dtd";
-
         public string FeedUrl { get; set; }
         public string Title { get; set; }
         public string Subtitle { get; set; }
@@ -30,8 +29,8 @@ namespace Commuter.SearchJob
                 using (var reader = XmlReader.Create(stream))
                 {
                     var feed = SyndicationFeed.Load(reader);
-                    var iTunesAuthor = GetITunesAttribute(feed, "author");
-                    var iTunesSubtitle = GetITunesAttribute(feed, "subtitle");
+                    var iTunesAuthor = feed.GetITunesAttribute("author");
+                    var iTunesSubtitle = feed.GetITunesAttribute("subtitle");
 
                     var title = feed.Title.Text;
                     var author = iTunesAuthor ??
@@ -54,16 +53,6 @@ namespace Commuter.SearchJob
             {
                 return null;
             }
-        }
-
-        private static string GetITunesAttribute(SyndicationFeed feed, string attribute)
-        {
-            return feed.ElementExtensions
-                .Where(x =>
-                    x.OuterNamespace == ITunesNamespace &&
-                    x.OuterName == attribute)
-                .Select(x => x.GetObject<string>())
-                .FirstOrDefault();
         }
     }
 }

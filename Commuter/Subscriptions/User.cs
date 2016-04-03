@@ -1,5 +1,5 @@
-﻿using Assisticant.Collections;
-using Assisticant.Fields;
+﻿using Assisticant.Fields;
+using Commuter.MyCommute;
 using Commuter.Search;
 using RoverMob;
 using RoverMob.Messaging;
@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Commuter.Subscriptions
 {
@@ -18,6 +17,7 @@ namespace Commuter.Subscriptions
         private Observable<SearchTerm> _searchTerm = new Observable<SearchTerm>();
         private Observable<SearchResult> _selectedSearchResult = new Observable<SearchResult>();
         private SuccessorCollection<Subscription> _subscriptions;
+        private SuccessorCollection<Queue> _queuedEpisodes;
 
         private static MessageDispatcher<User> _dispatcher = new MessageDispatcher<User>()
             .On("Search", (u, m) => u.HandleSearch(m));
@@ -30,6 +30,11 @@ namespace Commuter.Subscriptions
                 CreateSubscription,
                 "Unsubscribe",
                 "Subscription");
+            _queuedEpisodes = new SuccessorCollection<Queue>(
+                "Queue",
+                CreateQueue,
+                "Finished",
+                "Queue");
         }
 
         public SearchTerm SearchTerm => _searchTerm.Value;
@@ -91,6 +96,22 @@ namespace Commuter.Subscriptions
                 subtitle,
                 author,
                 message.Hash);
+        }
+
+        private Queue CreateQueue(Message message)
+        {
+            string title = message.Body.Title;
+            string summary = message.Body.Summary;
+            DateTime publishedDated = message.Body.PublishedDate;
+            string mediaUrl = message.Body.MediaUrl;
+            string imageUri = message.Body.ImageUri;
+            return new Queue(
+                new { UserGuid = _userId, mediaUrl = mediaUrl }.ToGuid(),
+                new Uri(mediaUrl, UriKind.Absolute),
+                title,
+                summary,
+                publishedDated,
+                new Uri(imageUri, UriKind.Absolute));
         }
     }
 }

@@ -8,5 +8,6 @@ namespace Commuter.PodcastFeed
         public string Summary { get; set; }
         public DateTime PublishDate { get; set; }
         public string MediaUrl { get; set; }
+        public string ImageUri { get; set; }
     }
 }

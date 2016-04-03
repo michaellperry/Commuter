@@ -86,7 +86,8 @@ namespace Commuter.FeedJob
                     Title = episode.Title,
                     Summary = episode.Summary,
                     PublishedDate = episode.PublishDate,
-                    MediaUrl = episode.MediaUrl
+                    MediaUrl = episode.MediaUrl,
+                    ImageUri = episode.ImageUri ?? subscription.Podcast.ImageUri
                 });
         }
     }

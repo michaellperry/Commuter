@@ -27,6 +27,10 @@ namespace Commuter.FeedJob.Entities
                 .Property(x => x.FeedUrl)
                 .IsRequired()
                 .HasMaxLength(512);
+            modelBuilder.Entity<Podcast>()
+                .Property(x => x.ImageUri)
+                .IsOptional()
+                .HasMaxLength(512);
 
             modelBuilder.Entity<Episode>()
                 .Property(x => x.Title)
@@ -39,6 +43,10 @@ namespace Commuter.FeedJob.Entities
             modelBuilder.Entity<Episode>()
                 .Property(x => x.MediaUrl)
                 .IsRequired()
+                .HasMaxLength(512);
+            modelBuilder.Entity<Episode>()
+                .Property(x => x.ImageUri)
+                .IsOptional()
                 .HasMaxLength(512);
 
             modelBuilder.Entity<Queue>()

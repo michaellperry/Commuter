@@ -139,6 +139,10 @@
       <Project>{aa66134b-3cf8-40dc-8216-eb89649707e6}</Project>
       <Name>Commuter.DigitalPodcast</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Commuter.ITunes\Commuter.ITunes.csproj">
+      <Project>{e91ef490-0310-4dac-817b-e5812ebb58e3}</Project>
+      <Name>Commuter.ITunes</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
