@@ -1,14 +1,9 @@
-﻿using Commuter.FeedJob.Entities;
-using Commuter.PodcastFeed;
-using Microsoft.Azure.WebJobs;
-using RoverMob;
+﻿using Microsoft.Azure.WebJobs;
 using RoverMob.Messaging;
 using RoverMob.Protocol;
 using System;
-using System.Collections.Immutable;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Commuter.FeedJob
@@ -36,151 +31,24 @@ namespace Commuter.FeedJob
 
         private static void HandleSubscribe(Message message, TextWriter log)
         {
-            string feedUrl = message.Body.FeedUrl;
-            string hash = Convert.ToBase64String(message.Hash.Code);
-            Guid userGuid = message.ObjectId;
-
-            using (var context = new CommuterDbContext())
-            {
-                Podcast podcast = context.Podcasts
-                    .FirstOrDefault(p => p.FeedUrl == feedUrl);
-                if (podcast == null)
-                {
-                    podcast = context.Podcasts.Add(new Podcast
-                    {
-                        FeedUrl = feedUrl
-                    });
-                    log.WriteLine($"Adding new podcast {feedUrl}.");
-                }
-                else
-                {
-                    log.WriteLine($"Adding subscription for existing podcast {feedUrl}.");
-                }
-
-                context.Subscriptions.Add(new Subscription
-                {
-                    Podcast = podcast,
-                    UserGuid = userGuid,
-                    Hash = hash
-                });
-
-                context.SaveChanges();
-            }
+            MessageHandlers.HandleSubscribe(message, log);
 
             CheckFeeds(log).Wait();
         }
 
         private static void HandleUnsubscribe(Message message, TextWriter log)
         {
-            var hashes = message.GetPredecessors("Subscription")
-                .Select(p => Convert.ToBase64String(p.Code))
-                .ToList();
-
-            using (var context = new CommuterDbContext())
-            {
-                var predecessors = context.Subscriptions
-                    .Where(s => hashes.Contains(s.Hash))
-                    .ToList();
-                context.Subscriptions.RemoveRange(predecessors);
-                log.WriteLine($"Removing {predecessors.Count} podcast subscriptions");
-
-                context.SaveChanges();
-            }
+            MessageHandlers.HandleUnsubscribe(message, log);
 
             CheckFeeds(log).Wait();
         }
 
         private static async Task CheckFeeds(TextWriter log)
         {
-            var yesterday = DateTime.UtcNow.AddDays(-1.0);
-            var halfHourAgo = DateTime.UtcNow.AddHours(-0.5);
+            var pump = GetMessagePump();
 
-            using (var context = new CommuterDbContext())
-            {
-                var podcastsToCheck = context.Podcasts
-                    .Include("Episodes")
-                    .Where(p => context.Subscriptions.Any(
-                        s => s.Podcast == p))
-                    .Where(p =>
-                        p.LastUpdateDateTime == null ||
-                        p.LastUpdateDateTime < yesterday)
-                    .Where(p =>
-                        p.LastAttemptDateTime == null ||
-                        p.LastAttemptDateTime < halfHourAgo)
-                    .ToImmutableList();
-
-                var messages = await Task.WhenAll(podcastsToCheck
-                    .Select(p => CheckFeed(p, log)));
-
-                var pump = GetMessagePump();
-                pump.SendAllMessages(messages
-                    .SelectMany(m => m)
-                    .ToImmutableList());
-
-                try
-                {
-                    context.SaveChanges();
-                }
-                catch (System.Data.Entity.Validation.DbEntityValidationException x)
-                {
-                    var errors = x.EntityValidationErrors
-                        .SelectMany(e => e.ValidationErrors)
-                        .Select(e => $"Error in {e.PropertyName}: {e.ErrorMessage}")
-                        .ToArray();
-                    throw new InvalidOperationException(
-                        string.Join("; ", errors));
-                }
-            }
-        }
-
-        private static async Task<ImmutableList<Message>> CheckFeed(
-            Podcast podcast, TextWriter log)
-        {
-            var now = DateTime.UtcNow;
-            try
-            {
-                podcast.LastAttemptDateTime = now;
-                var result = await PodcastFunctions.TryLoadAsync(
-                    new Uri(podcast.FeedUrl, UriKind.Absolute));
-
-                var newEpisodes = result.Episodes
-                    .Where(e1 => !podcast.Episodes
-                        .Any(e2 => e1.MediaUrl == e2.MediaUrl))
-                    .ToImmutableList();
-                foreach (var episode in newEpisodes)
-                {
-                    podcast.Episodes.Add(new Entities.Episode
-                    {
-                        Title = episode.Title.MaxLength(50),
-                        Summary = episode.Summary,
-                        PublishDate = episode.PublishDate,
-                        MediaUrl = episode.MediaUrl
-                    });
-                }
-                podcast.LastUpdateDateTime = now;
-
-                log.WriteLine($"Found {newEpisodes.Count} new episodes in {podcast.FeedUrl}.");
-
-                Guid podcastGuid = new { FeedUrl = podcast.FeedUrl }.ToGuid();
-                return newEpisodes
-                    .Select(episode => Message.CreateMessage(
-                        podcastGuid.ToCanonicalString(),
-                        "Episode",
-                        podcastGuid,
-                        new
-                        {
-                            Title = episode.Title,
-                            Summary = episode.Summary,
-                            PublishDate = episode.PublishDate,
-                            MediaUrl = episode.MediaUrl
-                        }))
-                    .ToImmutableList();
-            }
-            catch (Exception)
-            {
-                // TODO: Publish the error so that someone can verify the podcast URL.
-                return ImmutableList<Message>.Empty;
-            }
+            await FeedFunctions.CheckFeeds(log, pump);
+            await QueueFunctions.CheckQueues(log, pump);
         }
 
         private static HttpMessagePump GetMessagePump()
@@ -195,16 +63,6 @@ namespace Commuter.FeedJob
                 messageQueue,
                 bookmarkStore);
             return pump;
-        }
-    }
-
-    public static class StringExtensions
-    {
-        public static string MaxLength(this string str, int length)
-        {
-            if (str == null || str.Length <= length)
-                return str;
-            return str.Substring(0, length);
         }
     }
 }

@@ -149,6 +149,8 @@
     <Compile Include="Entities\Episode.cs" />
     <Compile Include="Entities\Podcast.cs" />
     <Compile Include="Entities\Subscription.cs" />
+    <Compile Include="FeedFunctions.cs" />
+    <Compile Include="MessageHandlers.cs" />
     <Compile Include="Migrations\201603070021496_AddedSubscriptionPodcastAndEpisode.cs" />
     <Compile Include="Migrations\201603070021496_AddedSubscriptionPodcastAndEpisode.Designer.cs">
       <DependentUpon>201603070021496_AddedSubscriptionPodcastAndEpisode.cs</DependentUpon>
