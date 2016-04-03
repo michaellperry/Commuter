@@ -72,12 +72,14 @@ namespace Commuter.Subscriptions
         public void HandleAllMessages(IEnumerable<Message> messages)
         {
             _subscriptions.HandleAllMessages(messages);
+            _queuedEpisodes.HandleAllMessages(messages);
         }
 
         public void HandleMessage(Message message)
         {
             _dispatcher.Dispatch(this, message);
             _subscriptions.HandleMessage(message);
+            _queuedEpisodes.HandleMessage(message);
         }
 
         private void HandleSearch(Message message)

@@ -151,7 +151,6 @@
     <Compile Include="Entities\Podcast.cs" />
     <Compile Include="Entities\Queue.cs" />
     <Compile Include="Entities\Subscription.cs" />
-    <Compile Include="Extensions\EntityExtensions.cs" />
     <Compile Include="FeedFunctions.cs" />
     <Compile Include="MessageHandlers.cs" />
     <Compile Include="Migrations\201603070021496_AddedSubscriptionPodcastAndEpisode.cs" />

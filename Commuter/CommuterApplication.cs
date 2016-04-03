@@ -77,6 +77,8 @@ namespace Commuter
                 application.Load(new User(guid)));
 
             pump.Subscribe(() => application.Root
+                ?.GetObjectId().ToCanonicalString());
+            pump.Subscribe(() => application.Root
                 ?.SearchTerm?.GetObjectId().ToCanonicalString());
             pump.Subscribe(() => application.Root
                 ?.Subscriptions.Select(s => s.GetObjectId().ToCanonicalString()));

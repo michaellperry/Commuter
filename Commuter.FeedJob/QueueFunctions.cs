@@ -80,7 +80,7 @@ namespace Commuter.FeedJob
             return Message.CreateMessage(
                 subscription.UserGuid.ToCanonicalString(),
                 "Queue",
-                subscription.Podcast.ToGuid(),
+                subscription.UserGuid,
                 new
                 {
                     Title = episode.Title,

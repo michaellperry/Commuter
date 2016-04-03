@@ -11,6 +11,9 @@ namespace Commuter.Images
 
         public Uri GetCachedImageUri(Uri imageUri)
         {
+            if (imageUri == null)
+                return null;
+
             ImageCacheCell cell;
             string key = imageUri.ToString();
             if (!_cells.TryGetValue(key, out cell))

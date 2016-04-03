@@ -75,7 +75,7 @@ namespace Commuter.FeedJob
 
                 log.WriteLine($"Found {newEpisodes.Count} new episodes in {podcast.FeedUrl}.");
 
-                Guid podcastGuid = podcast.ToGuid();
+                Guid podcastGuid = new { FeedUrl = podcast.FeedUrl }.ToGuid();
                 return newEpisodes
                     .Select(episode => Message.CreateMessage(
                         podcastGuid.ToCanonicalString(),
