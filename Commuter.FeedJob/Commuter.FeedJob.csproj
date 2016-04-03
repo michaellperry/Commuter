@@ -145,10 +145,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ContextExtensions.cs" />
     <Compile Include="Entities\CommuterDbContext.cs" />
     <Compile Include="Entities\Episode.cs" />
     <Compile Include="Entities\Podcast.cs" />
+    <Compile Include="Entities\Queue.cs" />
     <Compile Include="Entities\Subscription.cs" />
+    <Compile Include="Extensions\EntityExtensions.cs" />
     <Compile Include="FeedFunctions.cs" />
     <Compile Include="MessageHandlers.cs" />
     <Compile Include="Migrations\201603070021496_AddedSubscriptionPodcastAndEpisode.cs" />
@@ -167,6 +170,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueueFunctions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

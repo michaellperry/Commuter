@@ -10,13 +10,6 @@ using System.Threading.Tasks;
 
 namespace Commuter.FeedJob
 {
-    static class QueueFunctions
-    {
-        public static async Task CheckQueues(TextWriter log, HttpMessagePump pump)
-        {
-            throw new NotImplementedException();
-        }
-    }
     static class FeedFunctions
     {
         public static async Task CheckFeeds(TextWriter log, HttpMessagePump pump)
@@ -44,20 +37,11 @@ namespace Commuter.FeedJob
                 pump.SendAllMessages(messages
                     .SelectMany(m => m)
                     .ToImmutableList());
+                await pump.JoinAsync();
+                if (pump.Exception == null)
+                    throw pump.Exception;
 
-                try
-                {
-                    context.SaveChanges();
-                }
-                catch (System.Data.Entity.Validation.DbEntityValidationException x)
-                {
-                    var errors = x.EntityValidationErrors
-                        .SelectMany(e => e.ValidationErrors)
-                        .Select(e => $"Error in {e.PropertyName}: {e.ErrorMessage}")
-                        .ToArray();
-                    throw new InvalidOperationException(
-                        string.Join("; ", errors));
-                }
+                context.ValidateAndSaveChanges();
             }
         }
 
@@ -79,7 +63,7 @@ namespace Commuter.FeedJob
                 {
                     podcast.Episodes.Add(new Entities.Episode
                     {
-                        Title = episode.Title.MaxLength(50),
+                        Title = episode.Title.Truncate(50),
                         Summary = episode.Summary,
                         PublishDate = episode.PublishDate,
                         MediaUrl = episode.MediaUrl
@@ -89,7 +73,7 @@ namespace Commuter.FeedJob
 
                 log.WriteLine($"Found {newEpisodes.Count} new episodes in {podcast.FeedUrl}.");
 
-                Guid podcastGuid = new { FeedUrl = podcast.FeedUrl }.ToGuid();
+                Guid podcastGuid = podcast.ToGuid();
                 return newEpisodes
                     .Select(episode => Message.CreateMessage(
                         podcastGuid.ToCanonicalString(),
@@ -110,5 +94,6 @@ namespace Commuter.FeedJob
                 return ImmutableList<Message>.Empty;
             }
         }
+        
     }
 }

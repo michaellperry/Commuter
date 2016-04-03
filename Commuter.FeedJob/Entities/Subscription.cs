@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Commuter.FeedJob.Entities
 {
@@ -12,5 +13,7 @@ namespace Commuter.FeedJob.Entities
 
         public int PodcastId { get; set; }
         public virtual Podcast Podcast { get; set; }
+
+        public virtual ICollection<Queue> Queues { get; set; }
     }
 }

@@ -4,7 +4,7 @@ namespace Commuter.FeedJob
 {
     public static class StringExtensions
     {
-        public static string MaxLength(this string str, int length)
+        public static string Truncate(this string str, int length)
         {
             if (str == null || str.Length <= length)
                 return str;
