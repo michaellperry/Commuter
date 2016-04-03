@@ -10,5 +10,10 @@ namespace Commuter.FeedJob
                 return str;
             return str.Substring(0, length);
         }
+
+        public static string NullIfWhiteSpace(this string str)
+        {
+            return string.IsNullOrWhiteSpace(str) ? null : str;
+        }
     }
 }
