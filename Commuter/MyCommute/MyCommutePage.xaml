@@ -22,7 +22,13 @@
                     <TextBlock Margin="8" Text="{Binding Summary}" Style="{StaticResource BodyTextBlockStyle}" />
                 </StackPanel>
             </ScrollViewer>
-            <local:CustomMediaTransportControls Grid.Row="2" ManageSubscriptionsCommand="{Binding ManageSubscriptions}" />
+            <Border Grid.Row="2" Height="120">
+                <MediaElement x:Name="Player" Source="{Binding Media}" AreTransportControlsEnabled="True">
+                    <MediaElement.TransportControls>
+                        <local:CustomMediaTransportControls ManageSubscriptionsCommand="{Binding ManageSubscriptions}"/>
+                    </MediaElement.TransportControls>
+                </MediaElement>
+            </Border>
         </Grid>
     </Grid>
 </Page>

@@ -17,6 +17,7 @@ namespace Commuter
             builder.RegisterModule<Subscriptions.Module>();
             builder.RegisterModule<Details.Module>();
             builder.RegisterModule<Images.Module>();
+            builder.RegisterModule<Media.Module>();
             builder.RegisterType<Model>()
                 .SingleInstance()
                 .AsSelf();

@@ -1,31 +1,19 @@
-﻿using Assisticant;
-using Assisticant.Collections;
-using Assisticant.Fields;
-using System.Collections.Immutable;
-using System;
-using System.Threading.Tasks;
-
-namespace Commuter
+﻿namespace Commuter
 {
     class Model
     {
-        private readonly Search.SearchService _searchService;
         private readonly Subscriptions.SubscriptionService _subscriptionService;
+        private readonly Media.MediaCacheService _mediaCacheService;
         private readonly CommuterApplication _application;
 
         public Model(
-            Search.SearchService searchService,
             Subscriptions.SubscriptionService subscriptionService,
+            Media.MediaCacheService mediaCacheService,
             CommuterApplication application)
         {
-            _searchService = searchService;
             _subscriptionService = subscriptionService;
+            _mediaCacheService = mediaCacheService;
             _application = application;
-        }
-
-        public Search.SearchService SearchService
-        {
-            get { return _searchService; }
         }
 
         public Subscriptions.SubscriptionService SubscriptionService

@@ -119,6 +119,9 @@
     <Compile Include="Images\ImageCacheCell.cs" />
     <Compile Include="Images\ImageCacheService.cs" />
     <Compile Include="Images\Module.cs" />
+    <Compile Include="Media\MediaCacheService.cs" />
+    <Compile Include="Media\MediaDownloader.cs" />
+    <Compile Include="Media\Module.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="MyCommute\CustomMediaTransportControls.cs" />
     <Compile Include="MyCommute\Module.cs" />
