@@ -34,28 +34,35 @@ namespace Commuter.Media
                 {
                     _started.Value = true;
 
-                    using (var client = new HttpClient())
-                    using (var request = new HttpRequestMessage(HttpMethod.Get, _queue.MediaUrl))
+                    var fileName = GetFileName(_queue.MediaUrl);
+                    string targetFileName = Path.Combine(
+                        ApplicationData.Current.LocalFolder.Path,
+                        "media",
+                        fileName);
+                    if (!File.Exists(targetFileName))
                     {
-                        var response = await client.SendAsync(request);
-                        if (response.IsSuccessStatusCode)
+                        using (var client = new HttpClient())
+                        using (var request = new HttpRequestMessage(HttpMethod.Get, _queue.MediaUrl))
                         {
-                            var mediaFolder = await ApplicationData.Current.LocalFolder
-                                .CreateFolderAsync("media", CreationCollisionOption.OpenIfExists);
-                            var fileName = GetFileName(_queue.MediaUrl);
-                            var mediaFile = await mediaFolder.CreateFileAsync(fileName,
-                                CreationCollisionOption.ReplaceExisting);
-                            var outStream = await mediaFile.OpenStreamForWriteAsync();
-                            await response.Content.CopyToAsync(outStream);
+                            var response = await client.SendAsync(request);
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var mediaFolder = await ApplicationData.Current.LocalFolder
+                                    .CreateFolderAsync("media", CreationCollisionOption.OpenIfExists);
+                                var mediaFile = await mediaFolder.CreateFileAsync(fileName,
+                                    CreationCollisionOption.ReplaceExisting);
+                                var outStream = await mediaFile.OpenStreamForWriteAsync();
+                                await response.Content.CopyToAsync(outStream);
 
-                            _application.EmitMessage(Message.CreateMessage(
-                                null,
-                                "Downloaded",
-                                _queue.GetObjectId(),
-                                new
-                                {
-                                    FileName = mediaFile.Path
-                                }));
+                                _application.EmitMessage(Message.CreateMessage(
+                                    null,
+                                    "Downloaded",
+                                    _queue.GetObjectId(),
+                                    new
+                                    {
+                                        FileName = mediaFile.Path
+                                    }));
+                            }
                         }
                     }
                 }
