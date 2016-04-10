@@ -44,10 +44,14 @@ namespace Commuter.MyCommute
             _search.ClearSearchResults();
         }
 
-        public TimeSpan Position => TimeSpan.Zero;
+        public TimeSpan Position => CurrentQueue?.Position ??
+            TimeSpan.Zero;
 
         public void Paused(TimeSpan position)
         {
+            if (CurrentQueue != null)
+                _application.EmitMessage(
+                    CurrentQueue.SetPlayhead(position));
         }
     }
 }

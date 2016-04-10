@@ -115,6 +115,7 @@ namespace Commuter.Subscriptions
             string imageUri = message.Body.ImageUri;
             return new Queue(
                 new { UserGuid = _userId, mediaUrl = mediaUrl }.ToGuid(),
+                _userId,
                 new Uri(mediaUrl, UriKind.Absolute),
                 title,
                 summary,
