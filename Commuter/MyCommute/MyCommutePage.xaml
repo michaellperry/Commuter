@@ -74,7 +74,7 @@
                 </StackPanel>
             </ScrollViewer>
             <Border x:Name="PodcastPlayer" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignBottomWithPanel="True" Height="120">
-                <MediaElement x:Name="PodcastMedia" Source="{Binding Media}" AreTransportControlsEnabled="True" CurrentStateChanged="MediaElement_CurrentStateChanged">
+                <MediaElement x:Name="PodcastMedia" Source="{Binding Media}" AreTransportControlsEnabled="True" CurrentStateChanged="MediaElement_CurrentStateChanged" AutoPlay="False">
                     <MediaElement.TransportControls>
                         <local:CustomMediaTransportControls ManageSubscriptionsCommand="{Binding ManageSubscriptions}"/>
                     </MediaElement.TransportControls>
