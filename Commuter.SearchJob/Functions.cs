@@ -29,7 +29,7 @@ namespace Commuter.SearchJob
             string searchTerm = searchMessage.Body.SearchTerm;
 
             log.WriteLine($"Searching for {searchTerm}");
-            var searchResults = await PerformSearch(searchTerm);
+            var searchResults = await PerformSearch(searchTerm, log);
             log.WriteLine($"Found {searchResults.Count} results");
 
             var searchTermId = new { Text = searchTerm }.ToGuid();
@@ -46,8 +46,28 @@ namespace Commuter.SearchJob
         }
 
         private static async Task<ImmutableList<SearchResult>> PerformSearch(
-            string searchTerm)
+            string searchTerm, TextWriter log)
         {
+            if (searchTerm.ToLower() == "qed")
+            {
+                log.WriteLine("It was qed!");
+                return new SearchResult[]
+                {
+                    new SearchResult
+                    {
+                        Author = "Michael L Perry",
+                        FeedUrl = "http://qedcode.libsyn.com/rss",
+                        ImageUri = "http://static.libsyn.com/p/assets/a/d/5/5/ad55cafbc4eeec42/Artwork2.jpg",
+                        Title = "Q.E.D. Code",
+                        Subtitle = "Exploring the intersection between software and mathematics"
+                    }
+                }.ToImmutableList();
+            }
+            else
+            {
+                log.WriteLine($"It wasn't qed, it was {searchTerm.ToLower()}");
+            }
+
             var search = new DigitalPodcastSearch(
                 ConfigurationManager.AppSettings["DigitalPodcastApiKey"]);
             var response = await search.SearchAsync(
