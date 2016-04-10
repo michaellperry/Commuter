@@ -9,26 +9,21 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Image Source="{Binding ImageUrl}"/>
-            <ScrollViewer Grid.Row="1">
+        <RelativePanel>
+            <Image x:Name="PodcastImage" Source="{Binding ImageUrl}" HorizontalAlignment="Right" Width="360" Height="360" d:LayoutOverrides="TopMargin, BottomMargin"/>
+            <ScrollViewer x:Name="PodcastSummary" RelativePanel.Below="PodcastImage" RelativePanel.Above="PodcastPlayer">
                 <StackPanel>
                     <TextBlock Margin="8" Text="{Binding Title}" Style="{StaticResource SubtitleTextBlockStyle}"/>
                     <TextBlock Margin="8" Text="{Binding Summary}" Style="{StaticResource BodyTextBlockStyle}" />
                 </StackPanel>
             </ScrollViewer>
-            <Border Grid.Row="2" Height="120">
-                <MediaElement x:Name="Player" Source="{Binding Media}" AreTransportControlsEnabled="True">
+            <Border x:Name="PodcastPlayer" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignBottomWithPanel="True" Height="120">
+                <MediaElement Source="{Binding Media}" AreTransportControlsEnabled="True">
                     <MediaElement.TransportControls>
                         <local:CustomMediaTransportControls ManageSubscriptionsCommand="{Binding ManageSubscriptions}"/>
                     </MediaElement.TransportControls>
                 </MediaElement>
             </Border>
-        </Grid>
+        </RelativePanel>
     </Grid>
 </Page>
