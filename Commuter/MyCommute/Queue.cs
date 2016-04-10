@@ -12,8 +12,7 @@ namespace Commuter.MyCommute
     public class Queue : IMessageHandler
     {
         private MessageDispatcher<Queue> _dispatcher = new MessageDispatcher<Queue>()
-            .On("Downloaded", (q, m) => q.OnDownloaded(m))
-            .On("Playhead", (q, m) => q.OnPlayhead(m));
+            .On("Downloaded", (q, m) => q.OnDownloaded(m));
 
         public Guid ObjectId { get; }
         public Uri MediaUrl { get; }
@@ -25,8 +24,7 @@ namespace Commuter.MyCommute
         private readonly Guid _userGuid;
         private Observable<string> _fileName = new Observable<string>();
 
-        private ObservableList<Candidate<TimeSpan>> _playheads =
-            new ObservableList<Candidate<TimeSpan>>();
+        private Mutable<double> _playhead;
 
         public Queue(
             Guid objectId,
@@ -44,6 +42,8 @@ namespace Commuter.MyCommute
             Summary = summary;
             PublishedDate = publishedDate;
             ImageUri = imageUri;
+
+            _playhead = new Mutable<double>(userGuid.ToCanonicalString());
         }
 
         public IEnumerable<IMessageHandler> Children =>
@@ -58,17 +58,19 @@ namespace Commuter.MyCommute
         {
             foreach (var message in messages)
                 _dispatcher.Dispatch(this, message);
+            _playhead.HandleAllMessages(messages);
         }
 
         public void HandleMessage(Message message)
         {
             _dispatcher.Dispatch(this, message);
+            _playhead.HandleMessage(message);
         }
 
         public bool IsDownloaded => !string.IsNullOrEmpty(_fileName.Value);
         public string FileName => _fileName.Value;
-        public TimeSpan Position => _playheads
-            .Select(p => p.Value)
+        public TimeSpan Position => _playhead.Candidates
+            .Select(p => TimeSpan.FromSeconds(p.Value))
             .DefaultIfEmpty(TimeSpan.Zero)
             .Max();
 
@@ -79,26 +81,10 @@ namespace Commuter.MyCommute
 
         public Message SetPlayhead(TimeSpan position)
         {
-            return Message.CreateMessage(
-                _userGuid.ToCanonicalString(),
+            return _playhead.CreateMessage(
                 "Playhead",
-                Predecessors.Set
-                    .In("Prior", _playheads.Select(p => p.MessageHash)),
                 ObjectId,
-                new
-                {
-                    Position = position.TotalSeconds
-                });
-        }
-
-        private void OnPlayhead(Message message)
-        {
-            double position = message.Body.Position;
-            _playheads.RemoveAll(c => message.GetPredecessors("Prior")
-                .Contains(c.MessageHash));
-            _playheads.Add(new Candidate<TimeSpan>(
-                message.Hash,
-                TimeSpan.FromSeconds(position)));
+                position.TotalSeconds);
         }
     }
 }
