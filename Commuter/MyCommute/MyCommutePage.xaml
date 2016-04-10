@@ -6,6 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     DataContext="{Binding Source={StaticResource Locator}, Path=MyCommuteViewModel}"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -72,7 +74,7 @@
                 </StackPanel>
             </ScrollViewer>
             <Border x:Name="PodcastPlayer" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignBottomWithPanel="True" Height="120">
-                <MediaElement Source="{Binding Media}" AreTransportControlsEnabled="True">
+                <MediaElement x:Name="PodcastMedia" Source="{Binding Media}" AreTransportControlsEnabled="True" CurrentStateChanged="MediaElement_CurrentStateChanged">
                     <MediaElement.TransportControls>
                         <local:CustomMediaTransportControls ManageSubscriptionsCommand="{Binding ManageSubscriptions}"/>
                     </MediaElement.TransportControls>

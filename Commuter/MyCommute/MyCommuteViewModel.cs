@@ -43,5 +43,11 @@ namespace Commuter.MyCommute
             _subscriptions.ManagingSubscriptions = true;
             _search.ClearSearchResults();
         }
+
+        public TimeSpan Position => TimeSpan.Zero;
+
+        public void Paused(TimeSpan position)
+        {
+        }
     }
 }
