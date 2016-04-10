@@ -49,7 +49,7 @@ namespace Commuter.MyCommute
 
         public void Paused(TimeSpan position)
         {
-            if (CurrentQueue != null)
+            if (CurrentQueue != null && position > TimeSpan.Zero)
                 _application.EmitMessage(
                     CurrentQueue.SetPlayhead(position));
         }

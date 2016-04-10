@@ -25,8 +25,8 @@ namespace Commuter.MyCommute
         private readonly Guid _userGuid;
         private Observable<string> _fileName = new Observable<string>();
 
-        private ObservableList<TimeSpan> _playheads =
-            new ObservableList<TimeSpan>();
+        private ObservableList<Candidate<TimeSpan>> _playheads =
+            new ObservableList<Candidate<TimeSpan>>();
 
         public Queue(
             Guid objectId,
@@ -68,6 +68,7 @@ namespace Commuter.MyCommute
         public bool IsDownloaded => !string.IsNullOrEmpty(_fileName.Value);
         public string FileName => _fileName.Value;
         public TimeSpan Position => _playheads
+            .Select(p => p.Value)
             .DefaultIfEmpty(TimeSpan.Zero)
             .Max();
 
@@ -81,6 +82,8 @@ namespace Commuter.MyCommute
             return Message.CreateMessage(
                 _userGuid.ToCanonicalString(),
                 "Playhead",
+                Predecessors.Set
+                    .In("Prior", _playheads.Select(p => p.MessageHash)),
                 ObjectId,
                 new
                 {
@@ -91,7 +94,11 @@ namespace Commuter.MyCommute
         private void OnPlayhead(Message message)
         {
             double position = message.Body.Position;
-            _playheads.Add(TimeSpan.FromSeconds(position));
+            _playheads.RemoveAll(c => message.GetPredecessors("Prior")
+                .Contains(c.MessageHash));
+            _playheads.Add(new Candidate<TimeSpan>(
+                message.Hash,
+                TimeSpan.FromSeconds(position)));
         }
     }
 }
