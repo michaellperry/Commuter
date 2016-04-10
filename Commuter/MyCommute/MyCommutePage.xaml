@@ -9,8 +9,41 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="Layouts">
+                <VisualState x:Name="VerticalPhone">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="500" MinWindowWidth="320"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PodcastImage.(UIElement.Visibility)" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="HorizontalPhone">
+                    <VisualState.Setters>
+                        <Setter Target="PodcastImage.(UIElement.Visibility)" Value="Visible"/>
+                        <Setter Target="PodcastImage.(FrameworkElement.Width)" Value="240"/>
+                        <Setter Target="PodcastImage.(FrameworkElement.Height)" Value="240"/>
+                        <Setter Target="PodcastImage.(RelativePanel.AlignHorizontalCenterWithPanel)" Value="False"/>
+                        <Setter Target="PodcastSummary.(RelativePanel.Above)" Value=""/>
+                        <Setter Target="PodcastSummary.(RelativePanel.LeftOf)" Value=""/>
+                        <Setter Target="PodcastSummary.(RelativePanel.Below)" Value=""/>
+                        <Setter Target="PodcastSummary.(RelativePanel.RightOf)" Value="PodcastImage"/>
+                        <Setter Target="PodcastSummary.(RelativePanel.AlignBottomWithPanel)" Value="True"/>
+                        <Setter Target="PodcastSummary.(RelativePanel.AlignTopWithPanel)" Value="True"/>
+                        <Setter Target="PodcastSummary.(RelativePanel.AlignRightWithPanel)" Value="True"/>
+                        <Setter Target="PodcastPlayer.(RelativePanel.AlignRightWithPanel)" Value="False"/>
+                        <Setter Target="PodcastPlayer.(RelativePanel.AlignRightWith)" Value=""/>
+                        <Setter Target="PodcastPlayer.(FrameworkElement.Width)" Value="240"/>
+                    </VisualState.Setters>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowHeight="320" MinWindowWidth="500"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <RelativePanel>
-            <Image x:Name="PodcastImage" Source="{Binding ImageUrl}" HorizontalAlignment="Right" Width="360" Height="360" d:LayoutOverrides="TopMargin, BottomMargin"/>
+            <Image x:Name="PodcastImage" Visibility="Collapsed" RelativePanel.AlignHorizontalCenterWithPanel="True" Source="{Binding ImageUrl}" Width="320" Height="320"/>
             <ScrollViewer x:Name="PodcastSummary" RelativePanel.Below="PodcastImage" RelativePanel.Above="PodcastPlayer">
                 <StackPanel>
                     <TextBlock Margin="8" Text="{Binding Title}" Style="{StaticResource SubtitleTextBlockStyle}"/>
